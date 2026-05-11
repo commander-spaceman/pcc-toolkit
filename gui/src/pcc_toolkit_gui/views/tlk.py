@@ -1,6 +1,6 @@
 """TLK viewer tab — search and browse talk file entries."""
 
-from imgui_bundle import imgui
+from imgui_bundle import imgui, ImVec2
 
 from pcc_toolkit_gui.engine import EngineError, parse_tlk
 from pcc_toolkit_gui.state import AppState
@@ -70,11 +70,19 @@ def render_tlk(state: AppState) -> None:
             sid_str = str(sid)
             selected = sid_str == state.selected_tlk_entry
 
+            col_w = imgui.get_column_width(1)
+            line_h = imgui.get_text_line_height()
+            if col_w <= 0:
+                col_w = 400
+            text_size = imgui.calc_text_size(text, None, False, col_w)
+            row_h = max(line_h, text_size.y)
+
             if selected:
                 imgui.table_set_bg_color(imgui.TableBgTarget_.row_bg0, imgui.IM_COL32(50, 80, 140, 180))
 
             imgui.table_set_column_index(0)
-            clicked = imgui.selectable(sid_str, selected, imgui.SelectableFlags_.span_all_columns)[0]
+            clicked = imgui.selectable(sid_str, selected, imgui.SelectableFlags_.span_all_columns,
+                                       imgui.ImVec2(0, row_h))[0]
             if clicked:
                 state.selected_tlk_entry = sid_str
 
