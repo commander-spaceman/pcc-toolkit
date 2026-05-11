@@ -59,6 +59,7 @@ def render_tlk(state: AppState) -> None:
              | imgui.TableFlags_.scroll_y)
 
     if imgui.begin_table("tlk_data", 2, flags, imgui.ImVec2(0, 0)):
+        imgui.table_setup_scroll_freeze(0, 1)
         imgui.table_setup_column("StringID", imgui.TableColumnFlags_.width_fixed, 80)
         imgui.table_setup_column("Text", imgui.TableColumnFlags_.width_stretch)
         imgui.table_headers_row()
