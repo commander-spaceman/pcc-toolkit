@@ -1,6 +1,6 @@
 """TLK viewer tab — search and browse talk file entries."""
 
-from imgui_bundle import imgui, ImVec2
+from imgui_bundle import imgui
 
 from pcc_toolkit_gui.engine import EngineError, parse_tlk
 from pcc_toolkit_gui.state import AppState
@@ -39,41 +39,31 @@ def render_tlk(state: AppState) -> None:
         return
 
     imgui.begin_child("tlk_table", imgui.ImVec2(0, 0), True)
-    imgui.columns(3, "tlk_columns", True)
-    imgui.text("StringID")
-    imgui.next_column()
-    imgui.text("Text")
-    imgui.next_column()
-    imgui.text("Source")
-    imgui.next_column()
-    imgui.separator()
 
-    row_bg_dark = imgui.IM_COL32(40, 40, 45, 255)
-    row_bg_light = imgui.IM_COL32(50, 50, 55, 255)
-    draw_list = imgui.get_window_draw_list()
+    flags = (imgui.TableFlags_.borders_inner_v
+             | imgui.TableFlags_.row_bg
+             | imgui.TableFlags_.resizable
+             | imgui.TableFlags_.scroll_y)
 
-    for idx, entry in enumerate(display[:500]):
-        if idx % 2 == 0:
-            x = imgui.get_cursor_pos().x
-            y = imgui.get_cursor_pos().y
-            line_h = imgui.get_text_line_height_with_spacing()
-            draw_list.add_rect_filled(
-                imgui.ImVec2(x, y),
-                imgui.ImVec2(x + imgui.get_content_region_avail().x, y + line_h),
-                row_bg_dark,
-            )
+    if imgui.begin_table("tlk_data", 3, flags):
+        imgui.table_setup_column("StringID", imgui.TableColumnFlags_.width_fixed, 80)
+        imgui.table_setup_column("Text", imgui.TableColumnFlags_.width_stretch)
+        imgui.table_setup_column("Source", imgui.TableColumnFlags_.width_fixed, 0)
+        imgui.table_headers_row()
 
-        sid = entry.get("string_id", entry.get("StringID", 0))
-        text = entry.get("text", entry.get("Text", ""))
-        source = entry.get("source_tlk", "")
-        imgui.text(str(sid))
-        imgui.next_column()
-        imgui.text_wrapped(text)
-        imgui.next_column()
-        imgui.text_disabled(source)
-        imgui.next_column()
+        for entry in display[:500]:
+            imgui.table_next_row()
+            imgui.table_set_column_index(0)
+            sid = entry.get("string_id", entry.get("StringID", 0))
+            imgui.text(str(sid))
+            imgui.table_set_column_index(1)
+            text = entry.get("text", entry.get("Text", ""))
+            imgui.text_wrapped(text)
+            imgui.table_set_column_index(2)
+            source = entry.get("source_tlk", "")
+            imgui.text_disabled(source)
 
-    imgui.columns(1)
+        imgui.end_table()
     imgui.end_child()
 
 
