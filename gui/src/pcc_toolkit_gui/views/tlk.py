@@ -1,6 +1,6 @@
 """TLK viewer tab — search and browse talk file entries."""
 
-from imgui_bundle import imgui
+from imgui_bundle import imgui, ImVec2
 
 from pcc_toolkit_gui.engine import EngineError, parse_tlk
 from pcc_toolkit_gui.state import AppState
@@ -48,7 +48,21 @@ def render_tlk(state: AppState) -> None:
     imgui.next_column()
     imgui.separator()
 
-    for entry in display[:500]:
+    row_bg_dark = imgui.IM_COL32(40, 40, 45, 255)
+    row_bg_light = imgui.IM_COL32(50, 50, 55, 255)
+    draw_list = imgui.get_window_draw_list()
+
+    for idx, entry in enumerate(display[:500]):
+        if idx % 2 == 0:
+            x = imgui.get_cursor_pos().x
+            y = imgui.get_cursor_pos().y
+            line_h = imgui.get_text_line_height_with_spacing()
+            draw_list.add_rect_filled(
+                imgui.ImVec2(x, y),
+                imgui.ImVec2(x + imgui.get_content_region_avail().x, y + line_h),
+                row_bg_dark,
+            )
+
         sid = entry.get("string_id", entry.get("StringID", 0))
         text = entry.get("text", entry.get("Text", ""))
         source = entry.get("source_tlk", "")
