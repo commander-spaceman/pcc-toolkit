@@ -26,7 +26,8 @@ def render_tlk(state: AppState) -> None:
                f"Female: {header.get('female_entry_count', 0)}  "
                f"Loaded: {len(entries)}")
 
-    changed, state.tlk_search = imgui.input_text("Search", state.tlk_search)
+    changed, state.tlk_search = imgui.input_text("##tlk_search", state.tlk_search)
+    imgui.same_line()
     if imgui.button("Search") or (changed and state.tlk_search):
         _search_tlk(state)
 
