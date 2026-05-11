@@ -30,6 +30,7 @@ class AppState:
     evidence_query: str = ""
     evidence_results: dict | None = None
     search_cancel: bool = False
+    cache_path: str = ""
 
     active_tab: int = 0
     show_about: bool = False

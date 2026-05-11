@@ -468,6 +468,7 @@ func cmdScanEvidence(args []string) {
 	tlkPath := fs.String("tlk", "", "Path to base TLK file")
 	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
 	bioGameRoot := fs.String("biogame-root", "", "BioGame root directory for PCC scanning")
+	cachePath := fs.String("cache", "", "Path to file cache JSON (default: none)")
 	workers := fs.Int("workers", 0, "Number of concurrent workers (default: CPU count)")
 	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
 
@@ -527,7 +528,18 @@ func cmdScanEvidence(args []string) {
 		if *workers <= 0 {
 			*workers = runtime.NumCPU()
 		}
-		scanReport = scan.Run(files, candidates, *workers)
+
+		if *cachePath != "" {
+			fileCache, cacheErr := scan.LoadFileCache(*cachePath)
+			if cacheErr == nil {
+				scanReport = scan.RunWithCache(files, candidates, *workers, fileCache)
+				_ = fileCache.Save(*cachePath)
+			} else {
+				scanReport = scan.Run(files, candidates, *workers)
+			}
+		} else {
+			scanReport = scan.Run(files, candidates, *workers)
+		}
 	} else {
 		scanReport = &scan.ScanReport{}
 	}

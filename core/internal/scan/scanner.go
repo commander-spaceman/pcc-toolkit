@@ -3,6 +3,7 @@ package scan
 import (
 	"encoding/binary"
 	"os"
+	"path/filepath"
 	"runtime"
 	"sync"
 
@@ -96,6 +97,64 @@ func ScanFile(path string, candidates []int32) (*ScanResult, error) {
 }
 
 func Run(files []FileEntry, candidates []int32, workers int) *ScanReport {
+	return runScan(files, candidates, workers, nil)
+}
+
+func RunWithCache(files []FileEntry, candidates []int32, workers int, cache *FileCache) *ScanReport {
+	uncached := make([]FileEntry, 0)
+	cachedResults := make([]ScanResult, 0)
+
+	for _, f := range files {
+		filename := filepath.Base(f.Path)
+		cachedStrRefs, valid := cache.GetCachedStrRefs(filename, f.Size, f.ModTimeUNIX)
+		if valid {
+			hasBioC := cache.HasBioConversation(filename, f.Size, f.ModTimeUNIX)
+			hits := make([]ContainerHit, 0)
+			for _, sr := range cachedStrRefs {
+				for _, c := range candidates {
+					if int32(sr) == c {
+						hits = append(hits, ContainerHit{
+							ContainerHit: pcc.ContainerHit{StrRef: sr},
+							FilePath:     f.Path,
+						})
+						break
+					}
+				}
+			}
+			cachedResults = append(cachedResults, ScanResult{
+				FilePath:         f.Path,
+				Hits:             hits,
+				HasBioConversation: hasBioC,
+			})
+		} else {
+			uncached = append(uncached, f)
+		}
+	}
+
+	scanned := runScan(uncached, candidates, workers, cache)
+
+	report := &ScanReport{
+		FilesScanned: len(cachedResults) + scanned.FilesScanned,
+	}
+
+	for _, r := range cachedResults {
+		if len(r.Hits) > 0 {
+			report.FilesWithHits++
+			report.TotalHits += len(r.Hits)
+			report.Results = append(report.Results, r)
+		}
+	}
+
+	report.FilesScanned += scanned.FilesScanned
+	report.FilesWithHits += scanned.FilesWithHits
+	report.TotalHits += scanned.TotalHits
+	report.Results = append(report.Results, scanned.Results...)
+	report.Errors = append(report.Errors, scanned.Errors...)
+
+	return report
+}
+
+func runScan(files []FileEntry, candidates []int32, workers int, cache *FileCache) *ScanReport {
 	if workers <= 0 {
 		workers = runtime.NumCPU()
 	}
@@ -119,6 +178,15 @@ func Run(files []FileEntry, candidates []int32, workers int) *ScanReport {
 					}
 					continue
 				}
+
+				if cache != nil {
+					strrefs := make([]int, 0, len(result.Hits))
+					for _, h := range result.Hits {
+						strrefs = append(strrefs, h.StrRef)
+					}
+					cache.SetEntry(filepath.Base(f.Path), f.Size, f.ModTimeUNIX, strrefs, result.HasBioConversation)
+				}
+
 				results <- *result
 			}
 		}()

@@ -174,6 +174,12 @@ def _run_tlk_only_thread(state: AppState) -> None:
 def _run_scan_thread(state: AppState) -> None:
     global _active_process
     try:
+        import tempfile
+        import os as _os
+        cache_dir = _os.path.join(tempfile.gettempdir(), "pcc-toolkit")
+        _os.makedirs(cache_dir, exist_ok=True)
+        cache_file = _os.path.join(cache_dir, "file_cache.json")
+
         with _process_lock:
             _active_process = run_async(
                 "scan-evidence",
@@ -181,6 +187,7 @@ def _run_scan_thread(state: AppState) -> None:
                 tlk=str(state.tlk_path),
                 dlc_dir=state.dlc_dir,
                 biogame_root=state.biogame_root,
+                cache=cache_file,
             )
 
         while _active_process.poll() is None:
@@ -201,7 +208,10 @@ def _run_scan_thread(state: AppState) -> None:
         import json
         result = json.loads(stdout)
         state.evidence_results = result
-        state.status_message = f"Search complete: {result.get('total_hits', 0)} hits"
+        cached_msg = ""
+        if result.get("files_scanned", 0) < 50 and state.biogame_root:
+            cached_msg = " (mostly from cache)"
+        state.status_message = f"Search complete: {result.get('total_hits', 0)} hits{cached_msg}"
 
     except EngineError as e:
         if not state.search_cancel:
