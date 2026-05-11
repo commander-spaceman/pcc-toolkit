@@ -49,7 +49,9 @@ func Parse(data []byte, path string) (*File, error) {
 	for i := int32(0); i < header.MaleEntryCount; i++ {
 		stringID := int32(binary.LittleEndian.Uint32(data[cursor : cursor+4]))
 		bitOffset := int32(binary.LittleEndian.Uint32(data[cursor+4 : cursor+8]))
-		maleEntries[stringID] = bitOffset
+		if bitOffset >= 0 {
+			maleEntries[stringID] = bitOffset
+		}
 		cursor += 8
 	}
 
@@ -57,7 +59,9 @@ func Parse(data []byte, path string) (*File, error) {
 	for i := int32(0); i < header.FemaleEntryCount; i++ {
 		stringID := int32(binary.LittleEndian.Uint32(data[cursor : cursor+4]))
 		bitOffset := int32(binary.LittleEndian.Uint32(data[cursor+4 : cursor+8]))
-		femaleEntries[stringID] = bitOffset
+		if bitOffset >= 0 {
+			femaleEntries[stringID] = bitOffset
+		}
 		cursor += 8
 	}
 
@@ -93,13 +97,19 @@ func Parse(data []byte, path string) (*File, error) {
 }
 
 func getBit(data []byte, index int) bool {
+	if index < 0 {
+		return false
+	}
 	byteIndex := index >> 3
+	if byteIndex >= len(data) {
+		return false
+	}
 	bitIndex := index & 7
 	return (data[byteIndex] & (1 << bitIndex)) != 0
 }
 
 func DecodeString(bits []byte, nodes []Node, bitOffset int32) (string, bool) {
-	if len(nodes) == 0 {
+	if len(nodes) == 0 || bitOffset < 0 {
 		return "", false
 	}
 	root := nodes[0]
@@ -140,7 +150,7 @@ func ResolveString(tlk *File, stringID int32, male bool) (string, bool) {
 		entries = tlk.FemaleEntries
 	}
 	bitOffset, ok := entries[stringID]
-	if !ok {
+	if !ok || bitOffset < 0 {
 		return "", false
 	}
 	return DecodeString(tlk.Bits, tlk.Nodes, bitOffset)
