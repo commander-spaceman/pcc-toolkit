@@ -204,3 +204,4 @@ opencode.jsonc
 
 # Local stuff
 .secrets/
+.ini

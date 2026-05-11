@@ -1,1 +1,3 @@
-"""PCC Toolkit GUI — Dear ImGui renderer for ME2 OT dialogue exploration."""
+"""PCC Toolkit v2 — GUI"""
+
+__version__ = "0.2.0"

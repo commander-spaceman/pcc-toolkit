@@ -34,6 +34,22 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
+
+@app.command()
+def gui() -> None:
+    """Launch the interactive GUI."""
+    import sys
+    gui_src = str(Path(__file__).resolve().parents[3] / "gui" / "src")
+    if gui_src not in sys.path:
+        sys.path.insert(0, gui_src)
+    try:
+        from pcc_toolkit_gui.app import main as gui_main
+    except ImportError as e:
+        typer.echo(f"Cannot load GUI: {e}", err=True)
+        typer.echo("Install GUI dependencies: pip install .[gui]", err=True)
+        raise typer.Exit(code=1)
+    gui_main()
+
 package_app = typer.Typer(help="Inspect PCC packages")
 tlk_app = typer.Typer(help="Work with TLK talk files")
 dialogue_app = typer.Typer(help="Extract dialogue from BioConversation")
