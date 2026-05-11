@@ -12,6 +12,7 @@ class AppState:
 
     pcc_exports: dict | None = None
     tlk_entries: dict | None = None
+    tlk_dump: dict | None = None
     conversations: dict | None = None
     graph_layout: dict | None = None
 

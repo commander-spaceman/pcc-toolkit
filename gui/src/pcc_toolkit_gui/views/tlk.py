@@ -43,6 +43,8 @@ def render_tlk(state: AppState) -> None:
     imgui.same_line()
     if imgui.button("Search") or (changed and state.tlk_search):
         _search_tlk(state)
+    if changed and not state.tlk_search:
+        _restore_dump(state)
 
     display = results if results else entries
 
@@ -99,12 +101,20 @@ def _load_tlk(state: AppState) -> None:
     state.error_message = None
     try:
         state.tlk_entries = parse_tlk(state.tlk_path, dump_all=True)
+        state.tlk_dump = state.tlk_entries
         state.status_message = f"Loaded {state.tlk_entries.get('total_entries', 0)} entries"
     except EngineError as e:
         state.error_message = str(e)
         state.tlk_entries = None
+        state.tlk_dump = None
     finally:
         state.is_loading = False
+
+
+def _restore_dump(state: AppState) -> None:
+    if state.tlk_dump:
+        state.tlk_entries = state.tlk_dump
+        state.status_message = f"Loaded {state.tlk_entries.get('total_entries', 0)} entries"
 
 
 def _search_tlk(state: AppState) -> None:
