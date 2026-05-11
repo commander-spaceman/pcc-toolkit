@@ -221,7 +221,7 @@ func (f *File) IterEntriesWithSource() func(func(int32, string, string) bool) {
 func (f *File) Search(query string) []Entry {
 	var results []Entry
 	f.IterEntries()(func(id int32, text string) bool {
-		if containsFold(text, query) {
+		if containsFold(text, query) || containsFold(fmt.Sprintf("%d", id), query) {
 			results = append(results, Entry{StringID: id, Text: text})
 		}
 		return true

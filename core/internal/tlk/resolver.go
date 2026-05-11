@@ -70,7 +70,7 @@ func (r *Resolver) TotalUniqueEntries() int {
 func (r *Resolver) Search(query string) []ResolveResult {
 	var results []ResolveResult
 	r.IterAllEntries()(func(id int32, text string, source string) bool {
-		if containsFold(text, query) {
+		if containsFold(text, query) || containsFold(fmt.Sprintf("%d", id), query) {
 			results = append(results, ResolveResult{
 				StringID:  id,
 				Text:      text,
