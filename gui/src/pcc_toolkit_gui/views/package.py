@@ -42,11 +42,12 @@ def render_package(state: AppState) -> None:
         if imgui.tree_node(cls):
             for e in groups[cls]:
                 label = f"[{e['index']}] {e.get('object_name', '?')}"
-                if e["index"] == state.selected_export_index:
+                is_selected = e["index"] == state.selected_export_index
+                if is_selected:
                     imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(100, 200, 255, 255))
-                if imgui.selectable(label, e["index"] == state.selected_export_index):
+                if imgui.selectable(label, is_selected):
                     state.selected_export_index = e["index"]
-                if e["index"] == state.selected_export_index:
+                if is_selected:
                     imgui.pop_style_color()
             imgui.tree_pop()
 
