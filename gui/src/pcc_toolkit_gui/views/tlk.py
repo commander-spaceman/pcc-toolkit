@@ -58,17 +58,15 @@ def render_tlk(state: AppState) -> None:
              | imgui.TableFlags_.resizable
              | imgui.TableFlags_.scroll_y)
 
-    if imgui.begin_table("tlk_data", 3, flags):
+    if imgui.begin_table("tlk_data", 2, flags):
         imgui.table_setup_column("StringID", imgui.TableColumnFlags_.width_fixed, 80)
         imgui.table_setup_column("Text", imgui.TableColumnFlags_.width_stretch)
-        imgui.table_setup_column("Source", imgui.TableColumnFlags_.width_fixed, 0)
         imgui.table_headers_row()
 
         for entry in display[:500]:
             imgui.table_next_row()
             sid = entry.get("string_id", entry.get("StringID", 0))
             text = entry.get("text", entry.get("Text", ""))
-            source = entry.get("source", entry.get("source_tlk", ""))
 
             imgui.table_set_column_index(0)
             sid_str = str(sid)
@@ -85,8 +83,6 @@ def render_tlk(state: AppState) -> None:
 
             imgui.table_set_column_index(1)
             imgui.text_wrapped(text)
-            imgui.table_set_column_index(2)
-            imgui.text_disabled(source)
 
         imgui.end_table()
     imgui.end_child()
