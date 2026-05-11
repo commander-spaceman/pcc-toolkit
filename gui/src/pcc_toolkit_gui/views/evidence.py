@@ -15,6 +15,19 @@ _active_process: subprocess.Popen | None = None
 _process_lock = threading.Lock()
 
 
+def _copy_clipboard(text: str) -> None:
+    try:
+        import tkinter
+        root = tkinter.Tk()
+        root.withdraw()
+        root.clipboard_clear()
+        root.clipboard_append(text)
+        root.update()
+        root.destroy()
+    except Exception:
+        pass
+
+
 def render_evidence(state: AppState) -> None:
     imgui.text("TLK:")
     imgui.same_line()
@@ -91,6 +104,12 @@ def render_evidence(state: AppState) -> None:
 
         if has_children:
             if imgui.tree_node(label):
+                if imgui.begin_popup_context_item(f"ev_ctx_{sid}"):
+                    if imgui.menu_item("Copy Text", "", False, True)[0]:
+                        _copy_clipboard(ev.get("text", ""))
+                    if imgui.menu_item("Copy StrRef", "", False, True)[0]:
+                        _copy_clipboard(str(sid))
+                    imgui.end_popup()
                 if t1:
                     imgui.text_colored(imgui.ImVec4(0.3, 0.9, 0.3, 1.0), f"Tier 1 — BioConversation ({len(t1)})")
                     for hit in t1:
@@ -103,7 +122,13 @@ def render_evidence(state: AppState) -> None:
                     imgui.text_colored(imgui.ImVec4(0.5, 0.5, 0.5, 1.0), f"Tier 3 — Fallback ({len(t3)})")
                 imgui.tree_pop()
         else:
-            imgui.bullet_text(label)
+            imgui.selectable(label, False)
+            if imgui.begin_popup_context_item(f"ev_ctx_{sid}"):
+                if imgui.menu_item("Copy Text", "", False, True)[0]:
+                    _copy_clipboard(ev.get("text", ""))
+                if imgui.menu_item("Copy StrRef", "", False, True)[0]:
+                    _copy_clipboard(str(sid))
+                imgui.end_popup()
 
     imgui.end_child()
 
