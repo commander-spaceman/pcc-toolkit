@@ -10,12 +10,23 @@ def render_evidence(state: AppState) -> None:
     imgui.text("TLK path:")
     imgui.same_line()
     imgui.text_disabled(state.tlk_path or "not set")
-
+    imgui.same_line()
     if imgui.button("Set TLK..."):
         state.tlk_path = _open_file_dialog()
+
+    imgui.text("DLC dir:")
     imgui.same_line()
-    if imgui.button("Set DLC dir..."):
+    imgui.text_disabled(state.dlc_dir or "not set")
+    imgui.same_line()
+    if imgui.button("Set DLC..."):
         state.dlc_dir = _open_dir_dialog()
+
+    imgui.text("BioGame root:")
+    imgui.same_line()
+    imgui.text_disabled(state.biogame_root or "not set")
+    imgui.same_line()
+    if imgui.button("Set Root..."):
+        state.biogame_root = _open_dir_dialog()
 
     imgui.separator()
     changed, state.evidence_query = imgui.input_text("##evidence_query", state.evidence_query,
