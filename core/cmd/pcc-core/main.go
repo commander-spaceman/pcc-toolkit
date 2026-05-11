@@ -204,10 +204,11 @@ func cmdParseTlk(args []string) {
 	}
 
 	type parseTlkOutput struct {
-		File    string        `json:"file"`
-		Header  tlk.Header    `json:"header"`
-		Entries []tlk.Entry   `json:"entries,omitempty"`
-		Results []tlk.Entry   `json:"results,omitempty"`
+		File         string        `json:"file"`
+		Header       tlk.Header    `json:"header"`
+		Entries      []tlk.Entry   `json:"entries,omitempty"`
+		Results      []tlk.Entry   `json:"results,omitempty"`
+		TotalEntries int           `json:"total_entries"`
 	}
 
 	out := parseTlkOutput{
@@ -230,6 +231,11 @@ func cmdParseTlk(args []string) {
 		})
 	default:
 		out.Entries = nil
+	}
+
+	out.TotalEntries = len(out.Entries)
+	if out.TotalEntries == 0 && out.Results != nil {
+		out.TotalEntries = len(out.Results)
 	}
 
 	var enc *json.Encoder

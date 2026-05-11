@@ -64,11 +64,13 @@ def render_tlk(state: AppState) -> None:
 
 def _load_tlk(state: AppState) -> None:
     state.is_loading = True
+    state.error_message = None
     try:
         state.tlk_entries = parse_tlk(state.tlk_path, dump_all=True)
         state.status_message = f"Loaded {state.tlk_entries.get('total_entries', 0)} entries"
     except EngineError as e:
         state.error_message = str(e)
+        state.tlk_entries = None
     finally:
         state.is_loading = False
 
@@ -76,6 +78,7 @@ def _load_tlk(state: AppState) -> None:
 def _search_tlk(state: AppState) -> None:
     if not state.tlk_search:
         return
+    state.error_message = None
     try:
         state.tlk_entries = parse_tlk(state.tlk_path, search=state.tlk_search)
     except EngineError as e:
