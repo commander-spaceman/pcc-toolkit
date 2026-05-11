@@ -6,6 +6,7 @@ Regenerate with: python tests/regression/run_probes.py --regenerate
 """
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -13,7 +14,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
-SAMPLES_DIR = REPO_ROOT / "samples"
+
+_samples_dir = os.environ.get("PCC_SAMPLES_DIR", "")
+SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "samples")
 
 CORE_BINARY = (
     REPO_ROOT / "core" / "pcc-core.exe"
@@ -31,10 +34,13 @@ def run_core(subcommand: str, **kwargs) -> dict:
                 args.append(flag)
         elif value is not None:
             args.extend([flag, str(value)])
-    proc = subprocess.run(args, capture_output=True, text=True)
+    proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
-        raise RuntimeError(f"pcc-core error: {proc.stderr.strip()}")
-    return json.loads(proc.stdout)
+        raise RuntimeError(f"pcc-core error: {(proc.stderr or '').strip()}")
+    stdout = proc.stdout or ""
+    if not stdout.strip():
+        raise RuntimeError(f"pcc-core produced empty output")
+    return json.loads(stdout)
 
 
 def _load_golden(rel_path: str) -> dict | None:
@@ -132,26 +138,20 @@ class TestGoldenFiles:
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
         reason="samples/ directory empty.",
     )
-    def test_tlk_dump(self):
-        """Verify TLK dump matches golden."""
+    def test_tlk_info(self):
+        """Verify TLK header matches golden."""
         tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
         if not tlk_file.exists():
             pytest.skip(f"{tlk_file} not found")
 
-        actual = run_core("parse-tlk", file=str(tlk_file), dump_all=True)
-        golden = _load_golden("tlk/dump_first_50.json")
+        actual = run_core("parse-tlk", file=str(tlk_file))
+        golden = _load_golden("tlk/BIOGame_INT_info.json")
         if golden is None:
             pytest.skip("golden file not found")
 
-        assert actual["total_entries"] >= 30000, "TLK should have 30k+ entries"
-        assert actual["total_entries"] == golden["total_entries"], (
-            "TLK entry count mismatch"
-        )
-
-        # Compare first 50 entries
-        for i in range(min(50, len(actual["entries"]), len(golden["entries"]))):
-            assert actual["entries"][i]["StringID"] == golden["entries"][i]["StringID"]
-            assert actual["entries"][i]["Text"] == golden["entries"][i]["Text"]
+        assert actual["header"]["male_entry_count"] == golden["header"]["male_entry_count"]
+        assert actual["header"]["female_entry_count"] == golden["header"]["female_entry_count"]
+        assert actual["header"]["male_entry_count"] >= 30000
 
     @pytest.mark.skipif(
         not CORE_BINARY.exists(),

@@ -1,0 +1,19 @@
+{
+  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BIOGame_INT.tlk",
+  "header": {
+    "magic": 7040084,
+    "version": 3,
+    "min_version": 2,
+    "male_entry_count": 57946,
+    "female_entry_count": 1,
+    "tree_node_count": 109,
+    "data_len": 1298036
+  },
+  "entries": [
+    {
+      "string_id": 125303,
+      "text": "Shepard"
+    }
+  ],
+  "total_entries": 1
+}

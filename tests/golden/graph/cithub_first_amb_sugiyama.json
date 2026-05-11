@@ -1,0 +1,38 @@
+{
+  "conversation_id": "cithub_first_amb_a_dlg",
+  "node_count": 5,
+  "positions": {
+    "entry:0": [
+      -120,
+      184
+    ],
+    "entry:1": [
+      -120,
+      368
+    ],
+    "entry:2": [
+      -120,
+      552
+    ],
+    "reply:0": [
+      -120,
+      736
+    ],
+    "start:0": [
+      -120,
+      0
+    ]
+  },
+  "edges": [
+    {
+      "from": {
+        "type": "start",
+        "id": 0
+      },
+      "to": {
+        "type": "entry",
+        "id": 0
+      }
+    }
+  ]
+}

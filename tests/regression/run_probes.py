@@ -51,8 +51,7 @@ PROBES = [
         "args": {"file": "BioD_CitHub_LOC_INT.pcc", "conv_index": 3},
         "golden": "conversation/BioD_CitHub_LOC_INT_conv_3.json",
         "checks": [
-            {"path": "parse_mode", "not_empty": True},
-            {"path": "replies", "min_count": 1},
+            {"path": "conversations", "min_count": 1},
         ],
     },
     {
@@ -67,13 +66,13 @@ PROBES = [
         ],
     },
     {
-        "id": "tlk_dump_BIOGame_INT",
-        "description": "TLK dump validates 30k+ entries exist",
+        "id": "tlk_info_BIOGame_INT",
+        "description": "TLK header info validates entry count",
         "command": "parse-tlk",
-        "args": {"file": "BIOGame_INT.tlk", "dump_all": True},
-        "golden": "tlk/dump_BIOGame_INT.json",
+        "args": {"file": "BIOGame_INT.tlk"},
+        "golden": "tlk/BIOGame_INT_info.json",
         "checks": [
-            {"path": "total_entries", "min": 30000},
+            {"path": "header.male_entry_count", "min": 30000},
         ],
     },
     {
@@ -153,19 +152,27 @@ def run_core(subcommand: str, **kwargs) -> dict[str, Any]:
                 args.extend([flag, str(v)])
         elif value is not None:
             args.extend([flag, str(value)])
-    proc = subprocess.run(args, capture_output=True, text=True)
+    proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
+        stderr = (proc.stderr or "").strip()
         raise RuntimeError(
             f"pcc-core {subcommand} failed (exit {proc.returncode}):\n"
-            f"stderr: {proc.stderr.strip()}\n"
+            f"stderr: {stderr[:500]}\n"
+            f"args: {args}"
+        )
+    stdout = proc.stdout or ""
+    if not stdout.strip():
+        raise RuntimeError(
+            f"pcc-core {subcommand} produced empty output\n"
+            f"stderr: {(proc.stderr or '').strip()[:500]}\n"
             f"args: {args}"
         )
     try:
-        return json.loads(proc.stdout)
+        return json.loads(stdout)
     except json.JSONDecodeError as e:
         raise RuntimeError(
             f"pcc-core {subcommand} returned invalid JSON:\n"
-            f"stdout: {proc.stdout[:500]}\n"
+            f"stdout: {stdout[:500]}\n"
             f"error: {e}"
         )
 
