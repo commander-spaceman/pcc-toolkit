@@ -29,6 +29,7 @@ class AppState:
     tlk_search: str = ""
     evidence_query: str = ""
     evidence_results: dict | None = None
+    search_cancel: bool = False
 
     active_tab: int = 0
     show_about: bool = False
