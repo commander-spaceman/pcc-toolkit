@@ -68,23 +68,8 @@ def render_tlk(state: AppState) -> None:
             imgui.table_next_row()
             imgui.table_set_column_index(0)
             sid = entry.get("string_id", entry.get("StringID", 0))
-            sid_str = str(sid)
-            imgui.selectable(sid_str, False, imgui.SelectableFlags_.span_all_columns)
-            if imgui.begin_popup_context_item(f"tlk_ctx_{sid}"):
-                if imgui.menu_item("Copy StringID", "", False, True)[0]:
-                    _copy_to_clipboard(sid_str)
-                if imgui.menu_item("Copy Text", "", False, True)[0]:
-                    _copy_to_clipboard(entry.get("text", entry.get("Text", "")))
-                full = f"{sid} | {entry.get('text', entry.get('Text', ''))}"
-                if imgui.menu_item("Copy Full Entry", "", False, True)[0]:
-                    _copy_to_clipboard(full)
-                imgui.end_popup()
-
-            imgui.table_set_column_index(1)
             text = entry.get("text", entry.get("Text", ""))
-            imgui.text_wrapped(text)
-            imgui.table_set_column_index(2)
-            source = entry.get("source_tlk", "")
+            source = entry.get("source", entry.get("source_tlk", ""))
             imgui.text_disabled(source)
 
         imgui.end_table()

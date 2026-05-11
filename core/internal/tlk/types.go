@@ -35,6 +35,7 @@ type File struct {
 type Entry struct {
 	StringID int32  `json:"string_id"`
 	Text     string `json:"text"`
+	Source   string `json:"source,omitempty"`
 }
 
 type ResolveResult struct {

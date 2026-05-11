@@ -225,8 +225,8 @@ func cmdParseTlk(args []string) {
 	case *search != "":
 		out.Results = tlkFile.Search(*search)
 	case *dumpAll:
-		tlkFile.IterEntries()(func(id int32, text string) bool {
-			out.Entries = append(out.Entries, tlk.Entry{StringID: id, Text: text})
+		tlkFile.IterEntriesWithSource()(func(id int32, text string, source string) bool {
+			out.Entries = append(out.Entries, tlk.Entry{StringID: id, Text: text, Source: source})
 			return true
 		})
 	default:

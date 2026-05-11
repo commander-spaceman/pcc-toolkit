@@ -190,6 +190,29 @@ func (f *File) IterEntries() func(func(int32, string) bool) {
 	}
 }
 
+func (f *File) IterEntriesWithSource() func(func(int32, string, string) bool) {
+	return func(yield func(int32, string, string) bool) {
+		for id := range f.MaleEntries {
+			text, ok := ResolveString(f, id, true)
+			if !ok {
+				continue
+			}
+			if !yield(id, text, "Male") {
+				return
+			}
+		}
+		for id := range f.FemaleEntries {
+			text, ok := ResolveString(f, id, false)
+			if !ok {
+				continue
+			}
+			if !yield(id, text, "Female") {
+				return
+			}
+		}
+	}
+}
+
 func (f *File) Search(query string) []Entry {
 	var results []Entry
 	f.IterEntries()(func(id int32, text string) bool {
