@@ -88,6 +88,7 @@ def _load_dialogue_file(state: AppState) -> None:
 def _load_graph(state: AppState) -> None:
     if state.selected_conversation_index is None:
         return
+    state.error_message = None
     try:
         state.graph_layout = layout_graph(
             state.pcc_path,
@@ -95,6 +96,12 @@ def _load_graph(state: AppState) -> None:
         )
     except EngineError as e:
         state.error_message = str(e)
+        state.graph_layout = {
+            "conversation_id": "error",
+            "node_count": 0,
+            "positions": {},
+            "edges": [],
+        }
 
 
 def _render_graph(state: AppState) -> None:
