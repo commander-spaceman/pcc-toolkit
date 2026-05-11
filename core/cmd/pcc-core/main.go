@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -69,6 +70,10 @@ func main() {
 		cmdValidate(args[1:])
 	case "serialize":
 		cmdSerialize(args[1:])
+	case "batch-validate":
+		cmdBatchValidate(args[1:])
+	case "batch-extract":
+		cmdBatchExtract(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -612,6 +617,213 @@ func cmdSerialize(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(output); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdBatchValidate(args []string) {
+	fs := flag.NewFlagSet("batch-validate", flag.ExitOnError)
+	dir := fs.String("dir", "", "Directory to scan for PCC files")
+	globFlag := fs.String("glob", "*.pcc", "Glob pattern for PCC files")
+	output := fs.String("output", "", "Output JSON file path")
+	strict := fs.Bool("strict", false, "Fail on warnings")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *dir == "" {
+		fmt.Fprintln(os.Stderr, "--dir is required")
+		os.Exit(2)
+	}
+
+	pattern := filepath.Join(*dir, *globFlag)
+	matches, err := filepath.Glob(pattern)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "glob error: %v\n", err)
+		os.Exit(1)
+	}
+
+	type BatchResult struct {
+		File        string `json:"file"`
+		Total       int    `json:"total"`
+		Valid       int    `json:"valid"`
+		Warning     int    `json:"warning"`
+		Invalid     int    `json:"invalid"`
+		Error       string `json:"error,omitempty"`
+	}
+
+	type BatchReport struct {
+		Dir        string        `json:"dir"`
+		Pattern    string        `json:"pattern"`
+		FilesFound int           `json:"files_found"`
+		FilesOK    int           `json:"files_ok"`
+		FilesError int           `json:"files_error"`
+		Total      int           `json:"total_conversations"`
+		Valid      int           `json:"valid"`
+		Warning    int           `json:"warning"`
+		Invalid    int           `json:"invalid"`
+		Results    []BatchResult `json:"results"`
+	}
+
+	report := BatchReport{
+		Dir:     *dir,
+		Pattern: *globFlag,
+	}
+
+	_ = strict
+
+	for _, m := range matches {
+		report.FilesFound++
+		rawData, summary, err := pcc.ReadFileRaw(m)
+		if err != nil {
+			report.FilesError++
+			report.Results = append(report.Results, BatchResult{
+				File:  m,
+				Error: err.Error(),
+			})
+			continue
+		}
+
+		result := dialogue.ParseConversations(summary, rawData, "resilient")
+		valReport := dialogue.BuildValidationReport(result)
+
+		report.FilesOK++
+		report.Total += valReport.Summary.Total
+		report.Valid += valReport.Summary.Valid
+		report.Warning += valReport.Summary.Warning
+		report.Invalid += valReport.Summary.Invalid
+
+		report.Results = append(report.Results, BatchResult{
+			File:    m,
+			Total:   valReport.Summary.Total,
+			Valid:   valReport.Summary.Valid,
+			Warning: valReport.Summary.Warning,
+			Invalid: valReport.Summary.Invalid,
+		})
+	}
+
+	var enc *json.Encoder
+	var wr *os.File
+	if *output != "" {
+		wr, err = os.Create(*output)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "create output: %v\n", err)
+			os.Exit(1)
+		}
+		defer wr.Close()
+		if *pretty {
+			enc = json.NewEncoder(wr)
+			enc.SetIndent("", "  ")
+		} else {
+			enc = json.NewEncoder(wr)
+		}
+	} else {
+		if *pretty {
+			enc = json.NewEncoder(os.Stdout)
+			enc.SetIndent("", "  ")
+		} else {
+			enc = json.NewEncoder(os.Stdout)
+		}
+	}
+	if err := enc.Encode(report); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdBatchExtract(args []string) {
+	fs := flag.NewFlagSet("batch-extract", flag.ExitOnError)
+	dir := fs.String("dir", "", "Directory to scan for PCC files")
+	globFlag := fs.String("glob", "*.pcc", "Glob pattern for PCC files")
+	outputDir := fs.String("output-dir", "", "Output directory for extracted JSON files")
+	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK for text resolution")
+	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *dir == "" {
+		fmt.Fprintln(os.Stderr, "--dir is required")
+		os.Exit(2)
+	}
+
+	pattern := filepath.Join(*dir, *globFlag)
+	matches, err := filepath.Glob(pattern)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "glob error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if *outputDir != "" {
+		if err := os.MkdirAll(*outputDir, 0755); err != nil {
+			fmt.Fprintf(os.Stderr, "create output dir: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	type BatchExtractResult struct {
+		File          string `json:"file"`
+		Conversations int    `json:"conversations"`
+		OutputPath    string `json:"output_path,omitempty"`
+		Error         string `json:"error,omitempty"`
+	}
+
+	type BatchExtractReport struct {
+		Dir        string               `json:"dir"`
+		Pattern    string               `json:"pattern"`
+		FilesFound int                  `json:"files_found"`
+		FilesOK    int                  `json:"files_ok"`
+		FilesError int                  `json:"files_error"`
+		Results    []BatchExtractResult `json:"results"`
+	}
+
+	report := BatchExtractReport{
+		Dir:     *dir,
+		Pattern: *globFlag,
+	}
+
+	for _, m := range matches {
+		report.FilesFound++
+		output, err := serialize.Run(m, *resolveTlk, *dlcDir, "resilient")
+		if err != nil {
+			report.FilesError++
+			report.Results = append(report.Results, BatchExtractResult{
+				File:  m,
+				Error: err.Error(),
+			})
+			continue
+		}
+
+		report.FilesOK++
+		br := BatchExtractResult{
+			File:          m,
+			Conversations: len(output.Conversations),
+		}
+
+		if *outputDir != "" {
+			base := filepath.Base(m)
+			ext := filepath.Ext(base)
+			outName := base[:len(base)-len(ext)] + ".json"
+			outPath := filepath.Join(*outputDir, outName)
+			data, _ := json.MarshalIndent(output, "", "  ")
+			if err := os.WriteFile(outPath, data, 0644); err != nil {
+				br.Error = err.Error()
+			}
+			br.OutputPath = outPath
+		}
+
+		report.Results = append(report.Results, br)
+	}
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(report); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}

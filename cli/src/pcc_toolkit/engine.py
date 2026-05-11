@@ -198,10 +198,30 @@ def batch_validate(
     *,
     glob_pattern: str | None = None,
     strict: bool = False,
+    output: str | None = None,
 ) -> dict[str, Any]:
     return _run(
         "batch-validate",
         dir=str(dir),
         glob=glob_pattern,
         strict=strict,
+        output=output,
+    )
+
+
+def batch_extract(
+    dir: Path | str,
+    *,
+    glob_pattern: str | None = None,
+    output_dir: str | None = None,
+    resolve_tlk: str | None = None,
+    dlc_dir: str | None = None,
+) -> dict[str, Any]:
+    return _run(
+        "batch-extract",
+        dir=str(dir),
+        glob=glob_pattern,
+        output_dir=output_dir,
+        resolve_tlk=resolve_tlk,
+        dlc_dir=dlc_dir,
     )

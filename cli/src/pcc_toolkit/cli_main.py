@@ -7,6 +7,8 @@ import typer
 
 from pcc_toolkit.engine import (
     EngineError,
+    batch_extract as engine_batch_extract,
+    batch_validate as engine_batch_validate,
     layout_graph as engine_layout_graph,
     parse_conversations as engine_parse_conversations,
     parse_pcc as engine_parse_pcc,
@@ -16,6 +18,14 @@ from pcc_toolkit.engine import (
     serialize as engine_serialize,
     validate as engine_validate,
     version as engine_version,
+)
+from pcc_toolkit.format import (
+    batch_summary,
+    console,
+    conversation_table,
+    evidence_report,
+    pcc_export_table,
+    validation_summary,
 )
 
 app = typer.Typer(
@@ -28,10 +38,12 @@ package_app = typer.Typer(help="Inspect PCC packages")
 tlk_app = typer.Typer(help="Work with TLK talk files")
 dialogue_app = typer.Typer(help="Extract dialogue from BioConversation")
 evidence_app = typer.Typer(help="Search for evidence across game files")
+batch_app = typer.Typer(help="Batch operations across multiple files")
 app.add_typer(package_app, name="package")
 app.add_typer(tlk_app, name="tlk")
 app.add_typer(dialogue_app, name="dialogue")
 app.add_typer(evidence_app, name="evidence")
+app.add_typer(batch_app, name="batch")
 
 
 @app.callback(invoke_without_command=True)
@@ -68,17 +80,9 @@ def package_list(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    typer.echo(f"File: {file}")
-    typer.echo(f"Profile: {profile}  Compressed: {compressed}")
-    typer.echo(f"Exports: {len(exports)}")
-    typer.echo()
-    typer.echo(f"{'Index':>6}  {'Class':<30}  {'Object':<40}  {'Size':>8}  {'Offset':>10}")
-    typer.echo("-" * 100)
-    for e in exports:
-        typer.echo(
-            f"{e['index']:>6}  {e.get('class_name', ''):<30}  "
-            f"{e.get('object_name', ''):<40}  {e['serial_size']:>8}  {e['serial_offset']:>10}"
-        )
+    console.print(f"File: [bold]{file}[/bold]")
+    console.print(f"Profile: {profile}  Compressed: {compressed}")
+    console.print(pcc_export_table(exports))
 
 
 @package_app.command("inspect")
@@ -112,19 +116,8 @@ def package_validate(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    summary = result.get("report_summary", {})
-    typer.echo(f"File: {file}")
-    typer.echo(f"Total: {summary.get('total', 0)}  Valid: {summary.get('valid', 0)}  "
-               f"Warning: {summary.get('warning', 0)}  Invalid: {summary.get('invalid', 0)}")
-    typer.echo()
-
-    for r in result.get("results", []):
-        status_icon = {"valid": "[OK]", "warning": "[!!]", "invalid": "[XX]"}.get(r.get("status", ""), "[??]")
-        typer.echo(f"  {status_icon} {r['conversation_id']} (#{r['export_index']}) — {r['status']}")
-        for issue in r.get("issues", []):
-            loc = f" [{issue.get('node_type', '')}#{issue.get('node_id', '')}]" if issue.get("node_id") is not None else ""
-            typer.echo(f"      {issue['severity']}{loc}: {issue['message']}")
-        typer.echo()
+    console.print(f"File: [bold]{file}[/bold]")
+    validation_summary(result)
 
 
 @package_app.command("extract")
@@ -261,21 +254,12 @@ def dialogue_list(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    typer.echo(f"File: {file}")
-    typer.echo(f"Profile: {result.get('game_profile', 'unknown')}")
-    typer.echo(f"Conversations: {len(conversations)}")
-    if errors:
-        typer.echo(f"Errors: {len(errors)}")
-    typer.echo()
-    typer.echo(f"{'Index':>6}  {'ID':<50}  {'Mode':<30}  {'Entries':>7}  {'Replies':>7}")
-    typer.echo("-" * 110)
+    console.print(f"File: [bold]{file}[/bold]")
+    console.print(f"Profile: {result.get('game_profile', 'unknown')}")
+    console.print(conversation_table(conversations))
     for c in conversations:
-        typer.echo(
-            f"{c['export_index']:>6}  {c['id']:<50}  {c['parse_mode']:<30}  "
-            f"{len(c['entries']):>7}  {len(c['replies']):>7}"
-        )
         for w in c.get("warnings", []):
-            typer.echo(f"        ⚠ {w}")
+            console.print(f"  [yellow]⚠ {w}[/yellow]")
 
 
 @dialogue_app.command("export")
@@ -343,6 +327,53 @@ if __name__ == "__main__":
     main()
 
 
+# ── batch ────────────────────────────────────────────────────────────────────
+
+@batch_app.command("validate")
+def batch_validate(
+    dir: Path = typer.Argument(..., help="Directory to scan for PCC files"),
+    glob_pattern: str = typer.Option("*.pcc", "--glob", help="Glob pattern"),
+    output: Path = typer.Option(None, "--output", help="Output JSON file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_batch_validate(dir, glob_pattern=glob_pattern)
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    batch_summary(result)
+
+
+@batch_app.command("extract")
+def batch_extract(
+    dir: Path = typer.Argument(..., help="Directory to scan for PCC files"),
+    glob_pattern: str = typer.Option("*.pcc", "--glob", help="Glob pattern"),
+    output_dir: Path = typer.Option(None, "--output-dir", help="Output directory"),
+    tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
+    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_batch_extract(
+        dir,
+        glob_pattern=glob_pattern,
+        output_dir=str(output_dir) if output_dir else None,
+        resolve_tlk=str(tlk) if tlk else None,
+        dlc_dir=str(dlc_dir) if dlc_dir else None,
+    )
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    typer.echo(f"Dir: {dir}  Pattern: {glob_pattern}")
+    typer.echo(f"Files found: {result.get('files_found', 0)}")
+    typer.echo(f"Files OK: {result.get('files_ok', 0)}  Errors: {result.get('files_error', 0)}")
+    for r in result.get("results", []):
+        if r.get("error"):
+            typer.echo(f"  ERR: {r['file']} — {r['error']}")
+        else:
+            typer.echo(f"  {r.get('conversations', 0):>3} conv  {r.get('file', '')}")
+
+
 # ── evidence ─────────────────────────────────────────────────────────────────
 
 @evidence_app.command("scan")
@@ -372,35 +403,4 @@ def evidence_scan(
         typer.echo(data)
         return
 
-    typer.echo(f"Query: {query}")
-    typer.echo(f"TLK: {tlk}")
-    typer.echo(f"Files scanned: {result.get('files_scanned', 0)}")
-    typer.echo(f"Files with hits: {result.get('files_with_hits', 0)}")
-    typer.echo(f"Total hits: {result.get('total_hits', 0)}")
-    typer.echo()
-
-    for ev in result.get("evidence", []):
-        typer.echo(f"--- StrRef #{ev['strref']} ---")
-        if ev.get("text"):
-            typer.echo(f"  Text: {ev['text']}")
-
-        tier1 = ev.get("bioconversation", [])
-        if tier1:
-            typer.echo(f"  Tier 1 — BioConversation ({len(tier1)}):")
-            for hit in tier1:
-                typer.echo(f"    {hit.get('conversation_id', '?')} in {hit.get('file_path', '?')}")
-
-        tier2 = ev.get("semantic_container", [])
-        if tier2:
-            typer.echo(f"  Tier 2 — Semantic container ({len(tier2)}):")
-            for hit in tier2:
-                typer.echo(f"    {hit.get('export_name', '?')} [{hit.get('class_name', '?')}] in {hit.get('file_path', '?')}")
-
-        tier3 = ev.get("container_fallback", [])
-        if tier3:
-            typer.echo(f"  Tier 3 — Container fallback ({len(tier3)}):")
-            for hit in tier3[:5]:
-                typer.echo(f"    {hit.get('export_name', '?')} [{hit.get('class_name', '?')}] in {hit.get('file_path', '?')}")
-            if len(tier3) > 5:
-                typer.echo(f"    ... and {len(tier3) - 5} more")
-        typer.echo()
+    evidence_report(result)
