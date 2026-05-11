@@ -5,7 +5,13 @@ from pathlib import Path
 
 import typer
 
-from pcc_toolkit.engine import EngineError, parse_pcc as engine_parse_pcc, version as engine_version
+from pcc_toolkit.engine import (
+    EngineError,
+    parse_pcc as engine_parse_pcc,
+    parse_tlk as engine_parse_tlk,
+    resolve_tlk as engine_resolve_tlk,
+    version as engine_version,
+)
 
 app = typer.Typer(
     name="pcc-toolkit",
@@ -14,7 +20,9 @@ app = typer.Typer(
 )
 
 package_app = typer.Typer(help="Inspect PCC packages")
+tlk_app = typer.Typer(help="Work with TLK talk files")
 app.add_typer(package_app, name="package")
+app.add_typer(tlk_app, name="tlk")
 
 
 @app.callback(invoke_without_command=True)
@@ -30,6 +38,8 @@ def callback(
         result = engine_version()
         typer.echo(json.dumps(result, indent=2))
 
+
+# ── package ────────────────────────────────────────────────────────────────
 
 @package_app.command("list")
 def package_list(
@@ -80,6 +90,92 @@ def package_inspect(
     typer.echo(f"  Serial: offset={exp['serial_offset']}, size={exp['serial_size']}")
     if exp.get("serial_data"):
         typer.echo(f"  Data:   {len(exp['serial_data'])} chars (base64)")
+
+
+# ── tlk ────────────────────────────────────────────────────────────────────
+
+@tlk_app.command("info")
+def tlk_info(
+    file: Path = typer.Argument(..., help="Path to TLK file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_parse_tlk(file)
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    h = result.get("header", {})
+    typer.echo(f"File: {file}")
+    typer.echo(f"  Magic:       0x{h.get('magic', 0):08X}")
+    typer.echo(f"  Version:     {h.get('version', '?')} (min {h.get('min_version', '?')})")
+    typer.echo(f"  Male entries:   {h.get('male_entry_count', 0)}")
+    typer.echo(f"  Female entries: {h.get('female_entry_count', 0)}")
+    typer.echo(f"  Huffman nodes:  {h.get('tree_node_count', 0)}")
+    typer.echo(f"  Bitstream len:  {h.get('data_len', 0)} bytes")
+    typer.echo(f"  Total entries:  {result.get('total_entries', 0)}")
+
+
+@tlk_app.command("search")
+def tlk_search(
+    query: str = typer.Argument(..., help="Text to search for"),
+    file: Path = typer.Option(..., "--file", help="Path to TLK file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_parse_tlk(file, search=query)
+    results = result.get("results", [])
+
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    typer.echo(f"Searching for '{query}' in {file}")
+    typer.echo(f"Results: {len(results)}")
+    typer.echo()
+    for r in results:
+        typer.echo(f"  #{r['string_id']}: {r['text']}")
+
+
+@tlk_app.command("resolve")
+def tlk_resolve(
+    strref: int = typer.Argument(..., help="StringRef ID to resolve"),
+    file: Path = typer.Option(..., "--file", help="Path to TLK file"),
+    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for overrides"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    if dlc_dir:
+        result = engine_resolve_tlk(base=file, dlc_dir=dlc_dir, strrefs=[strref])
+    else:
+        result = engine_parse_tlk(file, strref=strref)
+
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    entries = result.get("entries", [])
+    results = result.get("results", [])
+    items = entries + results
+    if not items:
+        typer.echo(f"StringRef #{strref} not found")
+        return
+    for item in items:
+        source = item.get("source_tlk", "")
+        label = f" (source: {source})" if source else ""
+        typer.echo(f"#{item['string_id']}: {item['text']}{label}")
+
+
+@tlk_app.command("dump")
+def tlk_dump(
+    file: Path = typer.Argument(..., help="Path to TLK file"),
+    output: Path = typer.Option(None, "--output", help="Output JSON file"),
+) -> None:
+    result = engine_parse_tlk(file, dump_all=True)
+    data = json.dumps(result, indent=2, ensure_ascii=False)
+
+    if output:
+        output.write_text(data, encoding="utf-8")
+        typer.echo(f"Written to {output}")
+    else:
+        typer.echo(data)
 
 
 def main() -> None:

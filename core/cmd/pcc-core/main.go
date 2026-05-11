@@ -6,8 +6,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"pcc-toolkit/core/internal/pcc"
+	"pcc-toolkit/core/internal/tlk"
 )
 
 const version = "0.2.0"
@@ -47,6 +49,10 @@ func main() {
 		cmdVersion()
 	case "parse-pcc":
 		cmdParsePcc(args[1:])
+	case "parse-tlk":
+		cmdParseTlk(args[1:])
+	case "resolve-tlk":
+		cmdResolveTlk(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -153,4 +159,138 @@ func cmdExportDetail(path string, index int, pretty bool) {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+func cmdParseTlk(args []string) {
+	fs := flag.NewFlagSet("parse-tlk", flag.ExitOnError)
+	file := fs.String("file", "", "Path to TLK file")
+	search := fs.String("search", "", "Search query for text")
+	strref := fs.Int("strref", -1, "Resolve a single StringRef")
+	dumpAll := fs.Bool("dump-all", false, "Dump all entries")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	tlkFile, err := tlk.ReadFile(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	type parseTlkOutput struct {
+		File    string        `json:"file"`
+		Header  tlk.Header    `json:"header"`
+		Entries []tlk.Entry   `json:"entries,omitempty"`
+		Results []tlk.Entry   `json:"results,omitempty"`
+	}
+
+	out := parseTlkOutput{
+		File:   *file,
+		Header: tlkFile.Header,
+	}
+
+	switch {
+	case *strref >= 0:
+		text, ok := tlk.ResolveString(tlkFile, int32(*strref), true)
+		if ok {
+			out.Entries = []tlk.Entry{{StringID: int32(*strref), Text: text}}
+		}
+	case *search != "":
+		out.Results = tlkFile.Search(*search)
+	case *dumpAll:
+		tlkFile.IterEntries()(func(id int32, text string) bool {
+			out.Entries = append(out.Entries, tlk.Entry{StringID: id, Text: text})
+			return true
+		})
+	default:
+		out.Entries = nil
+	}
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(out); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdResolveTlk(args []string) {
+	fs := flag.NewFlagSet("resolve-tlk", flag.ExitOnError)
+	base := fs.String("base", "", "Path to base TLK file")
+	dlcDir := fs.String("dlc-dir", "", "Path to DLC directory")
+	strrefFlags := &multiFlag{}
+	fs.Var(strrefFlags, "strref", "StringRef to resolve (repeatable)")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *base == "" {
+		fmt.Fprintln(os.Stderr, "--base is required")
+		os.Exit(2)
+	}
+	if len(*strrefFlags) == 0 {
+		fmt.Fprintln(os.Stderr, "at least one --strref is required")
+		os.Exit(2)
+	}
+
+	resolver, err := tlk.BuildResolver(*base, *dlcDir, "INT", false)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	type resolveTlkOutput struct {
+		Base    string               `json:"base"`
+		DlcDir  string               `json:"dlc_dir,omitempty"`
+		Results []tlk.ResolveResult  `json:"results"`
+	}
+
+	out := resolveTlkOutput{
+		Base:   *base,
+		DlcDir: *dlcDir,
+	}
+
+	for _, raw := range *strrefFlags {
+		var id int
+		if _, err := fmt.Sscanf(raw, "%d", &id); err != nil {
+			out.Results = append(out.Results, tlk.ResolveResult{StringID: 0, Text: ""})
+			continue
+		}
+		result := resolver.ResolveWithSource(int32(id))
+		if result == nil {
+			out.Results = append(out.Results, tlk.ResolveResult{StringID: int32(id), Text: ""})
+		} else {
+			out.Results = append(out.Results, *result)
+		}
+	}
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(out); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+type multiFlag []string
+
+func (m *multiFlag) String() string { return strings.Join(*m, ",") }
+func (m *multiFlag) Set(v string) error {
+	*m = append(*m, v)
+	return nil
 }
