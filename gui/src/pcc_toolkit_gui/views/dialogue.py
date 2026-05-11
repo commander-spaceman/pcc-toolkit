@@ -35,6 +35,15 @@ def render_dialogue(state: AppState) -> None:
         return
 
     convs = state.conversations.get("conversations", [])
+    errors = state.conversations.get("errors", [])
+
+    if errors:
+        imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(255, 120, 120, 255))
+        for err in errors:
+            imgui.text_wrapped(f"Parse error [{err.get('id', '?')}]: {err.get('error', '?')}")
+        imgui.pop_style_color()
+        imgui.separator()
+
     if not convs:
         imgui.text_disabled("No BioConversations found")
         return
@@ -58,13 +67,20 @@ def render_dialogue(state: AppState) -> None:
 
 def _load_dialogue_file(state: AppState) -> None:
     state.is_loading = True
+    state.error_message = None
     try:
         state.conversations = parse_conversations(state.pcc_path)
         state.selected_conversation_index = None
         state.graph_layout = None
-        state.status_message = f"Loaded {len(state.conversations.get('conversations', []))} conversations"
+        n = len(state.conversations.get("conversations", []))
+        e = len(state.conversations.get("errors", []))
+        msg = f"Loaded {n} conversations"
+        if e:
+            msg += f" ({e} errors)"
+        state.status_message = msg
     except EngineError as e:
         state.error_message = str(e)
+        state.conversations = None
     finally:
         state.is_loading = False
 
@@ -87,9 +103,25 @@ def _render_graph(state: AppState) -> None:
         return
 
     layout = state.graph_layout
+    node_count = layout.get("node_count", 0)
     imgui.text(f"Conversation: {layout.get('conversation_id', '?')}")
-    imgui.text(f"Nodes: {layout.get('node_count', 0)}  "
+    imgui.text(f"Nodes: {node_count}  "
                f"Edges: {len(layout.get('edges', []))}")
+
+    if node_count == 0:
+        imgui.separator()
+        imgui.text_disabled("No nodes in this conversation (0 entries, 0 replies, 0 starts)")
+        convs = state.conversations.get("conversations", [])
+        for c in convs:
+            if c["export_index"] == state.selected_conversation_index:
+                w = c.get("warnings", [])
+                if w:
+                    imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(255, 200, 100, 255))
+                    for wm in w:
+                        imgui.text_wrapped(f"Warning: {wm}")
+                    imgui.pop_style_color()
+                break
+        return
 
     imgui.separator()
 
