@@ -134,11 +134,16 @@ func DecodeString(bits []byte, nodes []Node, bitOffset int32) (string, bool) {
 		}
 
 		charCode := (0xFFFF - nextNodeID) & 0xFFFF
-		c := byte(charCode)
-		if c == 0 {
+		if charCode == 0 {
 			return string(chars), true
 		}
-		chars = append(chars, c)
+		if charCode < 0x80 {
+			chars = append(chars, byte(charCode))
+		} else if charCode < 0x800 {
+			chars = append(chars, byte(0xC0|(charCode>>6)), byte(0x80|(charCode&0x3F)))
+		} else {
+			chars = append(chars, byte(0xE0|(charCode>>12)), byte(0x80|((charCode>>6)&0x3F)), byte(0x80|(charCode&0x3F)))
+		}
 		current = root
 	}
 	return "", false
