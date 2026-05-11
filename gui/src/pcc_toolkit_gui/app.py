@@ -102,6 +102,11 @@ def _open_tlk_dialog() -> str | None:
         return None
 
 
+def _before_exit() -> None:
+    from pcc_toolkit_gui.views.evidence import _kill_process
+    _kill_process()
+
+
 def main() -> None:
     state = AppState()
 
@@ -114,6 +119,7 @@ def main() -> None:
     params.callbacks.show_menus = lambda: _show_menu(state)
     params.callbacks.show_status = lambda: _show_status(state)
     params.callbacks.show_app_menu_items = lambda: _show_app_menu(state)
+    params.callbacks.before_exit = _before_exit
     params.fps_idling.enable_idling = False
 
     hello_imgui.run(params)

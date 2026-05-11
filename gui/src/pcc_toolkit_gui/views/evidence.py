@@ -1,12 +1,18 @@
 """Evidence search tab — query dialogue across game files."""
 
+import signal
+import subprocess
+import sys
 import threading
 import time
 
 from imgui_bundle import imgui
 
-from pcc_toolkit_gui.engine import EngineError, scan_evidence
+from pcc_toolkit_gui.engine import EngineError, run_async
 from pcc_toolkit_gui.state import AppState
+
+_active_process: subprocess.Popen | None = None
+_process_lock = threading.Lock()
 
 
 def _path_row(label: str, path: str | None, set_cb, clear_cb) -> None:
@@ -134,18 +140,37 @@ def _start_search(state: AppState) -> None:
 
 
 def _run_search_thread(state: AppState) -> None:
+    global _active_process
     try:
-        result = scan_evidence(
-            state.evidence_query,
-            tlk=state.tlk_path,
-            dlc_dir=state.dlc_dir,
-            biogame_root=state.biogame_root,
-        )
-        if not state.search_cancel:
-            state.evidence_results = result
-            state.status_message = f"Search complete: {result.get('total_hits', 0)} hits"
-        else:
+        with _process_lock:
+            _active_process = run_async(
+                "scan-evidence",
+                query=state.evidence_query,
+                tlk=str(state.tlk_path),
+                dlc_dir=state.dlc_dir,
+                biogame_root=state.biogame_root,
+            )
+
+        while _active_process.poll() is None:
+            if state.search_cancel:
+                _kill_process()
+                state.status_message = "Search cancelled"
+                return
+            time.sleep(0.1)
+
+        stdout, stderr = _active_process.communicate(timeout=5)
+        if state.search_cancel:
             state.status_message = "Search cancelled"
+            return
+
+        if _active_process.returncode != 0:
+            raise EngineError((stderr or stdout or "").strip())
+
+        import json
+        result = json.loads(stdout)
+        state.evidence_results = result
+        state.status_message = f"Search complete: {result.get('total_hits', 0)} hits"
+
     except EngineError as e:
         if not state.search_cancel:
             state.error_message = str(e)
@@ -153,8 +178,24 @@ def _run_search_thread(state: AppState) -> None:
         if not state.search_cancel:
             state.error_message = f"Search error: {e}"
     finally:
+        with _process_lock:
+            _active_process = None
         state.is_loading = False
         state.search_cancel = False
+
+
+def _kill_process() -> None:
+    global _active_process
+    if _active_process is None:
+        return
+    try:
+        if sys.platform == "win32":
+            _active_process.kill()
+        else:
+            _active_process.send_signal(signal.SIGTERM)
+    except Exception:
+        pass
+    _active_process = None
 
 
 def _open_file_dialog() -> str | None:

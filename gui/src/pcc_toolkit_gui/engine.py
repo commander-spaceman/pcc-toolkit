@@ -26,7 +26,7 @@ def _resolve_binary() -> Path:
     return binary
 
 
-def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
+def _build_args(subcommand: str, **kwargs: Any) -> list[str]:
     binary = _resolve_binary()
     args = [str(binary), subcommand]
     for key, value in kwargs.items():
@@ -39,10 +39,26 @@ def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
                 args.extend([flag, str(v)])
         elif value is not None:
             args.extend([flag, str(value)])
+    return args
+
+
+def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
+    args = _build_args(subcommand, **kwargs)
     proc = subprocess.run(args, capture_output=True, text=True)
     if proc.returncode != 0:
         raise EngineError(proc.stderr.strip() or proc.stdout.strip())
     return json.loads(proc.stdout)
+
+
+def run_async(subcommand: str, **kwargs: Any) -> subprocess.Popen:
+    """Launch the Go core as a cancellable subprocess. Returns a Popen handle."""
+    args = _build_args(subcommand, **kwargs)
+    return subprocess.Popen(
+        args,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
 
 
 def version() -> dict[str, Any]:
