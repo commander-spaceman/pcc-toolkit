@@ -7,6 +7,7 @@ import typer
 
 from pcc_toolkit.engine import (
     EngineError,
+    parse_conversations as engine_parse_conversations,
     parse_pcc as engine_parse_pcc,
     parse_tlk as engine_parse_tlk,
     resolve_tlk as engine_resolve_tlk,
@@ -21,8 +22,10 @@ app = typer.Typer(
 
 package_app = typer.Typer(help="Inspect PCC packages")
 tlk_app = typer.Typer(help="Work with TLK talk files")
+dialogue_app = typer.Typer(help="Extract dialogue from BioConversation")
 app.add_typer(package_app, name="package")
 app.add_typer(tlk_app, name="tlk")
+app.add_typer(dialogue_app, name="dialogue")
 
 
 @app.callback(invoke_without_command=True)
@@ -184,6 +187,66 @@ def main() -> None:
     except EngineError as e:
         typer.echo(f"Error: {e}", err=True)
         raise typer.Exit(code=1)
+
+
+# ── dialogue ────────────────────────────────────────────────────────────────
+
+@dialogue_app.command("list")
+def dialogue_list(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_parse_conversations(file)
+    conversations = result.get("conversations", [])
+    errors = result.get("errors", [])
+
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    typer.echo(f"File: {file}")
+    typer.echo(f"Profile: {result.get('game_profile', 'unknown')}")
+    typer.echo(f"Conversations: {len(conversations)}")
+    if errors:
+        typer.echo(f"Errors: {len(errors)}")
+    typer.echo()
+    typer.echo(f"{'Index':>6}  {'ID':<50}  {'Mode':<30}  {'Entries':>7}  {'Replies':>7}")
+    typer.echo("-" * 110)
+    for c in conversations:
+        typer.echo(
+            f"{c['export_index']:>6}  {c['id']:<50}  {c['parse_mode']:<30}  "
+            f"{len(c['entries']):>7}  {len(c['replies']):>7}"
+        )
+        for w in c.get("warnings", []):
+            typer.echo(f"        ⚠ {w}")
+
+
+@dialogue_app.command("export")
+def dialogue_export(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    output: Path = typer.Option(None, "--output", help="Output JSON file"),
+    tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
+    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    conv_index: int = typer.Option(None, "--conv-index", help="Export a single conversation"),
+    pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
+) -> None:
+    kwargs = {}
+    if tlk:
+        kwargs["resolve_tlk"] = str(tlk)
+    if dlc_dir:
+        kwargs["dlc_dir"] = str(dlc_dir)
+    if conv_index is not None:
+        kwargs["conv_index"] = conv_index
+
+    result = engine_parse_conversations(file, **kwargs)
+
+    data = json.dumps(result, indent=2, ensure_ascii=False) if pretty else json.dumps(result, ensure_ascii=False)
+
+    if output:
+        output.write_text(data, encoding="utf-8")
+        typer.echo(f"Saved to {output}")
+    else:
+        typer.echo(data)
 
 
 if __name__ == "__main__":

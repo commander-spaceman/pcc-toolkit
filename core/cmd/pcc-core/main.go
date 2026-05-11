@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"pcc-toolkit/core/internal/dialogue"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/tlk"
 )
@@ -53,6 +54,8 @@ func main() {
 		cmdParseTlk(args[1:])
 	case "resolve-tlk":
 		cmdResolveTlk(args[1:])
+	case "parse-conversations":
+		cmdParseConversations(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -284,6 +287,104 @@ func cmdResolveTlk(args []string) {
 	if err := enc.Encode(out); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
+	}
+}
+
+func cmdParseConversations(args []string) {
+	fs := flag.NewFlagSet("parse-conversations", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	convIndex := fs.Int("conv-index", -1, "Parse a single conversation by export index")
+	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK file for text resolution")
+	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	mode := fs.String("mode", "resilient", "Parse mode: resilient or strict")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	var resolver *tlk.Resolver
+	if *resolveTlk != "" {
+		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, "INT", false)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	var result *dialogue.ParseResult
+	if *convIndex >= 0 {
+		conv, err := dialogue.ParseConversation(summary, rawData, *convIndex)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+		if resolver != nil {
+			resolveConversationTLK(conv, resolver)
+		}
+		result = &dialogue.ParseResult{
+			File:          *file,
+			GameProfile:   string(summary.GameProfile),
+			Conversations: []dialogue.Conversation{*conv},
+		}
+	} else {
+		result = dialogue.ParseConversations(summary, rawData, *mode)
+		if resolver != nil {
+			for i := range result.Conversations {
+				resolveConversationTLK(&result.Conversations[i], resolver)
+			}
+		}
+	}
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(result); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver) {
+	for i := range conv.Entries {
+		if conv.Entries[i].LineStrRef != nil {
+			text, ok := resolver.Resolve(int32(*conv.Entries[i].LineStrRef))
+			if ok {
+				conv.Entries[i].LineText = text
+			}
+		}
+	}
+	for i := range conv.Replies {
+		if conv.Replies[i].LineStrRef != nil {
+			text, ok := resolver.Resolve(int32(*conv.Replies[i].LineStrRef))
+			if ok {
+				conv.Replies[i].LineText = text
+			}
+		}
+	}
+	for i := range conv.Speakers {
+		if conv.Speakers[i].DisplayName != "" && len(conv.Speakers[i].DisplayName) > 7 &&
+			conv.Speakers[i].DisplayName[:7] == "strref:" {
+			var strref int
+			fmt.Sscanf(conv.Speakers[i].DisplayName, "strref:%d", &strref)
+			text, ok := resolver.Resolve(int32(strref))
+			if ok {
+				conv.Speakers[i].DisplayName = text
+			}
+		}
 	}
 }
 
