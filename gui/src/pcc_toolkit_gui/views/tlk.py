@@ -71,12 +71,12 @@ def render_tlk(state: AppState) -> None:
             sid_str = str(sid)
             imgui.selectable(sid_str, False, imgui.SelectableFlags_.span_all_columns)
             if imgui.begin_popup_context_item(f"tlk_ctx_{sid}"):
-                if imgui.menu_item("Copy StringID")[0]:
+                if imgui.menu_item("Copy StringID", "", False, True)[0]:
                     _copy_to_clipboard(sid_str)
-                if imgui.menu_item("Copy Text")[0]:
+                if imgui.menu_item("Copy Text", "", False, True)[0]:
                     _copy_to_clipboard(entry.get("text", entry.get("Text", "")))
                 full = f"{sid} | {entry.get('text', entry.get('Text', ''))}"
-                if imgui.menu_item("Copy Full Entry")[0]:
+                if imgui.menu_item("Copy Full Entry", "", False, True)[0]:
                     _copy_to_clipboard(full)
                 imgui.end_popup()
 
