@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"pcc-toolkit/core/internal/dialogue"
+	"pcc-toolkit/core/internal/graph"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/tlk"
 )
@@ -56,6 +57,8 @@ func main() {
 		cmdResolveTlk(args[1:])
 	case "parse-conversations":
 		cmdParseConversations(args[1:])
+	case "layout-graph":
+		cmdLayoutGraph(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -385,6 +388,56 @@ func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver)
 				conv.Speakers[i].DisplayName = text
 			}
 		}
+	}
+}
+
+func cmdLayoutGraph(args []string) {
+	fs := flag.NewFlagSet("layout-graph", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	convIndex := fs.Int("conv-index", -1, "Conversation export index")
+	algorithm := fs.String("algorithm", "sugiyama", "Layout algorithm (sugiyama, tree, force)")
+	nodeWidth := fs.Float64("node-width", 240, "Node width in pixels")
+	nodeHeight := fs.Float64("node-height", 64, "Node height in pixels")
+	xSpacing := fs.Float64("x-spacing", 80, "Horizontal spacing")
+	ySpacing := fs.Float64("y-spacing", 120, "Vertical spacing")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+	if *convIndex < 0 {
+		fmt.Fprintln(os.Stderr, "--conv-index is required")
+		os.Exit(2)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	conv, err := dialogue.ParseConversation(summary, rawData, *convIndex)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	_ = algorithm
+	layout := graph.LayoutConversation(conv, *nodeWidth, *nodeHeight, *xSpacing, *ySpacing)
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(layout); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
 	}
 }
 

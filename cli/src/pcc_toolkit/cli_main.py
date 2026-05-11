@@ -7,6 +7,7 @@ import typer
 
 from pcc_toolkit.engine import (
     EngineError,
+    layout_graph as engine_layout_graph,
     parse_conversations as engine_parse_conversations,
     parse_pcc as engine_parse_pcc,
     parse_tlk as engine_parse_tlk,
@@ -247,6 +248,39 @@ def dialogue_export(
         typer.echo(f"Saved to {output}")
     else:
         typer.echo(data)
+
+
+@dialogue_app.command("graph")
+def dialogue_graph(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    conv_index: int = typer.Option(..., "--conv-index", help="Conversation export index"),
+    algorithm: str = typer.Option("sugiyama", "--algorithm", help="Layout algorithm"),
+    node_width: float = typer.Option(240, "--node-width", help="Node width in pixels"),
+    node_height: float = typer.Option(64, "--node-height", help="Node height in pixels"),
+    x_spacing: float = typer.Option(80, "--x-spacing", help="Horizontal spacing"),
+    y_spacing: float = typer.Option(120, "--y-spacing", help="Vertical spacing"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_layout_graph(
+        file,
+        conv_index=conv_index,
+        algorithm=algorithm,
+        node_width=int(node_width),
+        node_height=int(node_height),
+        x_spacing=int(x_spacing),
+        y_spacing=int(y_spacing),
+    )
+
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    typer.echo(f"Conversation: {result.get('conversation_id', '?')}")
+    typer.echo(f"Nodes: {result.get('node_count', 0)}")
+    typer.echo(f"Edges: {len(result.get('edges', []))}")
+    typer.echo()
+    for key, pos in result.get("positions", {}).items():
+        typer.echo(f"  {key}: ({pos[0]:.1f}, {pos[1]:.1f})")
 
 
 if __name__ == "__main__":
