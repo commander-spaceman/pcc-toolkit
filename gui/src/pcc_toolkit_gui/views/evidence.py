@@ -1,5 +1,7 @@
 """Evidence search tab — query dialogue across game files."""
 
+import threading
+
 from imgui_bundle import imgui
 
 from pcc_toolkit_gui.engine import EngineError, scan_evidence
@@ -30,13 +32,13 @@ def render_evidence(state: AppState) -> None:
 
     imgui.separator()
     changed, state.evidence_query = imgui.input_text("##evidence_query", state.evidence_query,
-                                                     imgui.InputTextFlags_.enter_returns_true)
+                                                      imgui.InputTextFlags_.enter_returns_true)
     imgui.same_line()
-    if imgui.button("Search") or changed:
-        _run_search(state)
+    if (imgui.button("Search") or changed) and not state.is_loading:
+        _start_search(state)
 
     if state.is_loading:
-        imgui.text("Searching...")
+        imgui.text("Searching... (this may take a while)")
         return
 
     if state.evidence_results is None:
@@ -81,10 +83,15 @@ def render_evidence(state: AppState) -> None:
     imgui.end_child()
 
 
-def _run_search(state: AppState) -> None:
+def _start_search(state: AppState) -> None:
     if not state.evidence_query or not state.tlk_path:
         return
     state.is_loading = True
+    state.error_message = None
+    threading.Thread(target=_run_search_thread, args=(state,), daemon=True).start()
+
+
+def _run_search_thread(state: AppState) -> None:
     try:
         state.evidence_results = scan_evidence(
             state.evidence_query,
@@ -95,6 +102,8 @@ def _run_search(state: AppState) -> None:
         state.status_message = f"Search complete: {state.evidence_results.get('total_hits', 0)} hits"
     except EngineError as e:
         state.error_message = str(e)
+    except Exception as e:
+        state.error_message = f"Search error: {e}"
     finally:
         state.is_loading = False
 
