@@ -73,7 +73,7 @@ def render_tlk(state: AppState) -> None:
             selected = sid_str == state.selected_tlk_entry
 
             if selected:
-                imgui.table_set_bg_color(imgui.TableBgTarget_.row_bg_0, imgui.IM_COL32(50, 80, 140, 180))
+                imgui.table_set_bg_color(imgui.TableBgTarget_.row_bg0, imgui.IM_COL32(50, 80, 140, 180))
 
             imgui.table_set_column_index(0)
             if imgui.selectable(sid_str, selected)[0]:
