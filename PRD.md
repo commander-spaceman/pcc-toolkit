@@ -95,7 +95,7 @@ A unified CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effec
 ```
 tools/pcc-toolkit-v2/
 ├── README.md
-├── DESIGN.md                        # This document
+├── PRD.md                        # This document
 ├── pyproject.toml                   # Python project: CLI + GUI deps, scripts
 │
 ├── core/                            # Go — ALL domain logic

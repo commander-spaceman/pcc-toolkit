@@ -4,7 +4,7 @@
 
 Use this file as the **operational entry point** for AI agents working on this project.
 
-- Architecture and design lives in `DESIGN.md`.
+- Architecture and design lives in `PRD.md`.
 - Session state lives in `.opencode/`.
 
 ## Session Lifecycle
@@ -21,7 +21,7 @@ Every agent session follows this protocol:
 ### Work
 
 - Document in `.opencode/current.md` as you go, not at the end.
-- Work incrementally, following the phase order in `DESIGN.md`.
+- Work incrementally, following the phase order in `PRD.md`.
 - Prefer additive, low-intrusion changes over replacements.
 - Keep modifications isolated and reversible where possible.
 - Avoid touching unrelated systems.
@@ -37,14 +37,14 @@ Every agent session follows this protocol:
 
 ## Read First
 
-1. `DESIGN.md` — complete architecture, AST spec, migration plan, dependencies.
+1. `PRD.md` — complete architecture, AST spec, migration plan, dependencies.
 2. `.opencode/checkpoints.md` — what "done" looks like.
 
 ## Repository Map
 
 | Path | What it contains | When to read |
 |------|-----------------|--------------|
-| `DESIGN.md` | Full architecture, AST spec, dependencies, migration plan | Before any work |
+| `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before any work |
 | `.opencode/current.md` | Active session state | Every session start |
 | `.opencode/history.md` | Append-only session log | For historical context |
 | `.opencode/checkpoints.md` | Objective completion criteria | Before closing any phase |
@@ -58,7 +58,7 @@ Every agent session follows this protocol:
 
 ## Operational Rules (High Impact)
 
-- **Always consult the LegendaryExplorer repository** when implementing features. Use GitHub search against `github.com/ME3Tweaks/LegendaryExplorer` to understand how the official tool handles PCC parsing, TLK resolution, dialogue editing, and graph rendering. LEX is the reference implementation — match its behavior unless `DESIGN.md` specifies otherwise.
+- **Always consult the LegendaryExplorer repository** when implementing features. Use GitHub search against `github.com/ME3Tweaks/LegendaryExplorer` to understand how the official tool handles PCC parsing, TLK resolution, dialogue editing, and graph rendering. LEX is the reference implementation — match its behavior unless `PRD.md` specifies otherwise.
 - Go core contains ALL domain logic. Python CLI and GUI are thin layers only.
 - All Go ↔ Python communication is JSON over stdout.
 - One feature at a time. Validate equivalence against old toolkit before moving on.
