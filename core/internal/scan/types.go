@@ -17,10 +17,10 @@ type ContainerHit struct {
 }
 
 type ScanResult struct {
-	FilePath string
-	Hits     []ContainerHit
-	Exports  []pcc.Export
-	Error    string
+	FilePath          string
+	Hits              []ContainerHit
+	HasBioConversation  bool
+	Error             string
 }
 
 type ScanReport struct {

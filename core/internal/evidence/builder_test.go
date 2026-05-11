@@ -38,19 +38,8 @@ func TestClassifyTier(t *testing.T) {
 func TestBuildFileHasBioCMap(t *testing.T) {
 	report := &scan.ScanReport{
 		Results: []scan.ScanResult{
-			{
-				FilePath: "file_a.pcc",
-				Exports: []pcc.Export{
-					{ClassName: "BioConversation"},
-					{ClassName: "BioPawn"},
-				},
-			},
-			{
-				FilePath: "file_b.pcc",
-				Exports: []pcc.Export{
-					{ClassName: "SeqAct_Interp"},
-				},
-			},
+			{FilePath: "file_a.pcc", HasBioConversation: true},
+			{FilePath: "file_b.pcc", HasBioConversation: false},
 		},
 	}
 
@@ -71,10 +60,7 @@ func TestBuildReport(t *testing.T) {
 		Results: []scan.ScanResult{
 			{
 				FilePath: "test.pcc",
-				Exports: []pcc.Export{
-					{Index: 0, ClassName: "BioConversation", ObjectName: "BioD_Test_Conv1"},
-					{Index: 1, ClassName: "BioPawn", ObjectName: "BioPawn_Test"},
-				},
+				HasBioConversation: true,
 				Hits: []scan.ContainerHit{
 					{ContainerHit: pcc.ContainerHit{StrRef: 42, ExportIndex: 0, ClassName: "BioConversation", ExportName: "BioD_Test_Conv1"}},
 					{ContainerHit: pcc.ContainerHit{StrRef: 42, ExportIndex: 1, ClassName: "BioPawn", ExportName: "BioPawn_Test"}},

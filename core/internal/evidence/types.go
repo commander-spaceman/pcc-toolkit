@@ -63,11 +63,8 @@ func ClassifyTier(className string, hasBioConversationInFile bool) EvidenceTier 
 func BuildFileHasBioCMap(report *scan.ScanReport) map[string]bool {
 	result := make(map[string]bool)
 	for _, r := range report.Results {
-		for _, e := range r.Exports {
-			if e.ClassName == "BioConversation" {
-				result[r.FilePath] = true
-				break
-			}
+		if r.HasBioConversation {
+			result[r.FilePath] = true
 		}
 	}
 	return result

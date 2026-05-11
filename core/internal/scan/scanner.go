@@ -61,10 +61,18 @@ func ScanFile(path string, candidates []int32) (*ScanResult, error) {
 		}, nil
 	}
 
+	hasBioC := false
+	for _, e := range summary.Exports {
+		if e.ClassName == "BioConversation" {
+			hasBioC = true
+			break
+		}
+	}
+
 	if len(candidates) == 0 {
 		return &ScanResult{
-			FilePath: path,
-			Exports:  summary.Exports,
+			FilePath:         path,
+			HasBioConversation: hasBioC,
 		}, nil
 	}
 
@@ -73,8 +81,8 @@ func ScanFile(path string, candidates []int32) (*ScanResult, error) {
 	hits := pcc.MapOffsetsToContainers(summary.Exports, strRefOffsets, len(decompressed))
 
 	result := &ScanResult{
-		FilePath: path,
-		Exports:  summary.Exports,
+		FilePath:         path,
+		HasBioConversation: hasBioC,
 	}
 
 	for _, h := range hits {
