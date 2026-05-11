@@ -27,6 +27,7 @@ class AppState:
     error_message: str | None = None
     conv_filter: str = ""
     tlk_search: str = ""
+    selected_tlk_entry: str = ""
     evidence_query: str = ""
     evidence_results: dict | None = None
     search_cancel: bool = False
