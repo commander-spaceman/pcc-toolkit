@@ -13,6 +13,8 @@ from pcc_toolkit.engine import (
     parse_tlk as engine_parse_tlk,
     resolve_tlk as engine_resolve_tlk,
     scan_evidence as engine_scan_evidence,
+    serialize as engine_serialize,
+    validate as engine_validate,
     version as engine_version,
 )
 
@@ -97,6 +99,57 @@ def package_inspect(
     typer.echo(f"  Serial: offset={exp['serial_offset']}, size={exp['serial_size']}")
     if exp.get("serial_data"):
         typer.echo(f"  Data:   {len(exp['serial_data'])} chars (base64)")
+
+
+@package_app.command("validate")
+def package_validate(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    strict: bool = typer.Option(False, "--strict", help="Fail on warnings"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_validate(file, strict=strict)
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    summary = result.get("report_summary", {})
+    typer.echo(f"File: {file}")
+    typer.echo(f"Total: {summary.get('total', 0)}  Valid: {summary.get('valid', 0)}  "
+               f"Warning: {summary.get('warning', 0)}  Invalid: {summary.get('invalid', 0)}")
+    typer.echo()
+
+    for r in result.get("results", []):
+        status_icon = {"valid": "[OK]", "warning": "[!!]", "invalid": "[XX]"}.get(r.get("status", ""), "[??]")
+        typer.echo(f"  {status_icon} {r['conversation_id']} (#{r['export_index']}) — {r['status']}")
+        for issue in r.get("issues", []):
+            loc = f" [{issue.get('node_type', '')}#{issue.get('node_id', '')}]" if issue.get("node_id") is not None else ""
+            typer.echo(f"      {issue['severity']}{loc}: {issue['message']}")
+        typer.echo()
+
+
+@package_app.command("extract")
+def package_extract(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    output: Path = typer.Option(None, "--output", help="Output JSON file"),
+    tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
+    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
+) -> None:
+    kwargs = {}
+    if tlk:
+        kwargs["resolve_tlk"] = str(tlk)
+    if dlc_dir:
+        kwargs["dlc_dir"] = str(dlc_dir)
+
+    result = engine_serialize(file, **kwargs)
+    data = json.dumps(result, indent=2, ensure_ascii=False) if pretty else json.dumps(result, ensure_ascii=False)
+
+    if output:
+        output.write_text(data, encoding="utf-8")
+        typer.echo(f"Saved to {output}")
+        return
+
+    typer.echo(data)
 
 
 # ── tlk ────────────────────────────────────────────────────────────────────

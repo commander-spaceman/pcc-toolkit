@@ -14,6 +14,7 @@ import (
 	"pcc-toolkit/core/internal/graph"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
+	"pcc-toolkit/core/internal/serialize"
 	"pcc-toolkit/core/internal/tlk"
 )
 
@@ -64,6 +65,10 @@ func main() {
 		cmdLayoutGraph(args[1:])
 	case "scan-evidence":
 		cmdScanEvidence(args[1:])
+	case "validate":
+		cmdValidate(args[1:])
+	case "serialize":
+		cmdSerialize(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -534,6 +539,79 @@ func cmdScanEvidence(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(report); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdValidate(args []string) {
+	fs := flag.NewFlagSet("validate", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	strict := fs.Bool("strict", false, "Fail on warnings, not just errors")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	result := dialogue.ParseConversations(summary, rawData, "resilient")
+	report := dialogue.BuildValidationReport(result)
+
+	_ = strict
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(report); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdSerialize(args []string) {
+	fs := flag.NewFlagSet("serialize", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	game := fs.String("game", "", "Game profile (me2_ot)")
+	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK for text resolution")
+	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	_ = game
+
+	output, err := serialize.Run(*file, *resolveTlk, *dlcDir, "resilient")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(output); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}
