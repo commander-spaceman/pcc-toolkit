@@ -146,10 +146,32 @@ def _start_search(state: AppState) -> None:
     state.error_message = None
     state.evidence_results = None
     state.search_cancel = False
-    threading.Thread(target=_run_search_thread, args=(state,), daemon=True).start()
+
+    if state.biogame_root:
+        threading.Thread(target=_run_scan_thread, args=(state,), daemon=True).start()
+    else:
+        threading.Thread(target=_run_tlk_only_thread, args=(state,), daemon=True).start()
 
 
-def _run_search_thread(state: AppState) -> None:
+def _run_tlk_only_thread(state: AppState) -> None:
+    try:
+        from pcc_toolkit_gui.engine import scan_evidence
+        result = scan_evidence(
+            state.evidence_query,
+            tlk=state.tlk_path,
+            dlc_dir=state.dlc_dir,
+        )
+        state.evidence_results = result
+        state.status_message = f"Search complete: {result.get('total_hits', 0)} hits"
+    except EngineError as e:
+        state.error_message = str(e)
+    except Exception as e:
+        state.error_message = f"Search error: {e}"
+    finally:
+        state.is_loading = False
+
+
+def _run_scan_thread(state: AppState) -> None:
     global _active_process
     try:
         with _process_lock:
