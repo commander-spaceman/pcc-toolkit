@@ -72,7 +72,7 @@ def render_tlk(state: AppState) -> None:
 
             imgui.table_set_column_index(0)
             sid_str = str(sid)
-            imgui.selectable(sid_str)
+            imgui.selectable(sid_str, False)
             if imgui.begin_popup_context_item(f"tlk_ctx_{sid}"):
                 if imgui.menu_item("Copy StringID", "", False, True)[0]:
                     _copy_to_clipboard(sid_str)
