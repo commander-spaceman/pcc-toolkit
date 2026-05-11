@@ -24,6 +24,9 @@ NODE_HEIGHT = 64
 
 
 def render_dialogue(state: AppState) -> None:
+    if state.conversations is None and state.pcc_path and not state.is_loading:
+        _load_dialogue_file(state)
+
     if imgui.button("Load PCC..."):
         state.pcc_path = _open_file_dialog()
         if state.pcc_path:
