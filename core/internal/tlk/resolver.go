@@ -84,7 +84,7 @@ func (r *Resolver) Search(query string) []ResolveResult {
 
 var mountPriorityRe = regexp.MustCompile(`(?i)MountPriority\s*=\s*(\d+)`)
 
-func readMountPriority(dlcRoot string) int {
+func ReadMountPriority(dlcRoot string) int {
 	data, err := os.ReadFile(filepath.Join(dlcRoot, "Mount.dlc"))
 	if err != nil {
 		return 0
@@ -129,7 +129,7 @@ func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]st
 		hasDLCFolders = true
 
 		dlcRoot := filepath.Join(dlcDir, name)
-		priority := readMountPriority(dlcRoot)
+		priority := ReadMountPriority(dlcRoot)
 
 		cookedMatches, _ := filepath.Glob(filepath.Join(dlcRoot, "CookedPC*", fmt.Sprintf("*_%s.TLK", language)))
 		for _, match := range cookedMatches {

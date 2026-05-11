@@ -12,6 +12,7 @@ from pcc_toolkit.engine import (
     parse_pcc as engine_parse_pcc,
     parse_tlk as engine_parse_tlk,
     resolve_tlk as engine_resolve_tlk,
+    scan_evidence as engine_scan_evidence,
     version as engine_version,
 )
 
@@ -24,9 +25,11 @@ app = typer.Typer(
 package_app = typer.Typer(help="Inspect PCC packages")
 tlk_app = typer.Typer(help="Work with TLK talk files")
 dialogue_app = typer.Typer(help="Extract dialogue from BioConversation")
+evidence_app = typer.Typer(help="Search for evidence across game files")
 app.add_typer(package_app, name="package")
 app.add_typer(tlk_app, name="tlk")
 app.add_typer(dialogue_app, name="dialogue")
+app.add_typer(evidence_app, name="evidence")
 
 
 @app.callback(invoke_without_command=True)
@@ -285,3 +288,66 @@ def dialogue_graph(
 
 if __name__ == "__main__":
     main()
+
+
+# ── evidence ─────────────────────────────────────────────────────────────────
+
+@evidence_app.command("scan")
+def evidence_scan(
+    query: str = typer.Argument(..., help="Text to search for in dialogue"),
+    tlk: Path = typer.Option(..., "--tlk", help="Path to base TLK file"),
+    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    biogame_root: Path = typer.Option(None, "--biogame-root", help="BioGame root for PCC scanning"),
+    output: Path = typer.Option(None, "--output", help="Output JSON file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_scan_evidence(
+        query=query,
+        tlk=str(tlk),
+        dlc_dir=str(dlc_dir) if dlc_dir else None,
+        biogame_root=str(biogame_root) if biogame_root else None,
+    )
+
+    data = json.dumps(result, indent=2, ensure_ascii=False)
+
+    if output:
+        output.write_text(data, encoding="utf-8")
+        typer.echo(f"Saved to {output}")
+        return
+
+    if json_output:
+        typer.echo(data)
+        return
+
+    typer.echo(f"Query: {query}")
+    typer.echo(f"TLK: {tlk}")
+    typer.echo(f"Files scanned: {result.get('files_scanned', 0)}")
+    typer.echo(f"Files with hits: {result.get('files_with_hits', 0)}")
+    typer.echo(f"Total hits: {result.get('total_hits', 0)}")
+    typer.echo()
+
+    for ev in result.get("evidence", []):
+        typer.echo(f"--- StrRef #{ev['strref']} ---")
+        if ev.get("text"):
+            typer.echo(f"  Text: {ev['text']}")
+
+        tier1 = ev.get("bioconversation", [])
+        if tier1:
+            typer.echo(f"  Tier 1 — BioConversation ({len(tier1)}):")
+            for hit in tier1:
+                typer.echo(f"    {hit.get('conversation_id', '?')} in {hit.get('file_path', '?')}")
+
+        tier2 = ev.get("semantic_container", [])
+        if tier2:
+            typer.echo(f"  Tier 2 — Semantic container ({len(tier2)}):")
+            for hit in tier2:
+                typer.echo(f"    {hit.get('export_name', '?')} [{hit.get('class_name', '?')}] in {hit.get('file_path', '?')}")
+
+        tier3 = ev.get("container_fallback", [])
+        if tier3:
+            typer.echo(f"  Tier 3 — Container fallback ({len(tier3)}):")
+            for hit in tier3[:5]:
+                typer.echo(f"    {hit.get('export_name', '?')} [{hit.get('class_name', '?')}] in {hit.get('file_path', '?')}")
+            if len(tier3) > 5:
+                typer.echo(f"    ... and {len(tier3) - 5} more")
+        typer.echo()

@@ -11,7 +11,10 @@ func ReadFile(path string) (*FileSummary, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read file: %w", err)
 	}
+	return ReadFileFromBytes(data, path)
+}
 
+func ReadFileFromBytes(data []byte, path string) (*FileSummary, error) {
 	header, err := parsePccHeader(data)
 	if err != nil {
 		return nil, fmt.Errorf("parse header: %w", err)
@@ -65,7 +68,10 @@ func ReadFileRaw(path string) ([]byte, *FileSummary, error) {
 	if err != nil {
 		return nil, nil, fmt.Errorf("read file: %w", err)
 	}
+	return ReadFileRawFromBytes(data, path)
+}
 
+func ReadFileRawFromBytes(data []byte, path string) ([]byte, *FileSummary, error) {
 	header, err := parsePccHeader(data)
 	if err != nil {
 		return nil, nil, fmt.Errorf("parse header: %w", err)

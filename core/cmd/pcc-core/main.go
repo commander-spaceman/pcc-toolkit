@@ -6,11 +6,14 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 
 	"pcc-toolkit/core/internal/dialogue"
+	"pcc-toolkit/core/internal/evidence"
 	"pcc-toolkit/core/internal/graph"
 	"pcc-toolkit/core/internal/pcc"
+	"pcc-toolkit/core/internal/scan"
 	"pcc-toolkit/core/internal/tlk"
 )
 
@@ -59,6 +62,8 @@ func main() {
 		cmdParseConversations(args[1:])
 	case "layout-graph":
 		cmdLayoutGraph(args[1:])
+	case "scan-evidence":
+		cmdScanEvidence(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -436,6 +441,99 @@ func cmdLayoutGraph(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(layout); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdScanEvidence(args []string) {
+	fs := flag.NewFlagSet("scan-evidence", flag.ExitOnError)
+	query := fs.String("query", "", "Search query text")
+	tlkPath := fs.String("tlk", "", "Path to base TLK file")
+	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	bioGameRoot := fs.String("biogame-root", "", "BioGame root directory for PCC scanning")
+	workers := fs.Int("workers", 0, "Number of concurrent workers (default: CPU count)")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *query == "" {
+		fmt.Fprintln(os.Stderr, "--query is required")
+		os.Exit(2)
+	}
+	if *tlkPath == "" {
+		fmt.Fprintln(os.Stderr, "--tlk is required")
+		os.Exit(2)
+	}
+
+	resolver, err := tlk.BuildResolver(*tlkPath, *dlcDir, "INT", false)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
+		os.Exit(1)
+	}
+
+	candidateResults := resolver.Search(*query)
+	if len(candidateResults) == 0 {
+		out := evidence.EvidenceReport{
+			Query:            *query,
+			TlkPath:          *tlkPath,
+			DlcDir:           *dlcDir,
+			BioGameRoot:      *bioGameRoot,
+			CandidateStrRefs: []int{},
+		}
+		var enc *json.Encoder
+		if *pretty {
+			enc = json.NewEncoder(os.Stdout)
+			enc.SetIndent("", "  ")
+		} else {
+			enc = json.NewEncoder(os.Stdout)
+		}
+		enc.Encode(out)
+		return
+	}
+
+	candidates := make([]int32, 0, len(candidateResults))
+	seen := make(map[int32]bool)
+	for _, r := range candidateResults {
+		if !seen[r.StringID] {
+			seen[r.StringID] = true
+			candidates = append(candidates, r.StringID)
+		}
+	}
+
+	var scanReport *scan.ScanReport
+	if *bioGameRoot != "" {
+		files, err := scan.CollectPccFiles(*bioGameRoot)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "file collection error: %v\n", err)
+			os.Exit(1)
+		}
+		if *workers <= 0 {
+			*workers = runtime.NumCPU()
+		}
+		scanReport = scan.Run(files, candidates, *workers)
+	} else {
+		scanReport = &scan.ScanReport{}
+	}
+
+	report := evidence.BuildReport(
+		*query,
+		*tlkPath,
+		*dlcDir,
+		*bioGameRoot,
+		candidates,
+		scanReport,
+		resolver,
+	)
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(report); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}
