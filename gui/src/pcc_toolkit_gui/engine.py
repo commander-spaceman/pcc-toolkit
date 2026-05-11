@@ -44,7 +44,7 @@ def _build_args(subcommand: str, **kwargs: Any) -> list[str]:
 
 def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
     args = _build_args(subcommand, **kwargs)
-    proc = subprocess.run(args, capture_output=True, text=True)
+    proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
         raise EngineError(proc.stderr.strip() or proc.stdout.strip())
     return json.loads(proc.stdout)
@@ -58,6 +58,8 @@ def run_async(subcommand: str, **kwargs: Any) -> subprocess.Popen:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        encoding="utf-8",
+        errors="replace",
     )
 
 

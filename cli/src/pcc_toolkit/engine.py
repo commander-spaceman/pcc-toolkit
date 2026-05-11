@@ -52,6 +52,8 @@ def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
         args,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     if proc.returncode != 0:
         raise EngineError(proc.stderr.strip() or proc.stdout.strip())
