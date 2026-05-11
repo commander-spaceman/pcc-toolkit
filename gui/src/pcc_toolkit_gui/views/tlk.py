@@ -70,8 +70,11 @@ def render_tlk(state: AppState) -> None:
             sid_str = str(sid)
             selected = sid_str == state.selected_tlk_entry
 
+            if selected:
+                imgui.table_set_bg_color(imgui.TableBgTarget_.row_bg_0, imgui.IM_COL32(50, 80, 140, 180))
+
             imgui.table_set_column_index(0)
-            if imgui.selectable(sid_str, selected, imgui.SelectableFlags_.span_all_columns)[0]:
+            if imgui.selectable(sid_str, selected)[0]:
                 state.selected_tlk_entry = sid_str
 
             if imgui.begin_popup_context_item(f"tlk_ctx_{sid}"):
