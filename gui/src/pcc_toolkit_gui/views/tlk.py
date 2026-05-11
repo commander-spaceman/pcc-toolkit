@@ -6,6 +6,19 @@ from pcc_toolkit_gui.engine import EngineError, parse_tlk
 from pcc_toolkit_gui.state import AppState
 
 
+def _copy_to_clipboard(text: str) -> None:
+    try:
+        import tkinter
+        root = tkinter.Tk()
+        root.withdraw()
+        root.clipboard_clear()
+        root.clipboard_append(text)
+        root.update()
+        root.destroy()
+    except Exception:
+        pass
+
+
 def render_tlk(state: AppState) -> None:
     if imgui.button("Load TLK..."):
         state.tlk_path = _open_file_dialog()
@@ -55,7 +68,18 @@ def render_tlk(state: AppState) -> None:
             imgui.table_next_row()
             imgui.table_set_column_index(0)
             sid = entry.get("string_id", entry.get("StringID", 0))
-            imgui.text(str(sid))
+            sid_str = str(sid)
+            imgui.selectable(sid_str, False, imgui.SelectableFlags_.span_all_columns)
+            if imgui.begin_popup_context_item(f"tlk_ctx_{sid}"):
+                if imgui.menu_item("Copy StringID")[0]:
+                    _copy_to_clipboard(sid_str)
+                if imgui.menu_item("Copy Text")[0]:
+                    _copy_to_clipboard(entry.get("text", entry.get("Text", "")))
+                full = f"{sid} | {entry.get('text', entry.get('Text', ''))}"
+                if imgui.menu_item("Copy Full Entry")[0]:
+                    _copy_to_clipboard(full)
+                imgui.end_popup()
+
             imgui.table_set_column_index(1)
             text = entry.get("text", entry.get("Text", ""))
             imgui.text_wrapped(text)
