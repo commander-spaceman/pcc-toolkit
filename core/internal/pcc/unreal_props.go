@@ -45,6 +45,16 @@ func parsePropertyHeader(data []byte, names []string, cursor, end int) (string, 
 			metaSize = 1
 		}
 	case "ArrayProperty":
+		if cursor+8 <= end {
+			a := readI32(data, cursor)
+			b := readI32(data, cursor+4)
+			aName := resolveName(a, names)
+			bName := resolveName(b, names)
+			if PropertyTypeNames[aName] || PropertyTypeNames[bName] {
+				metaSize = 8
+				break
+			}
+		}
 		noMetaNext := cursor + propSize
 		fnameMetaNext := cursor + 8 + propSize
 		if isPlausibleTagStart(data, fnameMetaNext, end, names) && !isPlausibleTagStart(data, noMetaNext, end, names) {

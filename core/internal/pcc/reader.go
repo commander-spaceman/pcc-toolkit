@@ -79,7 +79,6 @@ func ReadFileRawFromBytes(data []byte, path string) ([]byte, *FileSummary, error
 
 	profile := InferGameProfile(header.UnrealVersion, header.LicenseeVersion)
 	compressed := header.Flags&CompressedFlag != 0
-	rawData := data
 
 	if compressed {
 		decompressed, decErr := decompressME2OT(data)
@@ -110,7 +109,7 @@ func ReadFileRawFromBytes(data []byte, path string) ([]byte, *FileSummary, error
 
 	resolveExportNames(exports, imports, names)
 
-	return rawData, &FileSummary{
+	return data, &FileSummary{
 		Path:        path,
 		GameProfile: profile,
 		Compressed:  compressed,

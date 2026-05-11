@@ -145,6 +145,16 @@ func resolveBoolOrArrayMeta(data []byte, cursor *int, propType string, propSize 
 		return
 	}
 	if propType == "ArrayProperty" {
+		if *cursor+8 <= end {
+			a := readI32(data, *cursor)
+			b := readI32(data, *cursor+4)
+			aName := resolveName(a, names)
+			bName := resolveName(b, names)
+			if PropertyTypeNames[aName] || PropertyTypeNames[bName] {
+				*cursor += 8
+				return
+			}
+		}
 		noMetaNext := *cursor + propSize
 		fnameMetaNext := *cursor + 8 + propSize
 		noOk := noMetaNext <= end && isPlausibleTagStart(data, noMetaNext, end, names)
@@ -438,6 +448,8 @@ func resolveArrayCountAndPayloadStart(data []byte, tag PropertyTag) (int, int) {
 	if count >= 0 {
 		return count, tag.ValueOffset + 4
 	}
+
+	firstNonNeg := -1
 	for _, delta := range []int{4, 8, 12, 16} {
 		if delta+4 > tag.Size {
 			break
@@ -447,8 +459,16 @@ func resolveArrayCountAndPayloadStart(data []byte, tag PropertyTag) (int, int) {
 		}
 		candidate := readI32(data, tag.ValueOffset+delta)
 		if candidate >= 0 {
-			return candidate, tag.ValueOffset + delta + 4
+			if candidate > 0 {
+				return candidate, tag.ValueOffset + delta + 4
+			}
+			if firstNonNeg < 0 {
+				firstNonNeg = delta
+			}
 		}
+	}
+	if firstNonNeg >= 0 {
+		return 0, tag.ValueOffset + firstNonNeg + 4
 	}
 	return count, tag.ValueOffset + 4
 }
