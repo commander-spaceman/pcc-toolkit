@@ -15,29 +15,39 @@ _active_process: subprocess.Popen | None = None
 _process_lock = threading.Lock()
 
 
-def _path_row(label: str, path: str | None, set_cb, clear_cb) -> None:
-    imgui.text(label)
-    imgui.same_line()
-    imgui.text_disabled(path or "not set")
-    imgui.same_line()
-    if imgui.button(f"Set##{label}"):
-        set_cb()
-    if path:
-        imgui.same_line()
-        if imgui.button(f"X##{label}"):
-            clear_cb()
-
-
 def render_evidence(state: AppState) -> None:
-    _path_row("TLK:", state.tlk_path,
-              lambda: setattr(state, 'tlk_path', _open_file_dialog()),
-              lambda: setattr(state, 'tlk_path', None))
-    _path_row("DLC:", state.dlc_dir,
-              lambda: setattr(state, 'dlc_dir', _open_dir_dialog()),
-              lambda: setattr(state, 'dlc_dir', None))
-    _path_row("Root:", state.biogame_root,
-              lambda: setattr(state, 'biogame_root', _open_dir_dialog()),
-              lambda: setattr(state, 'biogame_root', None))
+    imgui.text("TLK:")
+    imgui.same_line()
+    imgui.text_disabled(state.tlk_path or "not set")
+    imgui.same_line()
+    if imgui.button("Set##tlk_path"):
+        state.tlk_path = _open_file_dialog()
+    if state.tlk_path:
+        imgui.same_line()
+        if imgui.button("X##tlk_path"):
+            state.tlk_path = None
+
+    imgui.text("DLC:")
+    imgui.same_line()
+    imgui.text_disabled(state.dlc_dir or "not set")
+    imgui.same_line()
+    if imgui.button("Set##dlc_dir"):
+        state.dlc_dir = _open_dir_dialog()
+    if state.dlc_dir:
+        imgui.same_line()
+        if imgui.button("X##dlc_dir"):
+            state.dlc_dir = None
+
+    imgui.text("Root:")
+    imgui.same_line()
+    imgui.text_disabled(state.biogame_root or "not set")
+    imgui.same_line()
+    if imgui.button("Set##biogame_root"):
+        state.biogame_root = _open_dir_dialog()
+    if state.biogame_root:
+        imgui.same_line()
+        if imgui.button("X##biogame_root"):
+            state.biogame_root = None
 
     imgui.separator()
     changed, state.evidence_query = imgui.input_text("##evidence_query", state.evidence_query,
