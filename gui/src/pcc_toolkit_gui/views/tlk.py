@@ -116,13 +116,19 @@ def _restore_dump(state: AppState) -> None:
 
 
 def _search_tlk(state: AppState) -> None:
-    if not state.tlk_search:
+    if not state.tlk_search or not state.tlk_dump:
         return
     state.error_message = None
-    try:
-        state.tlk_entries = parse_tlk(state.tlk_path, search=state.tlk_search)
-    except EngineError as e:
-        state.error_message = str(e)
+    query = state.tlk_search.lower()
+    entries = state.tlk_dump.get("entries", [])
+    results = [e for e in entries
+               if query in str(e.get("string_id", e.get("StringID", 0)))
+               or query in (e.get("text", e.get("Text", "")).lower())]
+    state.tlk_entries = {
+        "header": state.tlk_dump.get("header", {}),
+        "entries": results,
+        "total_entries": len(results),
+    }
 
 
 def _open_file_dialog() -> str | None:
