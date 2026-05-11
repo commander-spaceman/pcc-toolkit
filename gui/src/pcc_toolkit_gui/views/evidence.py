@@ -81,27 +81,29 @@ def render_evidence(state: AppState) -> None:
     imgui.begin_child("evidence_list", imgui.ImVec2(0, 0), True)
     for ev in evidence_list:
         sid = ev["strref"]
-        text = ev.get("text", "")[:100]
+        text = ev.get("text", "")[:120]
         label = f"#{sid}: {text}"
 
-        if imgui.tree_node(label):
-            t1 = ev.get("bioconversation", [])
-            if t1:
-                imgui.text_colored(imgui.ImVec4(0.3, 0.9, 0.3, 1.0), f"Tier 1 — BioConversation ({len(t1)})")
-                for hit in t1:
-                    imgui.bullet_text(hit.get("conversation_id", "?"))
+        t1 = ev.get("bioconversation", [])
+        t2 = ev.get("semantic_container", [])
+        t3 = ev.get("container_fallback", [])
+        has_children = t1 or t2 or t3
 
-            t2 = ev.get("semantic_container", [])
-            if t2:
-                imgui.text_colored(imgui.ImVec4(0.9, 0.9, 0.3, 1.0), f"Tier 2 — Semantic ({len(t2)})")
-                for hit in t2:
-                    imgui.bullet_text(f"{hit.get('export_name', '?')} [{hit.get('class_name', '?')}]")
-
-            t3 = ev.get("container_fallback", [])
-            if t3:
-                imgui.text_colored(imgui.ImVec4(0.5, 0.5, 0.5, 1.0), f"Tier 3 — Fallback ({len(t3)})")
-
-            imgui.tree_pop()
+        if has_children:
+            if imgui.tree_node(label):
+                if t1:
+                    imgui.text_colored(imgui.ImVec4(0.3, 0.9, 0.3, 1.0), f"Tier 1 — BioConversation ({len(t1)})")
+                    for hit in t1:
+                        imgui.bullet_text(hit.get("conversation_id", "?"))
+                if t2:
+                    imgui.text_colored(imgui.ImVec4(0.9, 0.9, 0.3, 1.0), f"Tier 2 — Semantic ({len(t2)})")
+                    for hit in t2:
+                        imgui.bullet_text(f"{hit.get('export_name', '?')} [{hit.get('class_name', '?')}]")
+                if t3:
+                    imgui.text_colored(imgui.ImVec4(0.5, 0.5, 0.5, 1.0), f"Tier 3 — Fallback ({len(t3)})")
+                imgui.tree_pop()
+        else:
+            imgui.bullet_text(label)
 
     imgui.end_child()
 
