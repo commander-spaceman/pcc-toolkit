@@ -120,18 +120,20 @@ def _render_graph(state: AppState) -> None:
 
     if node_count == 0:
         imgui.separator()
-        imgui.text_disabled("No nodes in this conversation (0 entries, 0 replies, 0 starts)")
         convs = state.conversations.get("conversations", [])
+        conv_info = None
         for c in convs:
             if c["export_index"] == state.selected_conversation_index:
-                w = c.get("warnings", [])
-                if w:
-                    imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(255, 200, 100, 255))
-                    for wm in w:
-                        imgui.text_wrapped(f"Warning: {wm}")
-                    imgui.pop_style_color()
+                conv_info = c
                 break
-        return
+
+        if conv_info and conv_info.get("parse_mode") == "count_or_value_fallback":
+            imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(255, 200, 100, 255))
+            imgui.text_wrapped("Conversation detected but graph extraction is not yet implemented for this file format.")
+            imgui.text_wrapped("The parser fell back to count_or_value_fallback mode — structural extraction pending future parser updates.")
+            imgui.pop_style_color()
+        else:
+            imgui.text_disabled("No nodes in this conversation (0 entries, 0 replies, 0 starts)")
 
     imgui.separator()
 
