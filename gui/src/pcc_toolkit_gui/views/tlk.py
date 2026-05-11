@@ -53,14 +53,12 @@ def render_tlk(state: AppState) -> None:
         imgui.text_disabled("No entries. Load a TLK file or search.")
         return
 
-    imgui.begin_child("tlk_table", imgui.ImVec2(0, 0), True)
-
     flags = (imgui.TableFlags_.borders_inner_v
              | imgui.TableFlags_.row_bg
              | imgui.TableFlags_.resizable
              | imgui.TableFlags_.scroll_y)
 
-    if imgui.begin_table("tlk_data", 2, flags):
+    if imgui.begin_table("tlk_data", 2, flags, imgui.ImVec2(0, 0)):
         imgui.table_setup_column("StringID", imgui.TableColumnFlags_.width_fixed, 80)
         imgui.table_setup_column("Text", imgui.TableColumnFlags_.width_stretch)
         imgui.table_headers_row()
@@ -94,7 +92,6 @@ def render_tlk(state: AppState) -> None:
             imgui.text_wrapped(text)
 
         imgui.end_table()
-    imgui.end_child()
 
 
 def _load_tlk(state: AppState) -> None:
