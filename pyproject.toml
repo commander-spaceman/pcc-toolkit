@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pcc-toolkit"
+version = "0.2.0"
+description = "CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effect 2 dialogue from .pcc files"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Lia'Vael Mod Team" }]
+
+[project.optional-dependencies]
+cli = ["typer>=0.15", "rich>=13"]
+gui = ["imgui-bundle>=1.90"]
+dev = ["pytest>=9.0"]
+
+[project.scripts]
+pcc-toolkit = "pcc_toolkit.cli_main:app"
+
+[tool.setuptools]
+package-dir = {"" = "cli/src"}
+
+[tool.setuptools.packages.find]
+where = ["cli/src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["cli/src"]
+testpaths = ["tests"]
