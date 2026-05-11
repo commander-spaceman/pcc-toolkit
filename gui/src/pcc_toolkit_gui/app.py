@@ -108,6 +108,8 @@ def main() -> None:
     params = hello_imgui.RunnerParams()
     params.app_window_params.window_title = "PCC Toolkit v2 — Dialogue Explorer"
     params.app_window_params.window_geometry.size = (1280, 800)
+    params.imgui_window_params.show_menu_bar = True
+    params.imgui_window_params.show_status_bar = True
     params.callbacks.show_gui = lambda: _show_gui(state)
     params.callbacks.show_menus = lambda: _show_menu(state)
     params.callbacks.show_status = lambda: _show_status(state)
