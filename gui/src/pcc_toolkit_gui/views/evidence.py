@@ -91,13 +91,36 @@ def render_evidence(state: AppState) -> None:
 
 
 def _render_loading() -> None:
-    t = int(time.time() * 2) % 8
+    t = int(time.time() * 3) % 8
     spinner = ["|", "/", "-", "\\", "|", "/", "-", "\\"][t]
-    imgui.text(f"{spinner} Searching... (this may take a while)")
+
+    avail = imgui.get_content_region_avail()
+    center_y = avail.y * 0.35
+
+    imgui.set_cursor_pos_y(center_y)
     imgui.text("")
-    imgui.text_disabled("Files are being scanned for matching dialogue.")
-    imgui.text_disabled("The first search may take several minutes.")
-    imgui.text_disabled("Results will appear automatically when complete.")
+    imgui.text("")
+
+    text_w = imgui.calc_text_size(spinner).x
+    imgui.set_cursor_pos_x((avail.x - text_w) * 0.5)
+    imgui.push_style_color(imgui.Col_.text, imgui.IM_COL32(100, 180, 255, 255))
+    imgui.text(spinner)
+    imgui.pop_style_color()
+
+    msg = "Scanning PCC files for dialogue matches..."
+    msg_w = imgui.calc_text_size(msg).x
+    imgui.set_cursor_pos_x((avail.x - msg_w) * 0.5)
+    imgui.text(msg)
+
+    sub = "This may take several minutes on first run."
+    sub_w = imgui.calc_text_size(sub).x
+    imgui.set_cursor_pos_x((avail.x - sub_w) * 0.5)
+    imgui.text_disabled(sub)
+
+    cancel = "Press Cancel to abort"
+    cancel_w = imgui.calc_text_size(cancel).x
+    imgui.set_cursor_pos_x((avail.x - cancel_w) * 0.5)
+    imgui.text_disabled(cancel)
 
 
 def _start_search(state: AppState) -> None:
