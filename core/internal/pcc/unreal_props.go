@@ -169,9 +169,33 @@ func ParseStructArrayItemsAsPropertyCollections(
 				}
 				items = append(items, item)
 			}
-			return items
+			if len(items) == count {
+				return items
+			}
 		}
 	}
+
+	// Strategy 4: scan for plausible tag starts at any position
+	if count > 0 {
+		candidates := findPlausibleStructStarts(data, names, payloadOffset, end)
+		if len(candidates) >= count {
+			var items []map[string]ParsedProperty
+			bounds := append(candidates, end)
+			for i := 0; i < count && i < len(candidates); i++ {
+				itemStart := candidates[i]
+				itemEnd := bounds[i+1]
+				item, _ := ParsePropertyCollection(data, names, itemStart, itemEnd-itemStart)
+				if item != nil {
+					items = append(items, item)
+				}
+			}
+			if len(items) == count {
+				return items
+			}
+		}
+	}
+
+	// Sequential parsing fallback (original strategy 3)
 
 	var items []map[string]ParsedProperty
 	cursor := payloadOffset
@@ -240,4 +264,14 @@ func HasStructSignature(data []byte, names []string, payloadOffset, payloadSize 
 	taName := resolveName(ta, names)
 	tbName := resolveName(tb, names)
 	return PropertyTypeNames[taName] || PropertyTypeNames[tbName]
+}
+
+func findPlausibleStructStarts(data []byte, names []string, payloadOffset, end int) []int {
+	var starts []int
+	for pos := payloadOffset; pos < end-16; pos += 4 {
+		if isPlausibleTagStart(data, pos, end, names) {
+			starts = append(starts, pos)
+		}
+	}
+	return starts
 }

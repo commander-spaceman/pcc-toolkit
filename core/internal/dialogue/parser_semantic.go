@@ -72,9 +72,6 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 	if entryCount <= 0 || entryPayloadSize <= 0 {
 		return nil
 	}
-	if !pcc.HasStructSignature(data, names, entryPayload, entryPayloadSize) {
-		return nil
-	}
 
 	entryItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, entryPayload, entryPayloadSize, entryCount)
 	if len(entryItems) == 0 {
@@ -158,7 +155,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 	var speakerItems []map[string]pcc.ParsedProperty
 	if spkTag, ok := tagMap["SpeakerList"]; ok {
 		spkCount, spkPayload, spkPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, spkTag)
-		if spkCount > 0 && spkPayloadSize > 0 && pcc.HasStructSignature(data, names, spkPayload, spkPayloadSize) {
+		if spkCount > 0 && spkPayloadSize > 0 {
 			speakerItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
 		}
 	}
