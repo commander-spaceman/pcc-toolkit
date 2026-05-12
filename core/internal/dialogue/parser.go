@@ -71,6 +71,13 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		len(names), len(names), 
 	))
 
+	if export.SerialOffset < 0 || export.SerialSize < 8 {
+		return nil, fmt.Errorf("export %d has invalid serial bounds", export.Index)
+	}
+	if export.SerialOffset+export.SerialSize > len(data) {
+		return nil, fmt.Errorf("export %d serial data out of range", export.Index)
+	}
+
 	tags := pcc.ExtractBioConversationKeyProperties(data, names, export.SerialOffset, export.SerialSize)
 	tagMap := map[string]pcc.PropertyTag{}
 	for _, tag := range tags {

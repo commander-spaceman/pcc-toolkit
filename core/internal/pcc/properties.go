@@ -94,6 +94,10 @@ func ParsePropertyTags(data []byte, names []string, startOffset, size int, stric
 			propSize, arrayIndex = arrayIndex, propSize
 		}
 
+		if propSize < 0 || propSize > size-(cursor-startOffset) {
+			break
+		}
+
 		skipTagMeta(&cursor, propType)
 		resolveBoolOrArrayMeta(data, &cursor, propType, propSize, names, end)
 
