@@ -202,18 +202,37 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		})
 	}
 
-	if conv.ParseMode == "count_or_value_fallback" {
+	if len(conv.Entries) == 0 && len(conv.Replies) == 0 && len(conv.Speakers) == 0 {
 		result.addIssue(ValidationIssue{
-			Severity: "warning",
+			Severity: "info",
+			Message:  "empty stub: no entries, replies, or speakers",
+			Cause:    "placeholder BioConversation export with no dialogue data — common in level transition and ambient master files",
+		})
+	}
+
+	if conv.ParseMode == "count_or_value_fallback" {
+		severity := "warning"
+		cause := "the parser could not determine the array layout and fell back to counting elements — entry/reply data may be incomplete"
+		if len(conv.Entries) == 0 && len(conv.Replies) == 0 && len(conv.Speakers) == 0 {
+			severity = "info"
+			cause = "empty conversation stub — fallback mode is expected when there is no data to parse"
+		}
+		result.addIssue(ValidationIssue{
+			Severity: severity,
 			Message:  "low-confidence parse: " + conv.ParseMode,
-			Cause:    "the parser could not determine the array layout and fell back to counting elements — entry/reply data may be incomplete",
+			Cause:    cause,
 		})
 	}
 
 	if len(conv.Warnings) > 0 {
+		isEmptyStub := len(conv.Entries) == 0 && len(conv.Replies) == 0 && len(conv.Speakers) == 0
 		for _, w := range conv.Warnings {
+			severity := "warning"
+			if isEmptyStub {
+				severity = "info"
+			}
 			result.addIssue(ValidationIssue{
-				Severity: "warning",
+				Severity: severity,
 				Message:  w,
 			})
 		}

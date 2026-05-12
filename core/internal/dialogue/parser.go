@@ -233,7 +233,11 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 	var speakers []Speaker
 
 	if semanticMode && semanticNodes != nil {
-		entries, replies, speakers = semanticNodes.entries, semanticNodes.replies, semanticNodes.speakers
+		entries = semanticNodes.entries
+		replies = semanticNodes.replies
+		if len(semanticNodes.speakers) > 0 {
+			speakers = semanticNodes.speakers
+		}
 	} else if rowMode {
 		entries = buildEntriesRowMode(entryRows, entryMatrix, schema, names, usedStructMatrix)
 	} else if len(entryRows) > 0 {
@@ -268,16 +272,17 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		}
 	}
 
-	if semanticMode {
-	} else if rowMode {
-		speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
-	} else if len(speakerRows) > 0 {
-		speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
-		warnings = append(warnings, "partial_row_payload_speakers")
-	} else {
-		speakers = make([]Speaker, len(speakerIDs))
-		for i, id := range speakerIDs {
-			speakers[i] = Speaker{ID: id}
+	if len(speakers) == 0 {
+		if rowMode {
+			speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
+		} else if len(speakerRows) > 0 {
+			speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
+			warnings = append(warnings, "partial_row_payload_speakers")
+		} else {
+			speakers = make([]Speaker, len(speakerIDs))
+			for i, id := range speakerIDs {
+				speakers[i] = Speaker{ID: id}
+			}
 		}
 	}
 
