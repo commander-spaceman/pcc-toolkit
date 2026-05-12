@@ -44,32 +44,43 @@ func findEntryIndicesFromReply(data []byte, names []string, itemStart, itemEnd i
 }
 
 func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.PropertyTag) *semanticResult {
-	tag, ok := tagMap["EntryList"]
-	if !ok {
-		return nil
-	}
-	entryCount, entryPayload, entryPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, tag)
-	if entryCount <= 0 || entryPayloadSize <= 0 {
-		return nil
+	entryCount := 0
+	entryPayload := 0
+	entryPayloadSize := 0
+	if tag, ok := tagMap["EntryList"]; ok {
+		entryCount, entryPayload, entryPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, tag)
 	}
 
-	entryItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, entryPayload, entryPayloadSize, entryCount)
-	if len(entryItems) == 0 {
-		return nil
-	}
-
-	var replyItems []map[string]pcc.ParsedProperty
 	replyCount := 0
 	replyPayload := 0
 	replyPayloadSize := 0
-	if replyTag, ok := tagMap["ReplyList"]; ok {
-		replyCount, replyPayload, replyPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, replyTag)
+	if tag, ok := tagMap["ReplyList"]; ok {
+		replyCount, replyPayload, replyPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, tag)
+	}
+
+	// Try parsing entries (required for full semantic mode)
+	var entryItems []map[string]pcc.ParsedProperty
+	if entryCount > 0 && entryPayloadSize > 0 {
+		entryItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, entryPayload, entryPayloadSize, entryCount)
+	}
+
+	// Try parsing replies
+	var replyItems []map[string]pcc.ParsedProperty
+	if replyCount > 0 && replyPayloadSize > 0 {
 		replyItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, replyPayload, replyPayloadSize, max(0, replyCount))
 	}
 
+	// Need at least entries or replies to proceed
+	if len(entryItems) == 0 && len(replyItems) == 0 {
+		if replyCount > 0 || entryCount > 0 {
+			return nil
+		}
+		return nil
+	}
+
 	replyStride := 0
-	if replyCount > 0 {
-		replyStride = replyPayloadSize / replyCount
+	if len(replyItems) > 0 {
+		replyStride = replyPayloadSize / len(replyItems)
 	}
 
 	entries := make([]EntryNode, len(entryItems))
