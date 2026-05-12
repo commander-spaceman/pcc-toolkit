@@ -205,3 +205,6 @@ opencode.jsonc
 # Local stuff
 .secrets/
 *.ini
+
+# Test artifacts and caches (golden files already committed remain tracked)
+tests/
