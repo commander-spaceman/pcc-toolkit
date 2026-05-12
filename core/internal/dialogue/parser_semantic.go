@@ -156,23 +156,54 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 		}
 	}
 
-	var speakerItems []map[string]pcc.ParsedProperty
+	var speakers []Speaker
 	if spkTag, ok := tagMap["SpeakerList"]; ok {
 		spkCount, spkPayload, spkPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, spkTag)
 		if spkCount > 0 && spkPayloadSize > 0 {
-			speakerItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
-		}
-	}
-	speakers := make([]Speaker, len(speakerItems))
-	for idx, item := range speakerItems {
-		var tag string
-		if tp, ok := item["sSpeakerTag"]; ok {
-			if s, ok := tp.Value.(string); ok {
-				tag = s
+			speakerItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
+			if len(speakerItems) > 0 {
+				speakers = make([]Speaker, len(speakerItems))
+				for idx, item := range speakerItems {
+					if tp, ok := item["sSpeakerTag"]; ok {
+						if s, ok := tp.Value.(string); ok {
+							speakers[idx] = Speaker{ID: idx, Tag: s}
+						}
+					}
+				}
+			} else {
+				// Fallback: scan raw bytes for NameProperty values
+				speakers = parseSpeakersDirect(data, names, spkPayload, spkPayloadSize, spkCount)
 			}
 		}
-		speakers[idx] = Speaker{ID: idx, Tag: tag}
 	}
 
 	return &semanticResult{entries, replies, speakers}
+}
+
+func parseSpeakersDirect(data []byte, names []string, payloadStart, payloadSize, count int) []Speaker {
+	// Find the NameProperty value for sSpeakerTag in each item.
+	// Each BioDialogSpeaker item: FName(sSpeakerTag) + FName(NameProperty) + 4(size) + 4(idx) + 4(value) = 28 bytes.
+	// If items are uniform size, compute stride; otherwise scan for sSpeakerTag occurrences.
+	stride := 0
+	if count > 0 && payloadSize%count == 0 {
+		stride = payloadSize / count
+	}
+	if stride < 24 {
+		stride = 28
+	}
+	speakers := make([]Speaker, count)
+	for i := 0; i < count; i++ {
+		itemStart := payloadStart + (i * stride)
+		valueOffset := itemStart + 24
+		if valueOffset+4 > len(data) {
+			break
+		}
+		nameIdx := pcc.ReadRawI32(data, valueOffset)
+		var tag string
+		if nameIdx >= 0 && nameIdx < len(names) {
+			tag = names[nameIdx]
+		}
+		speakers[i] = Speaker{ID: i, Tag: tag}
+	}
+	return speakers
 }
