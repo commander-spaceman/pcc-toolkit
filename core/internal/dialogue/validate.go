@@ -5,6 +5,7 @@ type ValidationIssue struct {
 	NodeType string `json:"node_type,omitempty"`
 	NodeID   int    `json:"node_id,omitempty"`
 	Message  string `json:"message"`
+	Cause    string `json:"cause,omitempty"`
 }
 
 type ValidationResult struct {
@@ -75,7 +76,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 					Severity: "error",
 					NodeType: "entry",
 					NodeID:   e.ID,
-					Message:  "reply_link references non-existent reply " + itoa(rid),
+					Message:  "dangling reply link: entry " + itoa(e.ID) + " → reply " + itoa(rid) + " not found",
+					Cause:    "entry references a reply that does not exist in ReplyList — conversation data is structurally broken",
 				})
 				result.Summary.DanglingLinks++
 			}
@@ -86,7 +88,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 				Severity: "warning",
 				NodeType: "entry",
 				NodeID:   e.ID,
-				Message:  "speaker_id " + itoa(*e.SpeakerID) + " not in speaker list",
+				Message:  "unregistered speaker: speaker_id " + itoa(*e.SpeakerID) + " not declared in SpeakerList",
+				Cause:    "entry references a speaker index that is not defined in this conversation's speaker list",
 			})
 		}
 
@@ -95,7 +98,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 				Severity: "warning",
 				NodeType: "entry",
 				NodeID:   e.ID,
-				Message:  "line_strref is zero or negative",
+				Message:  "missing TLK reference: line_strref is " + itoa(*e.LineStrRef),
+				Cause:    "strref is zero or negative — this line has no valid TLK text reference in the game data",
 			})
 		}
 	}
@@ -107,7 +111,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 					Severity: "error",
 					NodeType: "reply",
 					NodeID:   r.ID,
-					Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist",
+					Message:  "broken reply target: reply " + itoa(r.ID) + " → entry " + itoa(*r.TargetEntryID) + " does not exist",
+					Cause:    "reply points to an entry index that is not present in EntryList",
 				})
 				result.Summary.DanglingLinks++
 			}
@@ -119,7 +124,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 					Severity: "warning",
 					NodeType: "reply",
 					NodeID:   r.ID,
-					Message:  "reply has no target_entry_id (dead end)",
+					Message:  "unlinked reply: no target_entry_id — parser could not extract it from binary data",
+					Cause:    "the target entry column in the reply struct could not be read (may be encoded in a non-standard format)",
 				})
 			}
 		}
@@ -129,7 +135,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 				Severity: "warning",
 				NodeType: "reply",
 				NodeID:   r.ID,
-				Message:  "line_strref is zero or negative",
+				Message:  "missing TLK reference: line_strref is " + itoa(*r.LineStrRef),
+				Cause:    "strref is zero or negative — this line has no valid TLK text reference in the game data",
 			})
 		}
 	}
@@ -140,14 +147,16 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 				Severity: "error",
 				NodeType: "start",
 				NodeID:   s.ID,
-				Message:  "start has no target_entry_id",
+				Message:  "broken start node: start " + itoa(s.ID) + " has no target_entry_id",
+				Cause:    "starting list entry is missing its target entry — conversation has no valid entry point",
 			})
 		} else if !entryIDs[*s.TargetEntryID] {
 			result.addIssue(ValidationIssue{
 				Severity: "error",
 				NodeType: "start",
 				NodeID:   s.ID,
-				Message:  "start target_entry_id " + itoa(*s.TargetEntryID) + " does not exist",
+				Message:  "broken start node: start " + itoa(s.ID) + " → entry " + itoa(*s.TargetEntryID) + " not found",
+				Cause:    "start node points to an entry index that does not exist in EntryList",
 			})
 		}
 	}
@@ -159,7 +168,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 				Severity: "warning",
 				NodeType: "entry",
 				NodeID:   e.ID,
-				Message:  "entry is not reachable from any start or reply",
+				Message:  "orphaned entry: entry " + itoa(e.ID) + " is not reachable from any start node",
+				Cause:    "entry exists in the data but no dialogue path leads to it — may be unused or conditionally activated content",
 			})
 			result.Summary.OrphanedEntries++
 		}
@@ -174,14 +184,16 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	if len(conv.Entries) == 0 && len(conv.Replies) > 0 {
 		result.addIssue(ValidationIssue{
 			Severity: "info",
-			Message:  "reply-only conversation — no entries, " + itoa(len(conv.Replies)) + " replies",
+			Message:  "reply-only conversation: " + itoa(len(conv.Replies)) + " replies, 0 entries",
+			Cause:    "this conversation has no entry nodes — common in combat barks and ambient dialogue where NPCs speak without structured back-and-forth",
 		})
 	}
 
 	if conv.ParseMode == "count_or_value_fallback" {
 		result.addIssue(ValidationIssue{
 			Severity: "warning",
-			Message:  "parsed with fallback mode (count_or_value_fallback) — results may be incomplete",
+			Message:  "low-confidence parse: " + conv.ParseMode,
+			Cause:    "the parser could not determine the array layout and fell back to counting elements — entry/reply data may be incomplete",
 		})
 	}
 
