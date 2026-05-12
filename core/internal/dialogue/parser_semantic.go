@@ -12,7 +12,7 @@ type semanticResult struct {
 	speakers []Speaker
 }
 
-func readReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
+func findReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
 	prop, ok := item["ReplyListNew"]
 	if !ok {
 		return nil
@@ -39,28 +39,8 @@ func readReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.
 	return ids
 }
 
-func readEntryIndicesFromReply(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
-	el, ok := item["EntryList"]
-	if !ok {
-		return nil
-	}
-	arrMap, ok := el.Value.(map[string]interface{})
-	if !ok {
-		return nil
-	}
-	count, _ := arrMap["count"].(int)
-	ps, _ := arrMap["payload_offset"].(int)
-	if count <= 0 {
-		return nil
-	}
-	var ids []int
-	for k := 0; k < count; k++ {
-		eid := pcc.ReadRawI32(data, ps+(k*4))
-		if eid >= 0 {
-			ids = append(ids, eid)
-		}
-	}
-	return ids
+func findEntryIndicesFromReply(data []byte, names []string, itemStart, itemEnd int) []int {
+	return pcc.FindInt32ArrayByName(data, names, itemStart, itemEnd, "EntryList")
 }
 
 func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.PropertyTag) *semanticResult {
@@ -79,9 +59,17 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 	}
 
 	var replyItems []map[string]pcc.ParsedProperty
+	replyCount := 0
+	replyPayload := 0
+	replyPayloadSize := 0
 	if replyTag, ok := tagMap["ReplyList"]; ok {
-		replyCount, replyPayload, replyPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, replyTag)
+		replyCount, replyPayload, replyPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, replyTag)
 		replyItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, replyPayload, replyPayloadSize, max(0, replyCount))
+	}
+
+	replyStride := 0
+	if replyCount > 0 {
+		replyStride = replyPayloadSize / replyCount
 	}
 
 	entries := make([]EntryNode, len(entryItems))
@@ -98,7 +86,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				lineStrRef = &v
 			}
 		}
-		replyLinks := readReplyIndicesFromEntry(data, names, item)
+		replyLinks := findReplyIndicesFromEntry(data, names, item)
 		entries[idx] = EntryNode{
 			ID:         idx,
 			SpeakerID:  speakerID,
@@ -125,7 +113,12 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				targetEntryIDs = append(targetEntryIDs, v)
 			}
 		}
-		targetEntryIDs = append(targetEntryIDs, readEntryIndicesFromReply(data, names, item)...)
+		itemStart := replyPayload + (idx * replyStride)
+		itemEnd := replyPayload + ((idx + 1) * replyStride)
+		if idx == replyCount-1 {
+			itemEnd = replyPayload + replyPayloadSize
+		}
+		targetEntryIDs = append(targetEntryIDs, findEntryIndicesFromReply(data, names, itemStart, itemEnd)...)
 		var condRefs []string
 		if cf, ok := item["nConditionalFunc"]; ok {
 			if v, ok := cf.Value.(int); ok && v >= 0 {

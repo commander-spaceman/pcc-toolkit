@@ -590,3 +590,91 @@ func ReadArrayPropertyStructI32Matrix(data []byte, tag PropertyTag) [][]int {
 	}
 	return rows
 }
+
+// FindInt32ArrayByName scans raw bytes in range [start, end) for an ArrayProperty<IntProperty>
+// with the given property name. Returns the int32 element values.
+func FindInt32ArrayByName(data []byte, names []string, start, end int, propName string) []int {
+	nameIdx := -1
+	arrayIdx := -1
+	for i, n := range names {
+		if n == propName {
+			nameIdx = i
+		}
+		if n == "ArrayProperty" {
+			arrayIdx = i
+		}
+	}
+	if nameIdx < 0 || arrayIdx < 0 {
+		return nil
+	}
+
+	for pos := start; pos < end-32; pos += 4 {
+		nA := readI32(data, pos)
+		nB := readI32(data, pos+4)
+		tA := readI32(data, pos+8)
+		tB := readI32(data, pos+12)
+
+		isName := (nA == nameIdx && nB == 0) || (nA == 0 && nB == nameIdx)
+		isType := (tA == arrayIdx && tB == 0) || (tA == 0 && tB == arrayIdx)
+
+		if isName && isType {
+			propSize := readI32(data, pos+16)
+			countPos := pos + 16 + 8 + 8
+			if countPos+4 > end {
+				continue
+			}
+			count := readI32(data, countPos)
+			if count >= 0 && count <= 200000 && count*4 <= propSize {
+				ids := make([]int, count)
+				elemStart := countPos + 4
+				for k := 0; k < count; k++ {
+					ids[k] = readI32(data, elemStart+k*4)
+				}
+				return ids
+			}
+		}
+	}
+	return nil
+}
+
+// FindStructArrayItemStarts scans raw bytes for an ArrayProperty<StructProperty>
+// and returns the absolute payload start, item count, and stride hint.
+// Returns (-1, 0, 0) if not found.
+func FindStructArrayItemStarts(data []byte, names []string, start, end int, propName string) (int, int, int) {
+	nameIdx := -1
+	arrayIdx := -1
+	structIdx := -1
+	for i, n := range names {
+		if n == propName {
+			nameIdx = i
+		}
+		if n == "ArrayProperty" {
+			arrayIdx = i
+		}
+		if n == "StructProperty" {
+			structIdx = i
+		}
+	}
+	if nameIdx < 0 || arrayIdx < 0 || structIdx < 0 {
+		return -1, 0, 0
+	}
+	for pos := start; pos < end-32; pos += 4 {
+		nA := readI32(data, pos)
+		nB := readI32(data, pos+4)
+		tA := readI32(data, pos+8)
+		tB := readI32(data, pos+12)
+		isName := (nA == nameIdx && nB == 0) || (nA == 0 && nB == nameIdx)
+		isType := (tA == arrayIdx && tB == 0) || (tA == 0 && tB == arrayIdx)
+		if isName && isType {
+			countPos := pos + 16 + 8 + 8
+			if countPos+4 > end {
+				continue
+			}
+			count := readI32(data, countPos)
+			if count > 0 && count <= 200000 {
+				return countPos + 4, count, 0
+			}
+		}
+	}
+	return -1, 0, 0
+}
