@@ -206,5 +206,7 @@ opencode.jsonc
 .secrets/
 *.ini
 
-# Test artifacts and caches (golden files already committed remain tracked)
-tests/
+# Test artifacts and caches (golden files and test scripts ARE tracked)
+tests/__pycache__/
+tests/.pytest_cache/
+tests/**/__pycache__/
