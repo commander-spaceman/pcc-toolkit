@@ -102,13 +102,22 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 
 	for _, r := range conv.Replies {
 		if r.TargetEntryID != nil && !entryIDs[*r.TargetEntryID] {
-			result.addIssue(ValidationIssue{
-				Severity: "error",
-				NodeType: "reply",
-				NodeID:   r.ID,
-				Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist",
-			})
-			result.Summary.DanglingLinks++
+			if len(conv.Entries) > 0 {
+				result.addIssue(ValidationIssue{
+					Severity: "error",
+					NodeType: "reply",
+					NodeID:   r.ID,
+					Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist",
+				})
+				result.Summary.DanglingLinks++
+			} else {
+				result.addIssue(ValidationIssue{
+					Severity: "warning",
+					NodeType: "reply",
+					NodeID:   r.ID,
+					Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist (no entries in conversation)",
+				})
+			}
 		}
 
 		if r.TargetEntryID == nil {

@@ -106,7 +106,51 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		speakerValues = pcc.ReadArrayPropertyI32Values(data, t)
 	}
 
-	entryRows, replyRows, speakerRows, usedStructHead, usedStructMatrix := readRowArrays(data, names, tagMap, schema)
+	var entryRows, replyRows, speakerRows [][]int
+	var usedStructHead, usedStructMatrix bool
+
+	// Direct row reads (replaces buggy readRowArrays closure)
+	if t, ok := tagMap["EntryList"]; ok {
+		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.EntryHeadI32 {
+			usedStructMatrix = true
+			entryRows = make([][]int, len(m))
+			for i, row := range m {
+				entryRows[i] = row[:schema.EntryHeadI32]
+			}
+		} else if s := pcc.ReadArrayPropertyStructHeadI32(data, t, schema.EntryHeadI32); len(s) > 0 {
+			usedStructHead = true
+			entryRows = s
+		}
+	}
+	if t, ok := tagMap["ReplyList"]; ok {
+		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.ReplyHeadI32 {
+			usedStructMatrix = true
+			replyRows = make([][]int, len(m))
+			for i, row := range m {
+				replyRows[i] = row[:schema.ReplyHeadI32]
+			}
+		} else if s := pcc.ReadArrayPropertyStructHeadI32(data, t, schema.ReplyHeadI32); len(s) > 0 {
+			usedStructHead = true
+			replyRows = s
+		}
+	}
+	if t, ok := tagMap["SpeakerList"]; ok {
+		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.SpeakerHeadI32 {
+			usedStructMatrix = true
+			speakerRows = make([][]int, len(m))
+			for i, row := range m {
+				speakerRows[i] = row[:schema.SpeakerHeadI32]
+			}
+		} else if s := pcc.ReadArrayPropertyStructHeadI32(data, t, schema.SpeakerHeadI32); len(s) > 0 {
+			usedStructHead = true
+			speakerRows = s
+		}
+	}
+
+	var warnings []string
+	if entryCount == 0 && replyCount == 0 && speakerCount == 0 {
+		warnings = append(warnings, "empty_key_arrays")
+	}
 
 	rowMode := len(entryRows) > 0 && len(replyRows) > 0 && len(speakerRows) > 0
 	rowPayloadRejected := false
@@ -115,11 +159,6 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		rowPayloadRejected = true
 		usedStructHead = false
 		usedStructMatrix = false
-	}
-
-	var warnings []string
-	if entryCount == 0 && replyCount == 0 && speakerCount == 0 {
-		warnings = append(warnings, "empty_key_arrays")
 	}
 
 	semanticMode := false
@@ -197,10 +236,13 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		entries, replies, speakers = semanticNodes.entries, semanticNodes.replies, semanticNodes.speakers
 	} else if rowMode {
 		entries = buildEntriesRowMode(entryRows, entryMatrix, schema, names, usedStructMatrix)
+	} else if len(entryRows) > 0 {
+		entries = buildEntriesRowMode(entryRows, entryMatrix, schema, names, usedStructMatrix)
+		warnings = append(warnings, "partial_row_payload_entries")
 	} else {
 		if rowPayloadRejected {
 			warnings = append(warnings, "row_payload_incoherent_fallback_applied")
-		} else if len(entryRows) > 0 || len(replyRows) > 0 || len(speakerRows) > 0 {
+		} else if len(replyRows) > 0 || len(speakerRows) > 0 {
 			warnings = append(warnings, "partial_row_payload_detected_fallback_applied")
 		}
 		entries = make([]EntryNode, len(entryIDs))
@@ -212,6 +254,9 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 	if semanticMode {
 	} else if rowMode {
 		replies = buildRepliesRowMode(replyRows, replyMatrix, schema, usedStructMatrix)
+	} else if len(replyRows) > 0 {
+		replies = buildRepliesRowMode(replyRows, replyMatrix, schema, usedStructMatrix)
+		warnings = append(warnings, "partial_row_payload_replies")
 	} else {
 		replies = make([]ReplyNode, len(replyTargets))
 		for i, target := range replyTargets {
@@ -226,6 +271,9 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 	if semanticMode {
 	} else if rowMode {
 		speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
+	} else if len(speakerRows) > 0 {
+		speakers = buildSpeakersRowMode(speakerRows, speakerMatrix, schema, names, usedStructMatrix)
+		warnings = append(warnings, "partial_row_payload_speakers")
 	} else {
 		speakers = make([]Speaker, len(speakerIDs))
 		for i, id := range speakerIDs {
@@ -287,40 +335,6 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		Starts:      starts,
 		Warnings:    warnings,
 	}, nil
-}
-
-func readRowArrays(data []byte, names []string, tagMap map[string]pcc.PropertyTag, schema ConversationListSchema) (
-	entryRows, replyRows, speakerRows [][]int, usedStructHead, usedStructMatrix bool,
-) {
-	readRows := func(key string, headI32 int) [][]int {
-		tag, ok := tagMap[key]
-		if !ok {
-			return nil
-		}
-		tightRows := pcc.ReadArrayPropertyI32Rows(data, tag, headI32)
-		if tightRows != nil {
-			return tightRows
-		}
-		matrixRows := pcc.ReadArrayPropertyStructI32Matrix(data, tag)
-		if len(matrixRows) > 0 && len(matrixRows[0]) >= headI32 {
-			usedStructMatrix = true
-			result := make([][]int, len(matrixRows))
-			for i, row := range matrixRows {
-				result[i] = row[:headI32]
-			}
-			return result
-		}
-		structRows := pcc.ReadArrayPropertyStructHeadI32(data, tag, headI32)
-		if len(structRows) > 0 {
-			usedStructHead = true
-		}
-		return structRows
-	}
-
-	entryRows = readRows("EntryList", schema.EntryHeadI32)
-	replyRows = readRows("ReplyList", schema.ReplyHeadI32)
-	speakerRows = readRows("SpeakerList", schema.SpeakerHeadI32)
-	return
 }
 
 func rowPayloadIsCoherent(entryRows, replyRows, speakerRows [][]int) bool {

@@ -544,9 +544,6 @@ func ReadArrayPropertyStructHeadI32(data []byte, tag PropertyTag, headI32 int) [
 	if info.Count <= 0 || info.BytesPerItem == nil {
 		return nil
 	}
-	if info.Remainder != 0 {
-		return nil
-	}
 	stride := *info.BytesPerItem
 	headSize := headI32 * 4
 	if stride < headSize {
@@ -570,9 +567,6 @@ func ReadArrayPropertyStructI32Matrix(data []byte, tag PropertyTag) [][]int {
 	if info.Count <= 0 || info.BytesPerItem == nil {
 		return nil
 	}
-	if info.Remainder != 0 {
-		return nil
-	}
 	if *info.BytesPerItem%4 != 0 {
 		return nil
 	}
@@ -581,6 +575,10 @@ func ReadArrayPropertyStructI32Matrix(data []byte, tag PropertyTag) [][]int {
 		return nil
 	}
 	_, payloadStart := resolveArrayCountAndPayloadStart(data, tag)
+	end := payloadStart + (info.Count * *info.BytesPerItem)
+	if end > len(data) {
+		return nil
+	}
 	rows := make([][]int, info.Count)
 	for i := 0; i < info.Count; i++ {
 		itemStart := payloadStart + (i * *info.BytesPerItem)
