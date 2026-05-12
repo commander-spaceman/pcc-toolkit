@@ -125,8 +125,11 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 			}
 		}
 		itemStart := replyPayload + (idx * replyStride)
-		itemEnd := replyPayload + ((idx + 1) * replyStride)
-		if idx == replyCount-1 {
+		itemEnd := replyPayload + ((idx + 2) * replyStride) // expand into next item range
+		if itemEnd > replyPayload+replyPayloadSize {
+			itemEnd = replyPayload + replyPayloadSize
+		}
+		if idx >= replyCount-1 {
 			itemEnd = replyPayload + replyPayloadSize
 		}
 		targetEntryIDs = append(targetEntryIDs, findEntryIndicesFromReply(data, names, itemStart, itemEnd)...)
