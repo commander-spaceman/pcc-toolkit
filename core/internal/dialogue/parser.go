@@ -281,23 +281,57 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		}
 	}
 
-	linksByEntry := map[int][]int{}
-	knownEntryIDs := map[int]bool{}
-	for _, entry := range entries {
-		knownEntryIDs[entry.ID] = true
-		linksByEntry[entry.ID] = []int{}
-	}
-	for _, reply := range replies {
-		for _, tid := range reply.TargetEntryIDs {
-			if knownEntryIDs[tid] {
-				linksByEntry[tid] = append(linksByEntry[tid], reply.ID)
-			} else if len(entries) > 0 {
-				warnings = append(warnings, fmt.Sprintf("reply_target_missing_entry:%d->%d", reply.ID, tid))
+	if semanticMode {
+		// Validate entry → reply links from ReplyListNew
+		validLinks := true
+		for _, entry := range entries {
+			for _, rid := range entry.ReplyLinks {
+				if rid < 0 || rid >= len(replies) {
+					validLinks = false
+					break
+				}
+			}
+			if !validLinks {
+				break
 			}
 		}
-	}
-	for i := range entries {
-		entries[i].ReplyLinks = linksByEntry[entries[i].ID]
+		if validLinks {
+			// Derive Reply → Entry from inverse mapping
+			replyTargets := map[int][]int{}
+			for _, entry := range entries {
+				for _, rid := range entry.ReplyLinks {
+					replyTargets[rid] = append(replyTargets[rid], entry.ID)
+				}
+			}
+			for i := range replies {
+				replies[i].TargetEntryIDs = replyTargets[replies[i].ID]
+			}
+		} else {
+			// Fallback: clear invalid links, use count-based defaults
+			warnings = append(warnings, "invalid_ReplyListNew_links_fallback")
+			for i := range entries {
+				entries[i].ReplyLinks = []int{}
+			}
+		}
+	} else {
+		linksByEntry := map[int][]int{}
+		knownEntryIDs := map[int]bool{}
+		for _, entry := range entries {
+			knownEntryIDs[entry.ID] = true
+			linksByEntry[entry.ID] = []int{}
+		}
+		for _, reply := range replies {
+			for _, tid := range reply.TargetEntryIDs {
+				if knownEntryIDs[tid] {
+					linksByEntry[tid] = append(linksByEntry[tid], reply.ID)
+				} else if len(entries) > 0 {
+					warnings = append(warnings, fmt.Sprintf("reply_target_missing_entry:%d->%d", reply.ID, tid))
+				}
+			}
+		}
+		for i := range entries {
+			entries[i].ReplyLinks = linksByEntry[entries[i].ID]
+		}
 	}
 
 	var startValues []int
