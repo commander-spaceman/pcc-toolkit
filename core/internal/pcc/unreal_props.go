@@ -110,7 +110,7 @@ func ParsePropertyCollection(data []byte, names []string, startOffset, maxSize i
 		case "ArrayProperty":
 			if valueOffset+4 <= len(data) {
 				count := readI32(data, valueOffset)
-				pSize := propSize - 4
+				pSize := propSize - 4 - metaSize
 				if pSize < 0 {
 					pSize = 0
 				}
