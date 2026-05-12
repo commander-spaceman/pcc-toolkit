@@ -294,7 +294,7 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		tid := *reply.TargetEntryID
 		if knownEntryIDs[tid] {
 			linksByEntry[tid] = append(linksByEntry[tid], reply.ID)
-		} else {
+		} else if len(entries) > 0 {
 			warnings = append(warnings, fmt.Sprintf("reply_target_missing_entry:%d->%d", reply.ID, tid))
 		}
 	}

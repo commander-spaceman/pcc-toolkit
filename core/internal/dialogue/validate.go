@@ -110,13 +110,6 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 					Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist",
 				})
 				result.Summary.DanglingLinks++
-			} else {
-				result.addIssue(ValidationIssue{
-					Severity: "warning",
-					NodeType: "reply",
-					NodeID:   r.ID,
-					Message:  "target_entry_id " + itoa(*r.TargetEntryID) + " does not exist (no entries in conversation)",
-				})
 			}
 		}
 
@@ -176,6 +169,13 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		}
 	}
 
+	if len(conv.Entries) == 0 && len(conv.Replies) > 0 {
+		result.addIssue(ValidationIssue{
+			Severity: "info",
+			Message:  "reply-only conversation — no entries, " + itoa(len(conv.Replies)) + " replies",
+		})
+	}
+
 	if conv.ParseMode == "count_or_value_fallback" {
 		result.addIssue(ValidationIssue{
 			Severity: "warning",
@@ -204,10 +204,19 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 
 	if hasError {
 		result.Status = "invalid"
-	} else if len(result.Issues) > 0 {
-		result.Status = "warning"
 	} else {
-		result.Status = "valid"
+		hasWarning := false
+		for _, issue := range result.Issues {
+			if issue.Severity == "warning" {
+				hasWarning = true
+				break
+			}
+		}
+		if hasWarning {
+			result.Status = "warning"
+		} else {
+			result.Status = "valid"
+		}
 	}
 
 	return result
