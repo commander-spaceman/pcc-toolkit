@@ -167,12 +167,16 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	reached := findReachableEntries(conv)
 	for _, e := range conv.Entries {
 		if !reached[e.ID] {
+			cause := "entry exists in data but no dialogue path leads to it — may be unused content, conditional branch, or final line with no player response"
+			if len(e.ReplyLinks) == 0 {
+				cause = "leaf node — entry has no outgoing reply links (ReplyListNew is empty or absent); this is a terminal line with no player choice"
+			}
 			result.addIssue(ValidationIssue{
 				Severity: "warning",
 				NodeType: "entry",
 				NodeID:   e.ID,
 				Message:  "orphaned entry: entry " + itoa(e.ID) + " is not reachable from any start node",
-				Cause:    "entry exists in the data but no dialogue path leads to it — may be unused or conditionally activated content",
+				Cause:    cause,
 			})
 			result.Summary.OrphanedEntries++
 		}
@@ -194,18 +198,16 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		}
 	}
 
-	if len(conv.Entries) == 0 && len(conv.Replies) > 0 {
+	if len(conv.Entries) == 0 && len(conv.Replies) == 0 {
+		// Empty stub — speakers in fallback mode are garbage, ignore them
 		result.addIssue(ValidationIssue{
 			Severity: "info",
-			Message:  "reply-only conversation: " + itoa(len(conv.Replies)) + " replies, 0 entries",
-			Cause:    "this conversation has no entry nodes — common in combat barks and ambient dialogue where NPCs speak without structured back-and-forth",
-		})
-	}
-
-	if len(conv.Entries) == 0 && len(conv.Replies) == 0 && len(conv.Speakers) == 0 {
-		result.addIssue(ValidationIssue{
-			Severity: "info",
-			Message:  "empty stub: no entries, replies, or speakers",
+			Message:  "empty stub: no entries or replies" + func() string {
+				if len(conv.Speakers) > 0 && conv.ParseMode != "count_or_value_fallback" {
+					return ", " + itoa(len(conv.Speakers)) + " speakers"
+				}
+				return ""
+			}(),
 			Cause:    "placeholder BioConversation export with no dialogue data — common in level transition and ambient master files",
 		})
 	}
@@ -213,7 +215,7 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	if conv.ParseMode == "count_or_value_fallback" {
 		severity := "warning"
 		cause := "the parser could not determine the array layout and fell back to counting elements — entry/reply data may be incomplete"
-		if len(conv.Entries) == 0 && len(conv.Replies) == 0 && len(conv.Speakers) == 0 {
+		if len(conv.Entries) == 0 && len(conv.Replies) == 0 {
 			severity = "info"
 			cause = "empty conversation stub — fallback mode is expected when there is no data to parse"
 		}

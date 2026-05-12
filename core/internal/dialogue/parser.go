@@ -311,9 +311,14 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 			for i := range replies {
 				replies[i].TargetEntryIDs = replyTargets[replies[i].ID]
 			}
-		} else {
-			// Fallback: clear invalid links, use count-based defaults
+		} else if len(replies) > 0 {
+			// Links invalid but replies exist — fallback
 			warnings = append(warnings, "invalid_ReplyListNew_links_fallback")
+			for i := range entries {
+				entries[i].ReplyLinks = []int{}
+			}
+		} else {
+			// No replies — clear links silently
 			for i := range entries {
 				entries[i].ReplyLinks = []int{}
 			}
