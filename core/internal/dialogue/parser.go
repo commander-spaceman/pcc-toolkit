@@ -380,6 +380,57 @@ type semanticResult struct {
 	speakers []Speaker
 }
 
+func readReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
+	prop, ok := item["ReplyListNew"]
+	if !ok {
+		return nil
+	}
+	arrMap, ok := prop.Value.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	count, _ := arrMap["count"].(int)
+	ps, _ := arrMap["payload_offset"].(int)
+	psz, _ := arrMap["payload_size"].(int)
+	if count <= 0 || psz <= 0 {
+		return nil
+	}
+	structItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, ps, psz, count)
+	var ids []int
+	for _, si := range structItems {
+		if nidx, ok := si["nIndex"]; ok {
+			if v, ok := nidx.Value.(int); ok && v >= 0 {
+				ids = append(ids, v)
+			}
+		}
+	}
+	return ids
+}
+
+func readEntryIndicesFromReply(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
+	el, ok := item["EntryList"]
+	if !ok {
+		return nil
+	}
+	arrMap, ok := el.Value.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	count, _ := arrMap["count"].(int)
+	ps, _ := arrMap["payload_offset"].(int)
+	if count <= 0 {
+		return nil
+	}
+	var ids []int
+	for k := 0; k < count; k++ {
+		eid := pcc.ReadRawI32(data, ps+(k*4))
+		if eid >= 0 {
+			ids = append(ids, eid)
+		}
+	}
+	return ids
+}
+
 func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.PropertyTag) *semanticResult {
 	tag, ok := tagMap["EntryList"]
 	if !ok {
@@ -418,11 +469,12 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				lineStrRef = &v
 			}
 		}
+		replyLinks := readReplyIndicesFromEntry(data, names, item)
 		entries[idx] = EntryNode{
 			ID:         idx,
 			SpeakerID:  speakerID,
 			LineStrRef: lineStrRef,
-			ReplyLinks: []int{},
+			ReplyLinks: replyLinks,
 		}
 	}
 
@@ -444,21 +496,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				targetEntryIDs = append(targetEntryIDs, v)
 			}
 		}
-		// ME2 replies have an EntryList array of ints linking back to entries
-		if el, ok := item["EntryList"]; ok {
-			if arrMap, ok := el.Value.(map[string]interface{}); ok {
-				if count, ok2 := arrMap["count"].(int); ok2 && count > 0 {
-					if ps, ok3 := arrMap["payload_offset"].(int); ok3 {
-						for k := 0; k < count; k++ {
-							eid := pcc.ReadRawI32(data, ps+(k*4))
-							if eid >= 0 {
-								targetEntryIDs = append(targetEntryIDs, eid)
-							}
-						}
-					}
-				}
-			}
-		}
+		targetEntryIDs = append(targetEntryIDs, readEntryIndicesFromReply(data, names, item)...)
 		var condRefs []string
 		if cf, ok := item["nConditionalFunc"]; ok {
 			if v, ok := cf.Value.(int); ok && v >= 0 {
