@@ -105,29 +105,29 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	}
 
 	for _, r := range conv.Replies {
-		if r.TargetEntryID != nil && !entryIDs[*r.TargetEntryID] {
-			if len(conv.Entries) > 0 {
-				result.addIssue(ValidationIssue{
-					Severity: "error",
-					NodeType: "reply",
-					NodeID:   r.ID,
-					Message:  "broken reply target: reply " + itoa(r.ID) + " → entry " + itoa(*r.TargetEntryID) + " does not exist",
-					Cause:    "reply points to an entry index that is not present in EntryList",
-				})
-				result.Summary.DanglingLinks++
+		for _, tid := range r.TargetEntryIDs {
+			if !entryIDs[tid] {
+				if len(conv.Entries) > 0 {
+					result.addIssue(ValidationIssue{
+						Severity: "error",
+						NodeType: "reply",
+						NodeID:   r.ID,
+						Message:  "broken reply target: reply " + itoa(r.ID) + " → entry " + itoa(tid) + " does not exist",
+						Cause:    "reply points to an entry index that is not present in EntryList",
+					})
+					result.Summary.DanglingLinks++
+				}
 			}
 		}
 
-		if r.TargetEntryID == nil {
-			if len(conv.Entries) > 0 {
-				result.addIssue(ValidationIssue{
-					Severity: "warning",
-					NodeType: "reply",
-					NodeID:   r.ID,
-					Message:  "unlinked reply: no target_entry_id — parser could not extract it from binary data",
-					Cause:    "the target entry column in the reply struct could not be read (may be encoded in a non-standard format)",
-				})
-			}
+		if len(r.TargetEntryIDs) == 0 && len(conv.Entries) > 0 {
+			result.addIssue(ValidationIssue{
+				Severity: "warning",
+				NodeType: "reply",
+				NodeID:   r.ID,
+				Message:  "unlinked reply: no target_entry_id — parser could not extract it from binary data",
+				Cause:    "the target entry column in the reply struct could not be read (may be encoded in a non-standard format)",
+			})
 		}
 
 		if r.LineStrRef != nil && *r.LineStrRef <= 0 {
@@ -142,22 +142,25 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	}
 
 	for _, s := range conv.Starts {
-		if s.TargetEntryID == nil {
+		if len(s.TargetEntryIDs) == 0 {
 			result.addIssue(ValidationIssue{
 				Severity: "error",
 				NodeType: "start",
 				NodeID:   s.ID,
-				Message:  "broken start node: start " + itoa(s.ID) + " has no target_entry_id",
+				Message:  "broken start node: start " + itoa(s.ID) + " has no target_entry_ids",
 				Cause:    "starting list entry is missing its target entry — conversation has no valid entry point",
 			})
-		} else if !entryIDs[*s.TargetEntryID] {
-			result.addIssue(ValidationIssue{
-				Severity: "error",
-				NodeType: "start",
-				NodeID:   s.ID,
-				Message:  "broken start node: start " + itoa(s.ID) + " → entry " + itoa(*s.TargetEntryID) + " not found",
-				Cause:    "start node points to an entry index that does not exist in EntryList",
-			})
+		}
+		for _, tid := range s.TargetEntryIDs {
+			if !entryIDs[tid] {
+				result.addIssue(ValidationIssue{
+					Severity: "error",
+					NodeType: "start",
+					NodeID:   s.ID,
+					Message:  "broken start node: start " + itoa(s.ID) + " → entry " + itoa(tid) + " not found",
+					Cause:    "start node points to an entry index that does not exist in EntryList",
+				})
+			}
 		}
 	}
 
@@ -176,7 +179,17 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	}
 
 	for _, r := range conv.Replies {
-		if r.TargetEntryID == nil || !entryIDs[*r.TargetEntryID] {
+		orphaned := len(r.TargetEntryIDs) == 0
+		if !orphaned {
+			orphaned = true
+			for _, tid := range r.TargetEntryIDs {
+				if entryIDs[tid] {
+					orphaned = false
+					break
+				}
+			}
+		}
+		if orphaned {
 			result.Summary.OrphanedReplies++
 		}
 	}
@@ -245,30 +258,36 @@ func findReachableEntries(conv *Conversation) map[int]bool {
 	}
 
 	for _, s := range conv.Starts {
-		if s.TargetEntryID != nil && entryIDs[*s.TargetEntryID] {
-			reached[*s.TargetEntryID] = true
+		for _, tid := range s.TargetEntryIDs {
+			if entryIDs[tid] {
+				reached[tid] = true
+			}
 		}
 	}
 
 	for changed := true; changed; {
 		changed = false
 		for _, r := range conv.Replies {
-			if r.TargetEntryID == nil || !entryIDs[*r.TargetEntryID] {
-				continue
-			}
-			if !reached[*r.TargetEntryID] {
-				continue
-			}
-			entry := findEntry(conv.Entries, *r.TargetEntryID)
-			if entry == nil {
-				continue
-			}
-			for _, rid := range entry.ReplyLinks {
-				for _, r2 := range conv.Replies {
-					if r2.ID == rid && r2.TargetEntryID != nil && entryIDs[*r2.TargetEntryID] {
-						if !reached[*r2.TargetEntryID] {
-							reached[*r2.TargetEntryID] = true
-							changed = true
+			for _, tid := range r.TargetEntryIDs {
+				if !entryIDs[tid] {
+					continue
+				}
+				if !reached[tid] {
+					continue
+				}
+				entry := findEntry(conv.Entries, tid)
+				if entry == nil {
+					continue
+				}
+				for _, rid := range entry.ReplyLinks {
+					for _, r2 := range conv.Replies {
+						if r2.ID == rid {
+							for _, t2 := range r2.TargetEntryIDs {
+								if entryIDs[t2] && !reached[t2] {
+									reached[t2] = true
+									changed = true
+								}
+							}
 						}
 					}
 				}

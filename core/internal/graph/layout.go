@@ -37,14 +37,13 @@ func LayoutConversation(
 	var allEdges []Edge
 
 	for _, s := range starts {
-		if s.TargetEntryID != nil {
-			src := s.ID
-			dst := nStart + *s.TargetEntryID
-			if src >= 0 && src < total && dst >= 0 && dst < total {
-				adj[src] = append(adj[src], dst)
+		for _, tid := range s.TargetEntryIDs {
+			dst := nStart + tid
+			if dst >= 0 && dst < total {
+				adj[nStart+s.ID] = append(adj[nStart+s.ID], dst)
 				allEdges = append(allEdges, Edge{
 					From: NodeKey{Type: "start", ID: s.ID},
-					To:   NodeKey{Type: "entry", ID: *s.TargetEntryID},
+					To:   NodeKey{Type: "entry", ID: tid},
 				})
 			}
 		}
@@ -65,14 +64,14 @@ func LayoutConversation(
 	}
 
 	for _, r := range replies {
-		if r.TargetEntryID != nil {
+		for _, tid := range r.TargetEntryIDs {
 			src := nStart + nEntry + r.ID
-			dst := nStart + *r.TargetEntryID
+			dst := nStart + tid
 			if src >= 0 && src < total && dst >= 0 && dst < total {
 				adj[src] = append(adj[src], dst)
 				allEdges = append(allEdges, Edge{
 					From: NodeKey{Type: "reply", ID: r.ID},
-					To:   NodeKey{Type: "entry", ID: *r.TargetEntryID},
+					To:   NodeKey{Type: "entry", ID: tid},
 				})
 			}
 		}

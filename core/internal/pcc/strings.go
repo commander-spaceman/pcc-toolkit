@@ -10,6 +10,10 @@ func readI32(data []byte, offset int) int {
 	return int(int32(binary.LittleEndian.Uint32(data[offset : offset+4])))
 }
 
+func ReadRawI32(data []byte, offset int) int {
+	return readI32(data, offset)
+}
+
 func readU32(data []byte, offset int) uint32 {
 	return binary.LittleEndian.Uint32(data[offset : offset+4])
 }

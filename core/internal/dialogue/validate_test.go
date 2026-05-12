@@ -15,15 +15,15 @@ func makeTestConv() *Conversation {
 			{ID: 1, SpeakerID: intPtr(0), LineStrRef: intPtr(101), ReplyLinks: []int{2}},
 		},
 		Replies: []ReplyNode{
-			{ID: 0, TargetEntryID: intPtr(1), LineStrRef: intPtr(200)},
-			{ID: 1, TargetEntryID: intPtr(0), LineStrRef: intPtr(201)},
-			{ID: 2, TargetEntryID: intPtr(0), LineStrRef: intPtr(202)},
+			{ID: 0, TargetEntryIDs: []int{1}, LineStrRef: intPtr(200)},
+			{ID: 1, TargetEntryIDs: []int{0}, LineStrRef: intPtr(201)},
+			{ID: 2, TargetEntryIDs: []int{0}, LineStrRef: intPtr(202)},
 		},
 		Speakers: []Speaker{
 			{ID: 0, Tag: "Shepard"},
 		},
 		Starts: []StartNode{
-			{ID: 0, TargetEntryID: intPtr(0)},
+			{ID: 0, TargetEntryIDs: []int{0}},
 		},
 	}
 }
@@ -60,7 +60,7 @@ func TestValidateConversation_DanglingLink(t *testing.T) {
 
 func TestValidateConversation_BadTargetEntry(t *testing.T) {
 	conv := makeTestConv()
-	conv.Replies[0].TargetEntryID = intPtr(99)
+	conv.Replies[0].TargetEntryIDs = []int{99}
 	result := ValidateConversation(conv)
 
 	if result.Status != "invalid" {
@@ -98,7 +98,7 @@ func TestValidateConversation_UnreachableEntry(t *testing.T) {
 
 func TestValidateConversation_OrphanedReply(t *testing.T) {
 	conv := makeTestConv()
-	conv.Replies[0].TargetEntryID = nil
+	conv.Replies[0].TargetEntryIDs = []int{}
 	result := ValidateConversation(conv)
 
 	if result.Summary.OrphanedReplies == 0 {
@@ -126,7 +126,7 @@ func TestValidateConversation_ZeroStrRef(t *testing.T) {
 
 func TestValidateConversation_BadStartTarget(t *testing.T) {
 	conv := makeTestConv()
-	conv.Starts[0].TargetEntryID = intPtr(99)
+	conv.Starts[0].TargetEntryIDs = []int{99}
 	result := ValidateConversation(conv)
 
 	if result.Status != "invalid" {
@@ -162,7 +162,7 @@ func TestBuildValidationReport(t *testing.T) {
 
 func TestValidateConversation_NullStartTarget(t *testing.T) {
 	conv := makeTestConv()
-	conv.Starts[0].TargetEntryID = nil
+	conv.Starts[0].TargetEntryIDs = []int{}
 	result := ValidateConversation(conv)
 
 	if result.Status != "invalid" {

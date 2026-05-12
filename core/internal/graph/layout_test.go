@@ -18,11 +18,10 @@ func TestLayoutConversation_Empty(t *testing.T) {
 }
 
 func TestLayoutConversation_SimpleChain(t *testing.T) {
-	targetEntry0 := 0
 	conv := &dialogue.Conversation{
 		ID: "Conv_Test",
 		Starts: []dialogue.StartNode{
-			{ID: 0, TargetEntryID: &targetEntry0},
+			{ID: 0, TargetEntryIDs: []int{0}},
 		},
 		Entries: []dialogue.EntryNode{
 			{ID: 0, ReplyLinks: []int{0}},
@@ -51,11 +50,10 @@ func TestLayoutConversation_SimpleChain(t *testing.T) {
 }
 
 func TestLayoutConversation_MultipleReplies(t *testing.T) {
-	targetEntry0 := 0
 	conv := &dialogue.Conversation{
 		ID: "Conv_Multi",
 		Starts: []dialogue.StartNode{
-			{ID: 0, TargetEntryID: &targetEntry0},
+			{ID: 0, TargetEntryIDs: []int{0}},
 		},
 		Entries: []dialogue.EntryNode{
 			{ID: 0, ReplyLinks: []int{0, 1}},
@@ -73,19 +71,17 @@ func TestLayoutConversation_MultipleReplies(t *testing.T) {
 }
 
 func TestLayoutConversation_ReplyLinksBack(t *testing.T) {
-	target0 := 0
-	target1 := 1
 	conv := &dialogue.Conversation{
 		ID: "Conv_Chain",
 		Starts: []dialogue.StartNode{
-			{ID: 0, TargetEntryID: &target0},
+			{ID: 0, TargetEntryIDs: []int{0}},
 		},
 		Entries: []dialogue.EntryNode{
 			{ID: 0, ReplyLinks: []int{0}},
 			{ID: 1, ReplyLinks: []int{}},
 		},
 		Replies: []dialogue.ReplyNode{
-			{ID: 0, TargetEntryID: &target1},
+			{ID: 0, TargetEntryIDs: []int{1}},
 		},
 	}
 

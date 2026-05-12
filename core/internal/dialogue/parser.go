@@ -260,11 +260,11 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 	} else {
 		replies = make([]ReplyNode, len(replyTargets))
 		for i, target := range replyTargets {
-			t := target
-			if target < 0 {
-				t = 0
+			tids := []int{}
+			if target >= 0 {
+				tids = append(tids, target)
 			}
-			replies[i] = ReplyNode{ID: i, TargetEntryID: &t}
+			replies[i] = ReplyNode{ID: i, TargetEntryIDs: tids}
 		}
 	}
 
@@ -288,14 +288,12 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 		linksByEntry[entry.ID] = []int{}
 	}
 	for _, reply := range replies {
-		if reply.TargetEntryID == nil {
-			continue
-		}
-		tid := *reply.TargetEntryID
-		if knownEntryIDs[tid] {
-			linksByEntry[tid] = append(linksByEntry[tid], reply.ID)
-		} else if len(entries) > 0 {
-			warnings = append(warnings, fmt.Sprintf("reply_target_missing_entry:%d->%d", reply.ID, tid))
+		for _, tid := range reply.TargetEntryIDs {
+			if knownEntryIDs[tid] {
+				linksByEntry[tid] = append(linksByEntry[tid], reply.ID)
+			} else if len(entries) > 0 {
+				warnings = append(warnings, fmt.Sprintf("reply_target_missing_entry:%d->%d", reply.ID, tid))
+			}
 		}
 	}
 	for i := range entries {
@@ -308,7 +306,7 @@ func parseOneConversation(data []byte, names []string, export pcc.Export, schema
 	}
 	starts := make([]StartNode, len(startValues))
 	for i, val := range startValues {
-		starts[i] = StartNode{ID: i, TargetEntryID: &val}
+		starts[i] = StartNode{ID: i, TargetEntryIDs: []int{val}}
 	}
 
 	parseMode := "count_or_value_fallback"
@@ -436,14 +434,29 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				lineStrRef = &v
 			}
 		}
-		var targetEntryID *int
+		var targetEntryIDs []int
 		if t, ok := item["nIndex"]; ok {
 			if v, ok := t.Value.(int); ok {
-				targetEntryID = &v
+				targetEntryIDs = append(targetEntryIDs, v)
 			}
 		} else if t, ok := item["nEntryIndex"]; ok {
 			if v, ok := t.Value.(int); ok {
-				targetEntryID = &v
+				targetEntryIDs = append(targetEntryIDs, v)
+			}
+		}
+		// ME2 replies have an EntryList array of ints linking back to entries
+		if el, ok := item["EntryList"]; ok {
+			if arrMap, ok := el.Value.(map[string]interface{}); ok {
+				if count, ok2 := arrMap["count"].(int); ok2 && count > 0 {
+					if ps, ok3 := arrMap["payload_offset"].(int); ok3 {
+						for k := 0; k < count; k++ {
+							eid := pcc.ReadRawI32(data, ps+(k*4))
+							if eid >= 0 {
+								targetEntryIDs = append(targetEntryIDs, eid)
+							}
+						}
+					}
+				}
 			}
 		}
 		var condRefs []string
@@ -464,11 +477,11 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 			}
 		}
 		replies[idx] = ReplyNode{
-			ID:            idx,
-			LineStrRef:    lineStrRef,
-			TargetEntryID: targetEntryID,
-			ConditionRefs: condRefs,
-			Category:      category,
+			ID:             idx,
+			LineStrRef:     lineStrRef,
+			TargetEntryIDs: targetEntryIDs,
+			ConditionRefs:  condRefs,
+			Category:       category,
 		}
 	}
 
@@ -530,9 +543,9 @@ func buildRepliesRowMode(replyRows, replyMatrix [][]int, schema ConversationList
 		if row[2] >= 0 {
 			lineStrRef = &row[2]
 		}
-		var targetEntryID *int
+		var targetEntryIDs []int
 		if row[1] >= 0 {
-			targetEntryID = &row[1]
+			targetEntryIDs = append(targetEntryIDs, row[1])
 		}
 		var condRefs []string
 		if usedStructMatrix && schema.ReplyConditionStartCol > 0 &&
@@ -544,10 +557,10 @@ func buildRepliesRowMode(replyRows, replyMatrix [][]int, schema ConversationList
 			}
 		}
 		replies[idx] = ReplyNode{
-			ID:            row[0],
-			LineStrRef:    lineStrRef,
-			TargetEntryID: targetEntryID,
-			ConditionRefs: condRefs,
+			ID:             row[0],
+			LineStrRef:     lineStrRef,
+			TargetEntryIDs: targetEntryIDs,
+			ConditionRefs:  condRefs,
 		}
 	}
 	return replies
