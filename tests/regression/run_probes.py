@@ -116,6 +116,48 @@ PROBES = [
             {"path": "compressed", "equals": True},
         ],
     },
+    {
+        "id": "conv_omghub_large",
+        "description": "Large file with 25 conversations, many with speakers",
+        "command": "parse-conversations",
+        "args": {"file": "BioD_OmgHub_500DenVIP_LOC_INT.pcc"},
+        "golden": "conversation/OmgHub_500DenVIP.json",
+        "checks": [
+            {"path": "conversations", "min_count": 20},
+            {"path": "game_profile", "equals": "me2_ot"},
+        ],
+    },
+    {
+        "id": "conv_norgarrus_loyalty",
+        "description": "Garrus loyalty conversation (12 entries, 11 replies, linked)",
+        "command": "parse-conversations",
+        "args": {"file": "BioD_Nor_210aGarrus_LOC_INT.pcc"},
+        "golden": "conversation/Nor_210aGarrus.json",
+        "checks": [
+            {"path": "conversations", "min_count": 1},
+            {"path": "game_profile", "equals": "me2_ot"},
+        ],
+    },
+    {
+        "id": "conv_reply_only",
+        "description": "Reply-only combat bark conversation",
+        "command": "parse-conversations",
+        "args": {"file": "BioD_RprGtA_310EntryAirlock_LOC_INT.pcc"},
+        "golden": "conversation/RprGtA_310EntryAirlock_reply_only.json",
+        "checks": [
+            {"path": "conversations", "min_count": 1},
+        ],
+    },
+    {
+        "id": "conv_large_beach",
+        "description": "Large reply-only ambient conversation (432 replies)",
+        "command": "parse-conversations",
+        "args": {"file": "BioD_BchLmL_201BeachPath_LOC_INT.pcc"},
+        "golden": "conversation/BchLmL_201BeachPath.json",
+        "checks": [
+            {"path": "conversations", "min_count": 1},
+        ],
+    },
 ]
 
 

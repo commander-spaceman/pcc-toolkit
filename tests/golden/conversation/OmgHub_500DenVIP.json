@@ -1,0 +1,4842 @@
+{
+  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BioD_OmgHub_500DenVIP_LOC_INT.pcc",
+  "game_profile": "me2_ot",
+  "conversations": [
+    {
+      "id": "omgmwl_asari_dance_c_dlg",
+      "export_index": 216,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 236795,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 236796,
+          "reply_links": null
+        },
+        {
+          "id": 2,
+          "line_strref": 236797,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 236798,
+          "reply_links": [
+            1,
+            4,
+            7
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 234198,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 234199,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 234200,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 234201,
+          "reply_links": [
+            6
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 234202,
+          "reply_links": [
+            8
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            8
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_backroom_c_dlg",
+      "export_index": 217,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 208887,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 208888,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_buy_drinks_d_dlg",
+      "export_index": 218,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 236770,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 236771,
+          "reply_links": null
+        },
+        {
+          "id": 2,
+          "line_strref": 234154,
+          "reply_links": [
+            0,
+            4,
+            6,
+            13
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 234213,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 236772,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 236773,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 234214,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 236774,
+          "reply_links": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 236775,
+          "reply_links": [
+            0,
+            4,
+            6,
+            13
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 343103,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 236776,
+          "reply_links": [
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 236777,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 236778,
+          "reply_links": [
+            12
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 234215,
+          "reply_links": [
+            14
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            2,
+            8
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            2,
+            8
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            2,
+            8
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            12
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            2,
+            8
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            13
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_chess_set_a_dlg",
+      "export_index": 219,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 213723,
+          "reply_links": null
+        }
+      ],
+      "replies": [],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_daughter01_d_dlg",
+      "export_index": 220,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 234248,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 234249,
+          "reply_links": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 234992,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 234993,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 234995,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 234251,
+          "reply_links": [
+            5,
+            11,
+            13,
+            20,
+            22
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 236239,
+          "reply_links": [
+            6,
+            8,
+            10
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 236241,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 242452,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 203359,
+          "reply_links": [
+            12
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 203360,
+          "reply_links": [
+            14,
+            16,
+            18
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 242451,
+          "reply_links": [
+            15
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 203363,
+          "reply_links": [
+            17
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 203361,
+          "reply_links": [
+            19
+          ]
+        },
+        {
+          "id": 14,
+          "line_strref": 226735,
+          "reply_links": [
+            21
+          ]
+        },
+        {
+          "id": 15,
+          "line_strref": 276724,
+          "reply_links": [
+            23
+          ]
+        },
+        {
+          "id": 16,
+          "line_strref": 236240,
+          "reply_links": [
+            24
+          ]
+        },
+        {
+          "id": 17,
+          "line_strref": 203366,
+          "reply_links": [
+            25,
+            26,
+            31,
+            36,
+            38
+          ]
+        },
+        {
+          "id": 18,
+          "line_strref": 203367,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 19,
+          "line_strref": 203368,
+          "reply_links": [
+            27,
+            28,
+            30
+          ]
+        },
+        {
+          "id": 20,
+          "line_strref": 244408,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 21,
+          "line_strref": 203371,
+          "reply_links": [
+            29
+          ]
+        },
+        {
+          "id": 22,
+          "line_strref": 238041,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 23,
+          "line_strref": 203370,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 24,
+          "line_strref": 236217,
+          "reply_links": [
+            32,
+            34,
+            35
+          ]
+        },
+        {
+          "id": 25,
+          "line_strref": 236219,
+          "reply_links": [
+            33
+          ]
+        },
+        {
+          "id": 26,
+          "line_strref": 238042,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 27,
+          "line_strref": 236218,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 28,
+          "line_strref": 242454,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 29,
+          "line_strref": 226738,
+          "reply_links": [
+            37
+          ]
+        },
+        {
+          "id": 30,
+          "line_strref": 238043,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 31,
+          "line_strref": 226712,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 32,
+          "line_strref": 234990,
+          "reply_links": [
+            40,
+            42,
+            47,
+            52,
+            54
+          ]
+        },
+        {
+          "id": 33,
+          "line_strref": 299955,
+          "reply_links": [
+            41
+          ]
+        },
+        {
+          "id": 34,
+          "line_strref": 203347,
+          "reply_links": [
+            43,
+            45
+          ]
+        },
+        {
+          "id": 35,
+          "line_strref": 203350,
+          "reply_links": [
+            44
+          ]
+        },
+        {
+          "id": 36,
+          "line_strref": 203349,
+          "reply_links": [
+            46
+          ]
+        },
+        {
+          "id": 37,
+          "line_strref": 236207,
+          "reply_links": [
+            48,
+            50
+          ]
+        },
+        {
+          "id": 38,
+          "line_strref": 236209,
+          "reply_links": [
+            49
+          ]
+        },
+        {
+          "id": 39,
+          "line_strref": 236208,
+          "reply_links": [
+            51
+          ]
+        },
+        {
+          "id": 40,
+          "line_strref": 226730,
+          "reply_links": [
+            53
+          ]
+        },
+        {
+          "id": 41,
+          "line_strref": 226731,
+          "reply_links": [
+            55
+          ]
+        },
+        {
+          "id": 42,
+          "line_strref": 234253,
+          "reply_links": [
+            56,
+            57,
+            60,
+            63,
+            65
+          ]
+        },
+        {
+          "id": 43,
+          "line_strref": 226718,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 44,
+          "line_strref": 226719,
+          "reply_links": [
+            58,
+            59
+          ]
+        },
+        {
+          "id": 45,
+          "line_strref": 226722,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 46,
+          "line_strref": 226720,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 47,
+          "line_strref": 236221,
+          "reply_links": [
+            61,
+            62
+          ]
+        },
+        {
+          "id": 48,
+          "line_strref": 236223,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99
+          ]
+        },
+        {
+          "id": 49,
+          "line_strref": 236222,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 50,
+          "line_strref": 226725,
+          "reply_links": [
+            64
+          ]
+        },
+        {
+          "id": 51,
+          "line_strref": 238048,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 52,
+          "line_strref": 226728,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 53,
+          "line_strref": 234991,
+          "reply_links": [
+            67,
+            69,
+            74,
+            79,
+            81
+          ]
+        },
+        {
+          "id": 54,
+          "line_strref": 234256,
+          "reply_links": [
+            68
+          ]
+        },
+        {
+          "id": 55,
+          "line_strref": 234257,
+          "reply_links": [
+            70,
+            72
+          ]
+        },
+        {
+          "id": 56,
+          "line_strref": 234258,
+          "reply_links": [
+            71
+          ]
+        },
+        {
+          "id": 57,
+          "line_strref": 234259,
+          "reply_links": [
+            73
+          ]
+        },
+        {
+          "id": 58,
+          "line_strref": 236211,
+          "reply_links": [
+            75,
+            77
+          ]
+        },
+        {
+          "id": 59,
+          "line_strref": 236213,
+          "reply_links": [
+            76
+          ]
+        },
+        {
+          "id": 60,
+          "line_strref": 236214,
+          "reply_links": [
+            78
+          ]
+        },
+        {
+          "id": 61,
+          "line_strref": 234262,
+          "reply_links": [
+            80
+          ]
+        },
+        {
+          "id": 62,
+          "line_strref": 234263,
+          "reply_links": [
+            82
+          ]
+        },
+        {
+          "id": 63,
+          "line_strref": 234264,
+          "reply_links": [
+            83
+          ]
+        },
+        {
+          "id": 64,
+          "line_strref": 236225,
+          "reply_links": [
+            84,
+            85,
+            88,
+            92,
+            93
+          ]
+        },
+        {
+          "id": 65,
+          "line_strref": 236226,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 66,
+          "line_strref": 236227,
+          "reply_links": [
+            86,
+            87
+          ]
+        },
+        {
+          "id": 67,
+          "line_strref": 236228,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 68,
+          "line_strref": 236229,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 69,
+          "line_strref": 236232,
+          "reply_links": [
+            89,
+            91
+          ]
+        },
+        {
+          "id": 70,
+          "line_strref": 236233,
+          "reply_links": [
+            90
+          ]
+        },
+        {
+          "id": 71,
+          "line_strref": 279542,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 72,
+          "line_strref": 236234,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 73,
+          "line_strref": 236236,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 74,
+          "line_strref": 208860,
+          "reply_links": null
+        },
+        {
+          "id": 75,
+          "line_strref": 203353,
+          "reply_links": null
+        },
+        {
+          "id": 76,
+          "line_strref": 236237,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 77,
+          "line_strref": 235908,
+          "reply_links": [
+            97
+          ]
+        },
+        {
+          "id": 78,
+          "line_strref": 235909,
+          "reply_links": [
+            97
+          ]
+        },
+        {
+          "id": 79,
+          "line_strref": 235910,
+          "reply_links": [
+            97
+          ]
+        },
+        {
+          "id": 80,
+          "line_strref": 238039,
+          "reply_links": [
+            98
+          ]
+        },
+        {
+          "id": 81,
+          "line_strref": 234278,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 82,
+          "line_strref": 235911,
+          "reply_links": [
+            100
+          ]
+        },
+        {
+          "id": 83,
+          "line_strref": 238040,
+          "reply_links": [
+            101
+          ]
+        },
+        {
+          "id": 84,
+          "line_strref": 234280,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 85,
+          "line_strref": 234282,
+          "reply_links": [
+            103,
+            104
+          ]
+        },
+        {
+          "id": 86,
+          "line_strref": 234283,
+          "reply_links": [
+            4,
+            39,
+            66,
+            94,
+            95,
+            96,
+            99,
+            102
+          ]
+        },
+        {
+          "id": 87,
+          "line_strref": 234284,
+          "reply_links": [
+            105
+          ]
+        },
+        {
+          "id": 88,
+          "line_strref": 234285,
+          "reply_links": null
+        },
+        {
+          "id": 89,
+          "line_strref": 333629,
+          "reply_links": [
+            106
+          ]
+        },
+        {
+          "id": 90,
+          "speaker_id": 0,
+          "line_strref": 333630,
+          "reply_links": null
+        },
+        {
+          "id": 91,
+          "speaker_id": 0,
+          "line_strref": 333631,
+          "reply_links": null
+        },
+        {
+          "id": 92,
+          "speaker_id": 0,
+          "line_strref": 333632,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 15,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 16,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 17,
+          "target_entry_ids": [
+            12
+          ]
+        },
+        {
+          "id": 18,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 19,
+          "target_entry_ids": [
+            13
+          ]
+        },
+        {
+          "id": 20,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 21,
+          "target_entry_ids": [
+            14
+          ]
+        },
+        {
+          "id": 22,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 23,
+          "target_entry_ids": [
+            15
+          ]
+        },
+        {
+          "id": 24,
+          "target_entry_ids": [
+            16
+          ]
+        },
+        {
+          "id": 25,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 26,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 27,
+          "target_entry_ids": [
+            19
+          ]
+        },
+        {
+          "id": 28,
+          "target_entry_ids": [
+            19
+          ]
+        },
+        {
+          "id": 29,
+          "target_entry_ids": [
+            21
+          ]
+        },
+        {
+          "id": 30,
+          "target_entry_ids": [
+            19
+          ]
+        },
+        {
+          "id": 31,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 32,
+          "target_entry_ids": [
+            24
+          ]
+        },
+        {
+          "id": 33,
+          "target_entry_ids": [
+            25
+          ]
+        },
+        {
+          "id": 34,
+          "target_entry_ids": [
+            24
+          ]
+        },
+        {
+          "id": 35,
+          "target_entry_ids": [
+            24
+          ]
+        },
+        {
+          "id": 36,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 37,
+          "target_entry_ids": [
+            29
+          ]
+        },
+        {
+          "id": 38,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 39,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 40,
+          "target_entry_ids": [
+            32
+          ]
+        },
+        {
+          "id": 41,
+          "target_entry_ids": [
+            33
+          ]
+        },
+        {
+          "id": 42,
+          "target_entry_ids": [
+            32
+          ]
+        },
+        {
+          "id": 43,
+          "target_entry_ids": [
+            34
+          ]
+        },
+        {
+          "id": 44,
+          "target_entry_ids": [
+            35
+          ]
+        },
+        {
+          "id": 45,
+          "target_entry_ids": [
+            34
+          ]
+        },
+        {
+          "id": 46,
+          "target_entry_ids": [
+            36
+          ]
+        },
+        {
+          "id": 47,
+          "target_entry_ids": [
+            32
+          ]
+        },
+        {
+          "id": 48,
+          "target_entry_ids": [
+            37
+          ]
+        },
+        {
+          "id": 49,
+          "target_entry_ids": [
+            38
+          ]
+        },
+        {
+          "id": 50,
+          "target_entry_ids": [
+            37
+          ]
+        },
+        {
+          "id": 51,
+          "target_entry_ids": [
+            39
+          ]
+        },
+        {
+          "id": 52,
+          "target_entry_ids": [
+            32
+          ]
+        },
+        {
+          "id": 53,
+          "target_entry_ids": [
+            40
+          ]
+        },
+        {
+          "id": 54,
+          "target_entry_ids": [
+            32
+          ]
+        },
+        {
+          "id": 55,
+          "target_entry_ids": [
+            41
+          ]
+        },
+        {
+          "id": 56,
+          "target_entry_ids": [
+            42
+          ]
+        },
+        {
+          "id": 57,
+          "target_entry_ids": [
+            42
+          ]
+        },
+        {
+          "id": 58,
+          "target_entry_ids": [
+            44
+          ]
+        },
+        {
+          "id": 59,
+          "target_entry_ids": [
+            44
+          ]
+        },
+        {
+          "id": 60,
+          "target_entry_ids": [
+            42
+          ]
+        },
+        {
+          "id": 61,
+          "target_entry_ids": [
+            47
+          ]
+        },
+        {
+          "id": 62,
+          "target_entry_ids": [
+            47
+          ]
+        },
+        {
+          "id": 63,
+          "target_entry_ids": [
+            42
+          ]
+        },
+        {
+          "id": 64,
+          "target_entry_ids": [
+            50
+          ]
+        },
+        {
+          "id": 65,
+          "target_entry_ids": [
+            42
+          ]
+        },
+        {
+          "id": 66,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 67,
+          "target_entry_ids": [
+            53
+          ]
+        },
+        {
+          "id": 68,
+          "target_entry_ids": [
+            54
+          ]
+        },
+        {
+          "id": 69,
+          "target_entry_ids": [
+            53
+          ]
+        },
+        {
+          "id": 70,
+          "target_entry_ids": [
+            55
+          ]
+        },
+        {
+          "id": 71,
+          "target_entry_ids": [
+            56
+          ]
+        },
+        {
+          "id": 72,
+          "target_entry_ids": [
+            55
+          ]
+        },
+        {
+          "id": 73,
+          "target_entry_ids": [
+            57
+          ]
+        },
+        {
+          "id": 74,
+          "target_entry_ids": [
+            53
+          ]
+        },
+        {
+          "id": 75,
+          "target_entry_ids": [
+            58
+          ]
+        },
+        {
+          "id": 76,
+          "target_entry_ids": [
+            59
+          ]
+        },
+        {
+          "id": 77,
+          "target_entry_ids": [
+            58
+          ]
+        },
+        {
+          "id": 78,
+          "target_entry_ids": [
+            60
+          ]
+        },
+        {
+          "id": 79,
+          "target_entry_ids": [
+            53
+          ]
+        },
+        {
+          "id": 80,
+          "target_entry_ids": [
+            61
+          ]
+        },
+        {
+          "id": 81,
+          "target_entry_ids": [
+            53
+          ]
+        },
+        {
+          "id": 82,
+          "target_entry_ids": [
+            62
+          ]
+        },
+        {
+          "id": 83,
+          "target_entry_ids": [
+            63
+          ]
+        },
+        {
+          "id": 84,
+          "target_entry_ids": [
+            64
+          ]
+        },
+        {
+          "id": 85,
+          "target_entry_ids": [
+            64
+          ]
+        },
+        {
+          "id": 86,
+          "target_entry_ids": [
+            66
+          ]
+        },
+        {
+          "id": 87,
+          "target_entry_ids": [
+            66
+          ]
+        },
+        {
+          "id": 88,
+          "target_entry_ids": [
+            64
+          ]
+        },
+        {
+          "id": 89,
+          "target_entry_ids": [
+            69
+          ]
+        },
+        {
+          "id": 90,
+          "target_entry_ids": [
+            70
+          ]
+        },
+        {
+          "id": 91,
+          "target_entry_ids": [
+            69
+          ]
+        },
+        {
+          "id": 92,
+          "target_entry_ids": [
+            64
+          ]
+        },
+        {
+          "id": 93,
+          "target_entry_ids": [
+            64
+          ]
+        },
+        {
+          "id": 94,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 95,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 96,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 97,
+          "target_entry_ids": [
+            77,
+            78,
+            79
+          ]
+        },
+        {
+          "id": 98,
+          "target_entry_ids": [
+            80
+          ]
+        },
+        {
+          "id": 99,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            48,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 100,
+          "target_entry_ids": [
+            82
+          ]
+        },
+        {
+          "id": 101,
+          "target_entry_ids": [
+            83
+          ]
+        },
+        {
+          "id": 102,
+          "target_entry_ids": [
+            2,
+            3,
+            4,
+            18,
+            20,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            31,
+            43,
+            45,
+            46,
+            49,
+            51,
+            52,
+            65,
+            67,
+            68,
+            71,
+            72,
+            73,
+            76,
+            81,
+            84,
+            86
+          ]
+        },
+        {
+          "id": 103,
+          "target_entry_ids": [
+            85
+          ]
+        },
+        {
+          "id": 104,
+          "target_entry_ids": [
+            85
+          ]
+        },
+        {
+          "id": 105,
+          "target_entry_ids": [
+            87
+          ]
+        },
+        {
+          "id": 106,
+          "target_entry_ids": [
+            89
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "hench_mystic"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            89
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_daughter03_d_dlg",
+      "export_index": 221,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 203833,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 203834,
+          "reply_links": [
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 203836,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 226560,
+          "reply_links": [
+            4
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 203837,
+          "reply_links": [
+            6
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 203838,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 203839,
+          "reply_links": [
+            8,
+            10,
+            12
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 226561,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 203840,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 203841,
+          "reply_links": [
+            13
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 226562,
+          "reply_links": [
+            14,
+            15,
+            17
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 226563,
+          "reply_links": [
+            16
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 226565,
+          "reply_links": [
+            18
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 226566,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 15,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 16,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 17,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 18,
+          "target_entry_ids": [
+            12
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_door_a_dlg",
+      "export_index": 222,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 213724,
+          "reply_links": null
+        }
+      ],
+      "replies": [],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_fail_c_dlg",
+      "export_index": 223,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 208854,
+          "reply_links": null
+        }
+      ],
+      "replies": [],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_gangsters_a_dlg",
+      "export_index": 224,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 236486,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "speaker_id": 0,
+          "line_strref": 236487,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 236488,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "omgmwl_gangster"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_gangsters_d_dlg",
+      "export_index": 225,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 236801,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 236802,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 2,
+          "speaker_id": 0,
+          "line_strref": 236803,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 236804,
+          "reply_links": [
+            2,
+            6,
+            8,
+            12
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 234222,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 5,
+          "speaker_id": 0,
+          "line_strref": 236805,
+          "reply_links": [
+            4
+          ]
+        },
+        {
+          "id": 6,
+          "speaker_id": 0,
+          "line_strref": 236806,
+          "reply_links": [
+            4
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 234223,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 8,
+          "speaker_id": 0,
+          "line_strref": 236807,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 241748,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "speaker_id": 0,
+          "line_strref": 241749,
+          "reply_links": [
+            10,
+            2,
+            6,
+            12
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 241750,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 234224,
+          "reply_links": [
+            13
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            3,
+            10
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            5,
+            6
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            3,
+            10
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            3,
+            10
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            12
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "omgmwl_gangster"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_krogan_insult_c_dlg",
+      "export_index": 226,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 236814,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 236815,
+          "reply_links": null
+        },
+        {
+          "id": 2,
+          "line_strref": 234233,
+          "reply_links": [
+            0,
+            4,
+            6
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 238019,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 234234,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 234235,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 236816,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 234236,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 234237,
+          "reply_links": [
+            8
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            8
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_loiterer_d_dlg",
+      "export_index": 227,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 225528,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 225529,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 225530,
+          "reply_links": [
+            1,
+            3,
+            5,
+            6
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 225531,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 225532,
+          "reply_links": [
+            1,
+            3,
+            5,
+            6
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 225533,
+          "reply_links": [
+            4
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 225534,
+          "reply_links": [
+            1,
+            3,
+            5,
+            6
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 225535,
+          "reply_links": null
+        },
+        {
+          "id": 8,
+          "line_strref": 225536,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            2,
+            4,
+            6
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            2,
+            4,
+            6
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            2,
+            4,
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            2,
+            4,
+            6
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_message_deliver_d_dlg",
+      "export_index": 228,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 241771,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "speaker_id": 0,
+          "line_strref": 241772,
+          "reply_links": null
+        },
+        {
+          "id": 2,
+          "line_strref": 241773,
+          "reply_links": null
+        },
+        {
+          "id": 3,
+          "line_strref": 241774,
+          "reply_links": [
+            2,
+            1,
+            12
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 241775,
+          "reply_links": [
+            1,
+            2,
+            12
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 241776,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 6,
+          "speaker_id": 0,
+          "line_strref": 241777,
+          "reply_links": [
+            4,
+            10,
+            12
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 241778,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 241779,
+          "reply_links": [
+            6
+          ]
+        },
+        {
+          "id": 9,
+          "speaker_id": 0,
+          "line_strref": 241780,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 241781,
+          "reply_links": [
+            8
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 241782,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 241783,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 241784,
+          "reply_links": [
+            13
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            3,
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            12
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            3,
+            4,
+            6
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            13
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "omgmwl_message_deliver"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_message_get_d_dlg",
+      "export_index": 229,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 241945,
+          "reply_links": null
+        },
+        {
+          "id": 1,
+          "line_strref": 241812,
+          "reply_links": null
+        },
+        {
+          "id": 2,
+          "line_strref": 241813,
+          "reply_links": [
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 241814,
+          "reply_links": [
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 241815,
+          "reply_links": null
+        },
+        {
+          "id": 5,
+          "line_strref": 241816,
+          "reply_links": [
+            2,
+            21
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 241817,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 241818,
+          "reply_links": [
+            4,
+            6,
+            21
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 241819,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 241820,
+          "reply_links": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 241821,
+          "reply_links": [
+            7,
+            8
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 241822,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 241823,
+          "reply_links": [
+            10,
+            12,
+            20
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 241824,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 14,
+          "line_strref": 241825,
+          "reply_links": [
+            10,
+            12,
+            20
+          ]
+        },
+        {
+          "id": 15,
+          "line_strref": 241826,
+          "reply_links": [
+            13
+          ]
+        },
+        {
+          "id": 16,
+          "line_strref": 241827,
+          "reply_links": [
+            14,
+            16,
+            18
+          ]
+        },
+        {
+          "id": 17,
+          "line_strref": 241828,
+          "reply_links": [
+            15
+          ]
+        },
+        {
+          "id": 18,
+          "line_strref": 241829,
+          "reply_links": [
+            14,
+            16,
+            18
+          ]
+        },
+        {
+          "id": 19,
+          "line_strref": 241830,
+          "reply_links": [
+            17
+          ]
+        },
+        {
+          "id": 20,
+          "line_strref": 241831,
+          "reply_links": [
+            19
+          ]
+        },
+        {
+          "id": 21,
+          "line_strref": 241832,
+          "reply_links": null
+        },
+        {
+          "id": 22,
+          "line_strref": 241833,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2,
+            3,
+            5
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            9,
+            10
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            9,
+            10
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            12,
+            14
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            13
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            12,
+            14
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            15
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            16,
+            18
+          ]
+        },
+        {
+          "id": 15,
+          "target_entry_ids": [
+            17
+          ]
+        },
+        {
+          "id": 16,
+          "target_entry_ids": [
+            16,
+            18
+          ]
+        },
+        {
+          "id": 17,
+          "target_entry_ids": [
+            19
+          ]
+        },
+        {
+          "id": 18,
+          "target_entry_ids": [
+            16,
+            18
+          ]
+        },
+        {
+          "id": 19,
+          "target_entry_ids": [
+            20
+          ]
+        },
+        {
+          "id": 20,
+          "target_entry_ids": [
+            12,
+            14
+          ]
+        },
+        {
+          "id": 21,
+          "target_entry_ids": [
+            5,
+            7
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_mw02_d_dlg",
+      "export_index": 230,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 206871,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 208019,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 241742,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 241743,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 226299,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 226300,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 203195,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 226301,
+          "reply_links": [
+            6
+          ]
+        },
+        {
+          "id": 8,
+          "line_strref": 226302,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 9,
+          "line_strref": 226303,
+          "reply_links": [
+            8
+          ]
+        },
+        {
+          "id": 10,
+          "line_strref": 226304,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 11,
+          "line_strref": 226305,
+          "reply_links": [
+            10
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 226306,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 226307,
+          "reply_links": [
+            12
+          ]
+        },
+        {
+          "id": 14,
+          "line_strref": 226308,
+          "reply_links": [
+            13
+          ]
+        },
+        {
+          "id": 15,
+          "line_strref": 226309,
+          "reply_links": [
+            3,
+            4,
+            7,
+            9,
+            14
+          ]
+        },
+        {
+          "id": 16,
+          "line_strref": 241744,
+          "reply_links": [
+            15
+          ]
+        },
+        {
+          "id": 17,
+          "line_strref": 236340,
+          "reply_links": null
+        },
+        {
+          "id": 18,
+          "line_strref": 203199,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            0,
+            4,
+            5,
+            8,
+            10,
+            15
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            0,
+            4,
+            5,
+            8,
+            10,
+            15
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            0,
+            4,
+            5,
+            8,
+            10,
+            15
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            0,
+            4,
+            5,
+            8,
+            10,
+            15
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            12
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            13
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            14
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            0,
+            4,
+            5,
+            8,
+            10,
+            15
+          ]
+        },
+        {
+          "id": 15,
+          "target_entry_ids": [
+            16
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_mwl_done_return_d_dlg",
+      "export_index": 231,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 239335,
+          "reply_links": [
+            12,
+            13
+          ]
+        },
+        {
+          "id": 1,
+          "speaker_id": 0,
+          "line_strref": 239336,
+          "reply_links": [
+            17,
+            19,
+            20
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 239337,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 311528,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 311529,
+          "reply_links": [
+            2,
+            4
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 311530,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 6,
+          "line_strref": 311531,
+          "reply_links": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 311532,
+          "reply_links": [
+            6
+          ]
+        },
+        {
+          "id": 8,
+          "speaker_id": 1,
+          "line_strref": 311533,
+          "reply_links": [
+            7,
+            9
+          ]
+        },
+        {
+          "id": 9,
+          "speaker_id": 1,
+          "line_strref": 311534,
+          "reply_links": [
+            8
+          ]
+        },
+        {
+          "id": 10,
+          "speaker_id": 1,
+          "line_strref": 311535,
+          "reply_links": [
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "speaker_id": 1,
+          "line_strref": 311536,
+          "reply_links": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "line_strref": 311537,
+          "reply_links": [
+            12,
+            13,
+            14
+          ]
+        },
+        {
+          "id": 13,
+          "line_strref": 311538,
+          "reply_links": null
+        },
+        {
+          "id": 14,
+          "line_strref": 204721,
+          "reply_links": null
+        },
+        {
+          "id": 15,
+          "line_strref": 311539,
+          "reply_links": null
+        },
+        {
+          "id": 16,
+          "line_strref": 239338,
+          "reply_links": [
+            15
+          ]
+        },
+        {
+          "id": 17,
+          "line_strref": 239339,
+          "reply_links": null
+        },
+        {
+          "id": 18,
+          "speaker_id": 0,
+          "line_strref": 225517,
+          "reply_links": [
+            16
+          ]
+        },
+        {
+          "id": 19,
+          "speaker_id": 0,
+          "line_strref": 225518,
+          "reply_links": [
+            17,
+            19,
+            20
+          ]
+        },
+        {
+          "id": 20,
+          "speaker_id": 0,
+          "line_strref": 239341,
+          "reply_links": [
+            18
+          ]
+        },
+        {
+          "id": 21,
+          "speaker_id": 0,
+          "line_strref": 239342,
+          "reply_links": [
+            19,
+            20
+          ]
+        },
+        {
+          "id": 22,
+          "speaker_id": 0,
+          "line_strref": 239343,
+          "reply_links": null
+        },
+        {
+          "id": 23,
+          "line_strref": 225519,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            9
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            8
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            10
+          ]
+        },
+        {
+          "id": 11,
+          "target_entry_ids": [
+            11
+          ]
+        },
+        {
+          "id": 12,
+          "target_entry_ids": [
+            0,
+            12
+          ]
+        },
+        {
+          "id": 13,
+          "target_entry_ids": [
+            0,
+            12
+          ]
+        },
+        {
+          "id": 14,
+          "target_entry_ids": [
+            12
+          ]
+        },
+        {
+          "id": 15,
+          "target_entry_ids": [
+            16
+          ]
+        },
+        {
+          "id": 16,
+          "target_entry_ids": [
+            18
+          ]
+        },
+        {
+          "id": 17,
+          "target_entry_ids": [
+            1,
+            19
+          ]
+        },
+        {
+          "id": 18,
+          "target_entry_ids": [
+            20
+          ]
+        },
+        {
+          "id": 19,
+          "target_entry_ids": [
+            1,
+            19,
+            21
+          ]
+        },
+        {
+          "id": 20,
+          "target_entry_ids": [
+            1,
+            19,
+            21
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "hench_mystic"
+        },
+        {
+          "id": 1,
+          "tag": "hench_mystic_as_vampire"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_pill_bottle_a_dlg",
+      "export_index": 232,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 213725,
+          "reply_links": null
+        }
+      ],
+      "replies": [],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_punch_a_dlg",
+      "export_index": 233,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 237021,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "speaker_id": 0,
+          "line_strref": 237022,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 237023,
+          "reply_links": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "speaker_id": 0,
+          "line_strref": 237024,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "omgmwl_hassled_dancer"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_punch_d_dlg",
+      "export_index": 234,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 234186,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "speaker_id": 0,
+          "line_strref": 234187,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 234188,
+          "reply_links": [
+            2,
+            8
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 236996,
+          "reply_links": [
+            3
+          ]
+        },
+        {
+          "id": 4,
+          "line_strref": 236998,
+          "reply_links": [
+            4
+          ]
+        },
+        {
+          "id": 5,
+          "line_strref": 236997,
+          "reply_links": [
+            5,
+            6
+          ]
+        },
+        {
+          "id": 6,
+          "speaker_id": 0,
+          "line_strref": 237000,
+          "reply_links": [
+            7
+          ]
+        },
+        {
+          "id": 7,
+          "line_strref": 237001,
+          "reply_links": [
+            9
+          ]
+        },
+        {
+          "id": 8,
+          "speaker_id": 0,
+          "line_strref": 237003,
+          "reply_links": [
+            10
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            3
+          ]
+        },
+        {
+          "id": 4,
+          "target_entry_ids": [
+            4
+          ]
+        },
+        {
+          "id": 5,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 6,
+          "target_entry_ids": [
+            5
+          ]
+        },
+        {
+          "id": 7,
+          "target_entry_ids": [
+            6
+          ]
+        },
+        {
+          "id": 8,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 9,
+          "target_entry_ids": [
+            7
+          ]
+        },
+        {
+          "id": 10,
+          "target_entry_ids": [
+            8
+          ]
+        }
+      ],
+      "speakers": [
+        {
+          "id": 0,
+          "tag": "omgmwl_hassled_dancer"
+        }
+      ],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_puzzle_fail_c_dlg",
+      "export_index": 235,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 234164,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 234165,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 234166,
+          "reply_links": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 234167,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_puzzle_win_c_dlg",
+      "export_index": 236,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 234177,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 234178,
+          "reply_links": [
+            1
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_samara_cine_c_dlg",
+      "export_index": 237,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 343363,
+          "reply_links": [
+            0,
+            1
+          ]
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_sculpture_a_dlg",
+      "export_index": 238,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 213726,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 225569,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_sword_a_dlg",
+      "export_index": 239,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 213727,
+          "reply_links": null
+        }
+      ],
+      "replies": [],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "omgmwl_tell_mw_failed_d_dlg",
+      "export_index": 240,
+      "game_profile": "unknown",
+      "parse_mode": "struct_property_semantic",
+      "entries": [
+        {
+          "id": 0,
+          "line_strref": 208840,
+          "reply_links": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "line_strref": 208841,
+          "reply_links": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "line_strref": 208843,
+          "reply_links": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": 3,
+          "line_strref": 225580,
+          "reply_links": null
+        }
+      ],
+      "replies": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        },
+        {
+          "id": 1,
+          "target_entry_ids": [
+            1
+          ]
+        },
+        {
+          "id": 2,
+          "target_entry_ids": [
+            2
+          ]
+        },
+        {
+          "id": 3,
+          "target_entry_ids": [
+            2
+          ]
+        }
+      ],
+      "speakers": [],
+      "starts": [
+        {
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}
