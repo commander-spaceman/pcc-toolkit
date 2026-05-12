@@ -33,6 +33,26 @@
         "type": "entry",
         "id": 0
       }
+    },
+    {
+      "from": {
+        "type": "entry",
+        "id": 0
+      },
+      "to": {
+        "type": "reply",
+        "id": 0
+      }
+    },
+    {
+      "from": {
+        "type": "reply",
+        "id": 0
+      },
+      "to": {
+        "type": "entry",
+        "id": 0
+      }
     }
   ]
 }

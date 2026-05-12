@@ -1067,7 +1067,8 @@
         "issues": [
           {
             "severity": "warning",
-            "message": "parsed with fallback mode (count_or_value_fallback) — results may be incomplete"
+            "message": "low-confidence parse: count_or_value_fallback",
+            "cause": "the parser could not determine the array layout and fell back to counting elements — entry/reply data may be incomplete"
           },
           {
             "severity": "warning",
@@ -1095,29 +1096,36 @@
         {
           "id": 0,
           "line_strref": 344594,
-          "reply_links": []
+          "reply_links": [
+            0
+          ]
         },
         {
           "id": 1,
           "line_strref": 344595,
-          "reply_links": []
+          "reply_links": null
         },
         {
           "id": 2,
           "line_strref": 344596,
-          "reply_links": []
+          "reply_links": null
         }
       ],
       "replies": [
         {
-          "id": 0
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
         }
       ],
       "speakers": [],
       "starts": [
         {
           "id": 0,
-          "target_entry_id": 0
+          "target_entry_ids": [
+            0
+          ]
         }
       ],
       "validation": {
@@ -1127,20 +1135,17 @@
         "issues": [
           {
             "severity": "warning",
-            "node_type": "reply",
-            "message": "reply has no target_entry_id (dead end)"
-          },
-          {
-            "severity": "warning",
             "node_type": "entry",
             "node_id": 1,
-            "message": "entry is not reachable from any start or reply"
+            "message": "orphaned entry: entry 1 is not reachable from any start node",
+            "cause": "entry exists in the data but no dialogue path leads to it — may be unused or conditionally activated content"
           },
           {
             "severity": "warning",
             "node_type": "entry",
             "node_id": 2,
-            "message": "entry is not reachable from any start or reply"
+            "message": "orphaned entry: entry 2 is not reachable from any start node",
+            "cause": "entry exists in the data but no dialogue path leads to it — may be unused or conditionally activated content"
           }
         ],
         "summary": {
@@ -1149,9 +1154,9 @@
           "speaker_count": 0,
           "start_count": 1,
           "orphaned_entries": 2,
-          "orphaned_replies": 1,
+          "orphaned_replies": 0,
           "dangling_links": 0,
-          "issue_count": 3
+          "issue_count": 2
         }
       }
     },
@@ -1159,41 +1164,24 @@
       "id": "cithub_taligarrus_h_dlg",
       "export_index": 2,
       "game_profile": "unknown",
-      "parse_mode": "count_or_value_fallback",
+      "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
         {
-          "id": 0,
-          "target_entry_id": 0
+          "id": 0
         }
       ],
       "speakers": [],
       "starts": [],
-      "warnings": [
-        "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0",
-        "reply_target_missing_entry:0->0"
-      ],
       "validation": {
         "conversation_id": "cithub_taligarrus_h_dlg",
         "export_index": 2,
-        "status": "invalid",
+        "status": "valid",
         "issues": [
           {
-            "severity": "error",
-            "node_type": "reply",
-            "message": "target_entry_id 0 does not exist"
-          },
-          {
-            "severity": "warning",
-            "message": "parsed with fallback mode (count_or_value_fallback) — results may be incomplete"
-          },
-          {
-            "severity": "warning",
-            "message": "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0"
-          },
-          {
-            "severity": "warning",
-            "message": "reply_target_missing_entry:0->0"
+            "severity": "info",
+            "message": "reply-only conversation: 1 replies, 0 entries",
+            "cause": "this conversation has no entry nodes — common in combat barks and ambient dialogue where NPCs speak without structured back-and-forth"
           }
         ],
         "summary": {
@@ -1203,8 +1191,8 @@
           "start_count": 0,
           "orphaned_entries": 0,
           "orphaned_replies": 1,
-          "dangling_links": 1,
-          "issue_count": 4
+          "dangling_links": 0,
+          "issue_count": 1
         }
       }
     },
@@ -1212,46 +1200,24 @@
       "id": "nor_globalnews_a_dlg",
       "export_index": 3,
       "game_profile": "unknown",
-      "parse_mode": "count_or_value_fallback",
+      "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
         {
-          "id": 0,
-          "target_entry_id": 0
+          "id": 0
         }
       ],
       "speakers": [],
       "starts": [],
-      "warnings": [
-        "missing_key_properties:SpeakerList",
-        "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0",
-        "reply_target_missing_entry:0->0"
-      ],
       "validation": {
         "conversation_id": "nor_globalnews_a_dlg",
         "export_index": 3,
-        "status": "invalid",
+        "status": "valid",
         "issues": [
           {
-            "severity": "error",
-            "node_type": "reply",
-            "message": "target_entry_id 0 does not exist"
-          },
-          {
-            "severity": "warning",
-            "message": "parsed with fallback mode (count_or_value_fallback) — results may be incomplete"
-          },
-          {
-            "severity": "warning",
-            "message": "missing_key_properties:SpeakerList"
-          },
-          {
-            "severity": "warning",
-            "message": "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0"
-          },
-          {
-            "severity": "warning",
-            "message": "reply_target_missing_entry:0->0"
+            "severity": "info",
+            "message": "reply-only conversation: 1 replies, 0 entries",
+            "cause": "this conversation has no entry nodes — common in combat barks and ambient dialogue where NPCs speak without structured back-and-forth"
           }
         ],
         "summary": {
@@ -1261,16 +1227,16 @@
           "start_count": 0,
           "orphaned_entries": 0,
           "orphaned_replies": 1,
-          "dangling_links": 1,
-          "issue_count": 5
+          "dangling_links": 0,
+          "issue_count": 1
         }
       }
     }
   ],
   "validation_summary": {
     "total": 4,
-    "valid": 0,
+    "valid": 2,
     "warning": 2,
-    "invalid": 2
+    "invalid": 0
   }
 }

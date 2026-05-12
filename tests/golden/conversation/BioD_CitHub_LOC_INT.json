@@ -1057,29 +1057,36 @@
         {
           "id": 0,
           "line_strref": 344594,
-          "reply_links": []
+          "reply_links": [
+            0
+          ]
         },
         {
           "id": 1,
           "line_strref": 344595,
-          "reply_links": []
+          "reply_links": null
         },
         {
           "id": 2,
           "line_strref": 344596,
-          "reply_links": []
+          "reply_links": null
         }
       ],
       "replies": [
         {
-          "id": 0
+          "id": 0,
+          "target_entry_ids": [
+            0
+          ]
         }
       ],
       "speakers": [],
       "starts": [
         {
           "id": 0,
-          "target_entry_id": 0
+          "target_entry_ids": [
+            0
+          ]
         }
       ]
     },
@@ -1087,40 +1094,29 @@
       "id": "cithub_taligarrus_h_dlg",
       "export_index": 2,
       "game_profile": "unknown",
-      "parse_mode": "count_or_value_fallback",
+      "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
         {
-          "id": 0,
-          "target_entry_id": 0
+          "id": 0
         }
       ],
       "speakers": [],
-      "starts": [],
-      "warnings": [
-        "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0",
-        "reply_target_missing_entry:0->0"
-      ]
+      "starts": []
     },
     {
       "id": "nor_globalnews_a_dlg",
       "export_index": 3,
       "game_profile": "unknown",
-      "parse_mode": "count_or_value_fallback",
+      "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
         {
-          "id": 0,
-          "target_entry_id": 0
+          "id": 0
         }
       ],
       "speakers": [],
-      "starts": [],
-      "warnings": [
-        "missing_key_properties:SpeakerList",
-        "non_tight_i32_array:ReplyList:count=1:bytes_per_item=124:remainder=0",
-        "reply_target_missing_entry:0->0"
-      ]
+      "starts": []
     }
   ]
 }
