@@ -114,12 +114,14 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		}
 
 		if r.TargetEntryID == nil {
-			result.addIssue(ValidationIssue{
-				Severity: "warning",
-				NodeType: "reply",
-				NodeID:   r.ID,
-				Message:  "reply has no target_entry_id (dead end)",
-			})
+			if len(conv.Entries) > 0 {
+				result.addIssue(ValidationIssue{
+					Severity: "warning",
+					NodeType: "reply",
+					NodeID:   r.ID,
+					Message:  "reply has no target_entry_id (dead end)",
+				})
+			}
 		}
 
 		if r.LineStrRef != nil && *r.LineStrRef <= 0 {
