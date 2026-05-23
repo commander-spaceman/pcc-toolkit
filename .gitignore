@@ -203,7 +203,6 @@ opencode.jsonc
 .opencode/
 
 # Local stuff
-.secrets/
 *.ini
 
 # Test artifacts and caches (golden files and test scripts ARE tracked)

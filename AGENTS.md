@@ -1,94 +1,100 @@
-# PCC Toolkit v2 — ME2 OT Dialogue Extraction Toolkit
+# PCC Toolkit v2 - ME2 OT Dialogue Extraction Toolkit
 
 ## Instruction Entry Point
 
-Use this file as the **operational entry point** for AI agents working on this project.
+Use this file as the operational entry point for AI agents working on this project.
 
-- Architecture and design lives in `PRD.md`.
-- Session state lives in `.opencode/`.
+- Architecture and design live in `PRD.md`.
+- Persistent agent context should live in the `memory` MCP, not in session lifecycle files.
+- `.opencode/` is reserved for MCP runtime files, not project instructions.
 
-## Session Lifecycle
+## Operating Model
 
-Every agent session follows this protocol:
+Agents should work task-by-task, using the smallest correct change.
 
-### Open
+1. Understand the request and inspect the relevant code before changing files.
+2. Use `memory` MCP for durable context worth keeping across sessions.
+3. Follow the conventions and verification rules in this file.
+4. Keep changes isolated, incremental, and reversible where possible.
+5. Do not push, commit, or update external trackers unless explicitly asked.
 
-1. Read `.opencode/current.md` — understand where the last session left off.
-2. Pick **one** task. If multiple are pending, take the highest-priority one.
-3. Update `.opencode/current.md`: set phase, task, branch, plan.
-4. If using Notion, move the phase page to `In Progress`.
-
-### Work
-
-- Document in `.opencode/current.md` as you go, not at the end.
-- Work incrementally, following the phase order in `PRD.md`.
-- Prefer additive, low-intrusion changes over replacements.
-- Keep modifications isolated and reversible where possible.
-- Avoid touching unrelated systems.
-
-### Close
-
-1. Verify deliverables against `.opencode/checkpoints.md`.
-2. If complete: mark phase/task as `Done` in Notion.
-3. Move `.opencode/current.md` summary to `.opencode/history.md` (append-only).
-4. Clear `.opencode/current.md` back to the template.
-5. Push branch to remote.
-6. No temporary files, no debug prints, no orphaned TODOs.
+There is no required session lifecycle file. Do not maintain `.opencode/current.md`, `.opencode/history.md`, or `.opencode/checkpoints.md`.
 
 ## Read First
 
-1. `PRD.md` — complete architecture, AST spec, migration plan, dependencies.
-2. `.opencode/checkpoints.md` — what "done" looks like.
+1. `PRD.md` - architecture, AST spec, migration plan, dependencies.
+2. `AGENTS.md` - operating model, conventions, verification, and repository map.
 
 ## Repository Map
 
 | Path | What it contains | When to read |
-|------|-----------------|--------------|
-| `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before any work |
-| `.opencode/current.md` | Active session state | Every session start |
-| `.opencode/history.md` | Append-only session log | For historical context |
-| `.opencode/checkpoints.md` | Objective completion criteria | Before closing any phase |
-| `.opencode/conventions.md` | Code style rules (Go + Python) | Before writing code |
-| `.opencode/verification.md` | How to prove work is correct | Before marking a task done |
-| `core/` | Go engine — all domain logic | For implementing parsing, AST, layout, evidence |
-| `cli/` | Python CLI — thin dispatch wrapper | For CLI arg parsing and formatting |
-| `gui/` | Python GUI — thin renderer | For ImGui views and interaction |
-| `tests/golden/` | Known-good output files for regression | During port validation |
-| `samples/` | Real ME2 OT PCC/TLK files (gitignored) | Input for golden tests |
+|------|------------------|--------------|
+| `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before architecture or feature work |
+| `.opencode/start-github-mcp.ps1` | GitHub MCP wrapper that loads `.env` | MCP runtime only |
+| `.opencode/memory.jsonl` | Local memory MCP storage | MCP runtime only |
+| `core/` | Go engine; domain logic belongs here | Parsing, AST, layout, evidence, validation |
+| `cli/` | Python CLI; thin dispatch wrapper | CLI arg parsing and output formatting |
+| `gui/` | Python GUI; thin renderer | ImGui views and interaction |
+| `tests/golden/` | Known-good regression outputs | Port validation and parser regression checks |
+| `tests/regression/` | Probe/regression runners | Golden or probe validation workflows |
+| `samples/` | Real ME2 OT PCC/TLK files, gitignored | Local input for golden tests |
+| `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
 
-## Operational Rules (High Impact)
+## LegendaryExplorer Reference
 
-- **Always consult the LegendaryExplorer repository** when implementing features. Use GitHub search against `github.com/ME3Tweaks/LegendaryExplorer` to understand how the official tool handles PCC parsing, TLK resolution, dialogue editing, and graph rendering. LEX is the reference implementation — match its behavior unless `PRD.md` specifies otherwise.
-- Go core contains ALL domain logic. Python CLI and GUI are thin layers only.
-- All Go ↔ Python communication is JSON over stdout.
-- One feature at a time. Validate equivalence against old toolkit before moving on.
-- Golden files are the structural contract. Never edit them manually.
+The GitHub MCP is configured and should be used as the primary way to consult:
+
+```text
+ME3Tweaks/LegendaryExplorer
+```
+
+Always consult LegendaryExplorer when implementing or changing behavior for PCC parsing, TLK resolution, dialogue editing, conversation graph layout, package structures, or validation semantics.
+
+Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicitly says otherwise. The guiding question is:
+
+> Does this match how LegendaryExplorer handles it?
+
+## Operational Rules
+
+- Scope is Mass Effect 2 Original Trilogy only. Do not add LE1, LE2, LE3, ME1, or ME3 behavior unless the task explicitly changes project scope.
+- ME2 OT compressed package support is LZO-only per `PRD.md`.
+- Go core contains all domain logic. Python CLI and GUI are thin layers only.
+- Go core writes success payloads as JSON to stdout and error payloads as JSON to stderr.
+- One feature at a time. Validate equivalence against old toolkit or golden files before moving on.
+- Golden files are the structural contract. Do not edit them manually unless the task is explicitly to regenerate and justify them.
+- Prefer additive, low-intrusion changes over broad rewrites.
+- Avoid touching unrelated systems.
 
 ## Language Policy
 
-- Use English for all repository-facing content.
-- Documentation, code comments, variable names, function/class identifiers, user-facing strings, error messages, and test descriptions should be written in English.
-- **Exception**: Notion Kanban pages and reports may be written in Spanish.
+- Use English for repository-facing content.
+- Documentation, code comments, identifiers, user-facing strings, error messages, and test descriptions should be in English.
+- Spanish is fine for local planning notes or conversation with the user.
 
-## Notion Tracking Workflow
+## Code Conventions
 
-The Kanban board `PCC Dialog Toolkit - Kanban` is the execution log for toolkit development.
-
-- **When starting a new phase**: create a new page in the Kanban. Set `Phase` to the phase name, `Status` to `TO-DO`.
-- **When beginning work**: move `Status` to `In Progress`. Update `.opencode/current.md`.
-- **During the phase**: keep the Notion page updated with scope, deliverables, risks, and verification notes as work advances.
-- **When complete**: move `Status` to `Done`. Verify against `.opencode/checkpoints.md` first.
-- If extra tasks appear outside the original phase plan, add them as new Kanban items.
-- Keep Notion updates aligned with repository state (do not mark `Done` without corresponding code/docs progress).
+- Match existing local patterns before introducing new structure.
+- Add comments only to explain non-obvious why, subtle invariants, or documented workarounds.
+- Remove debug `print()` and `fmt.Println()` calls before finishing.
+- Avoid orphaned TODOs. Every TODO must reference a concrete follow-up.
+- Go: run `go fmt ./...`; return `error` as the last value for fallible functions; do not panic in library code.
+- Go: use `CamelCase` for exported names and `camelCase` for unexported names.
+- Python: target Python 3.11+ style, PEP 8, max 100 columns, type hints with `| None`, built-in generics, and double-quoted strings.
+- Tests: prefer concrete expected outputs over tests that only assert no crash.
 
 ## Build, Test, and Lint
 
-- **Go core** (`core/`): `go test ./...`, `go build ./cmd/pcc-core/`
-- **Python CLI** (`cli/`): `pytest` (once implemented)
-- **Python GUI** (`gui/`): `pytest` (once implemented)
+- Go core tests: from `core/`, run `go test ./...`.
+- Go formatting: from `core/`, run `go fmt ./...`.
+- Python CLI/GUI tests: `pytest` once implemented.
 
-No top-level build command exists yet. When one is added, document it here.
+No single top-level build command is guaranteed. If one is added, document it here.
 
-## Guiding Question
+## Verification Checklist
 
-> "Does this match how LegendaryExplorer handles it?"
+- Choose the smallest verification set that proves the change.
+- From `core/`, run `go test ./...` for core parser, domain logic, or integration-sensitive Go changes.
+- Run `pytest` when Python code is affected and tests exist.
+- Compare against golden files when parser output changes.
+- Consult LegendaryExplorer through the GitHub MCP when LEX semantics matter.
+- Final summaries should mention what changed, what verification ran, and any skipped or failing checks.
