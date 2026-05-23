@@ -1,5 +1,7 @@
 """Main application — HelloImGui window with docking tabs."""
 
+from pathlib import Path
+
 from imgui_bundle import hello_imgui, imgui, ImVec2
 
 from state import AppState
@@ -109,8 +111,12 @@ def _before_exit() -> None:
 
 def main() -> None:
     state = AppState()
+    output_dir = Path(__file__).resolve().parents[2] / "output"
+    output_dir.mkdir(exist_ok=True)
 
     params = hello_imgui.RunnerParams()
+    params.ini_folder_type = hello_imgui.IniFolderType.current_folder
+    params.ini_filename = "output/gui.ini"
     params.app_window_params.window_title = "PCC Toolkit v2 — Dialogue Explorer"
     params.app_window_params.window_geometry.size = (1280, 800)
     params.imgui_window_params.show_menu_bar = True
