@@ -146,12 +146,11 @@ tools/pcc-toolkit-v2/
 │
 ├── cli/                             # Python CLI (thin wrapper)
 │   └── src/
-│       └── pcc_toolkit/
-│           ├── __init__.py          # __version__
-│           ├── __main__.py          # → cli_main()
-│           ├── cli_main.py          # Typer CLI, subcommand registration
-│           ├── engine.py            # Go subprocess interface (shared with GUI)
-│           └── format.py            # Terminal output formatting (tables, colors)
+│       ├── __init__.py              # __version__
+│       ├── __main__.py              # → cli_main()
+│       ├── cli_main.py              # Typer CLI, subcommand registration
+│       ├── engine.py                # Go subprocess interface (shared with GUI)
+│       └── format.py                # Terminal output formatting (tables, colors)
 │
 ├── gui/                             # Python GUI (thin renderer)
 │   └── src/
@@ -732,7 +731,7 @@ Both CLI and GUI use the same `engine.py`. The GUI symlinks or copies it.
 
 ```python
 # Shared between cli/ and gui/
-# src/pcc_toolkit/engine.py  and  gui/src/pcc_toolkit_gui/engine.py
+# cli/src/engine.py  and  gui/src/pcc_toolkit_gui/engine.py
 
 import subprocess, json
 from pathlib import Path
@@ -1010,9 +1009,9 @@ tests/golden/
 1. Create directory structure (`core/`, `cli/`, `gui/`)
 2. Initialize `core/go.mod`, `pyproject.toml`
 3. Build `core/cmd/pcc-core/main.go` with `version` subcommand
-4. Build `cli/src/pcc_toolkit/engine.py` (shared interface)
-5. Build `cli/src/pcc_toolkit/cli_main.py` with `--version` and `--help`
-6. Verify: `python -m pcc_toolkit --version` → calls Go → prints version
+4. Build `cli/src/engine.py` (shared interface)
+5. Build `cli/src/cli_main.py` with `--version` and `--help`
+6. Verify: `pcc-toolkit --version` → calls Go → prints version
 
 ### Phase 2: PCC Parsing (Go)
 1. Port `internal/scan/pcc.go` → `core/internal/pcc/` (reader, decompress, containers, strings, types)

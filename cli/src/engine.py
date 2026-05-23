@@ -27,7 +27,7 @@ def _resolve_binary() -> Path:
 
 
 def _find_binary() -> Path | None:
-    core_dir = Path(__file__).resolve().parents[3] / "core"
+    core_dir = Path(__file__).resolve().parents[2] / "build"
     candidate = core_dir / (CORE_BINARY + _EXE_SUFFIX)
     if candidate.is_file():
         return candidate

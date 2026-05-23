@@ -5,7 +5,7 @@ from pathlib import Path
 
 import typer
 
-from pcc_toolkit.engine import (
+from engine import (
     EngineError,
     batch_extract as engine_batch_extract,
     batch_validate as engine_batch_validate,
@@ -19,7 +19,7 @@ from pcc_toolkit.engine import (
     validate as engine_validate,
     version as engine_version,
 )
-from pcc_toolkit.format import (
+from format import (
     batch_summary,
     console,
     conversation_table,
@@ -39,7 +39,7 @@ app = typer.Typer(
 def gui() -> None:
     """Launch the interactive GUI."""
     import sys
-    gui_src = str(Path(__file__).resolve().parents[3] / "gui" / "src")
+    gui_src = str(Path(__file__).resolve().parents[2] / "gui" / "src")
     if gui_src not in sys.path:
         sys.path.insert(0, gui_src)
     try:

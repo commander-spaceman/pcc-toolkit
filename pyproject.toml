@@ -17,13 +17,11 @@ gui = ["imgui-bundle>=1.90"]
 dev = ["pytest>=9.0"]
 
 [project.scripts]
-pcc-toolkit = "pcc_toolkit.cli_main:app"
+pcc-toolkit = "cli_main:app"
 
 [tool.setuptools]
+py-modules = ["cli_main", "engine", "format"]
 package-dir = {"" = "cli/src"}
-
-[tool.setuptools.packages.find]
-where = ["cli/src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["cli/src"]
