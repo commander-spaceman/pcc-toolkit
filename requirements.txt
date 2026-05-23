@@ -1,0 +1,4 @@
+typer>=0.15
+rich>=13
+imgui-bundle>=1.90
+pytest>=9.0
