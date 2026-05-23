@@ -32,11 +32,13 @@ There is no required session lifecycle file. Do not maintain `.opencode/current.
 | `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before architecture or feature work |
 | `.opencode/start-github-mcp.ps1` | GitHub MCP wrapper that loads `.env` | MCP runtime only |
 | `.opencode/memory.jsonl` | Local memory MCP storage | MCP runtime only |
+| `build/` | Local compiled binaries, gitignored | Runtime artifacts only |
 | `core/` | Go engine; domain logic belongs here | Parsing, AST, layout, evidence, validation |
 | `cli/` | Python CLI; thin dispatch wrapper | CLI arg parsing and output formatting |
 | `gui/` | Python GUI; thin renderer | ImGui views and interaction |
 | `tests/golden/` | Known-good regression outputs | Port validation and parser regression checks |
 | `tests/regression/` | Probe/regression runners | Golden or probe validation workflows |
+| `tests/fixtures/synthetic/` | Synthetic test fixture builders/data | Unit tests that do not require game files |
 | `samples/` | Real ME2 OT PCC/TLK files, gitignored | Local input for golden tests |
 | `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
 

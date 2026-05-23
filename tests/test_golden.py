@@ -19,9 +19,9 @@ _samples_dir = os.environ.get("PCC_SAMPLES_DIR", "")
 SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "samples")
 
 CORE_BINARY = (
-    REPO_ROOT / "core" / "pcc-core.exe"
-    if Path(REPO_ROOT / "core" / "pcc-core.exe").exists()
-    else REPO_ROOT / "core" / "pcc-core"
+    REPO_ROOT / "build" / "pcc-core.exe"
+    if Path(REPO_ROOT / "build" / "pcc-core.exe").exists()
+    else REPO_ROOT / "build" / "pcc-core"
 )
 
 
@@ -88,7 +88,7 @@ class TestGoldenFiles:
 
     @pytest.mark.skipif(
         not CORE_BINARY.exists(),
-        reason="pcc-core binary not found. Build with: cd core && go build ./cmd/pcc-core/",
+        reason="pcc-core binary not found. Build into build/ before running golden tests.",
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),

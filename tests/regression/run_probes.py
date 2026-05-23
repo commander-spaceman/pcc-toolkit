@@ -164,8 +164,8 @@ PROBES = [
 def find_core_binary() -> Path:
     """Locate the pcc-core binary."""
     candidates = [
-        REPO_ROOT / "core" / "pcc-core.exe",
-        REPO_ROOT / "core" / "pcc-core",
+        REPO_ROOT / "build" / "pcc-core.exe",
+        REPO_ROOT / "build" / "pcc-core",
     ]
     for c in candidates:
         if c.exists():
@@ -176,7 +176,7 @@ def find_core_binary() -> Path:
             if candidate.exists():
                 return candidate
     raise FileNotFoundError(
-        "pcc-core not found. Build with: cd core && go build ./cmd/pcc-core/"
+        "pcc-core not found. Build into build/ before running regression probes."
     )
 
 
