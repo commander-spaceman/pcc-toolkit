@@ -43,7 +43,7 @@ def gui() -> None:
     if gui_src not in sys.path:
         sys.path.insert(0, gui_src)
     try:
-        from pcc_toolkit_gui.app import main as gui_main
+        from app import main as gui_main
     except ImportError as e:
         typer.echo(f"Cannot load GUI: {e}", err=True)
         typer.echo("Install GUI dependencies: pip install .[gui]", err=True)

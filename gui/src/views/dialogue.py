@@ -4,13 +4,13 @@ import math
 
 from imgui_bundle import imgui, ImVec2, ImVec4
 
-from pcc_toolkit_gui.engine import (
+from engine import (
     EngineError,
     layout_graph,
     parse_conversations,
     parse_pcc,
 )
-from pcc_toolkit_gui.state import AppState
+from state import AppState
 
 
 NODE_COLORS = {

@@ -19,8 +19,8 @@ def _resolve_binary() -> Path:
     binary = Path(CORE_BINARY + _EXE_SUFFIX)
     if binary.is_absolute():
         return binary
-    core_dir = Path(__file__).resolve().parents[3] / "core"
-    candidate = core_dir / (CORE_BINARY + _EXE_SUFFIX)
+    build_dir = Path(__file__).resolve().parents[2] / "build"
+    candidate = build_dir / (CORE_BINARY + _EXE_SUFFIX)
     if candidate.is_file():
         return candidate
     return binary

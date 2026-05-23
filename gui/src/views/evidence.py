@@ -8,8 +8,8 @@ import time
 
 from imgui_bundle import imgui
 
-from pcc_toolkit_gui.engine import EngineError, run_async
-from pcc_toolkit_gui.state import AppState
+from engine import EngineError, run_async
+from state import AppState
 
 _active_process: subprocess.Popen | None = None
 _process_lock = threading.Lock()
@@ -182,7 +182,7 @@ def _start_search(state: AppState) -> None:
 
 def _run_tlk_only_thread(state: AppState) -> None:
     try:
-        from pcc_toolkit_gui.engine import scan_evidence
+        from engine import scan_evidence
         result = scan_evidence(
             state.evidence_query,
             tlk=state.tlk_path,

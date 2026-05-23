@@ -2,8 +2,8 @@
 
 from imgui_bundle import imgui
 
-from pcc_toolkit_gui.engine import EngineError, parse_pcc
-from pcc_toolkit_gui.state import AppState
+from engine import EngineError, parse_pcc
+from state import AppState
 
 
 def render_package(state: AppState) -> None:

@@ -2,8 +2,8 @@
 
 from imgui_bundle import imgui, ImVec2
 
-from pcc_toolkit_gui.engine import EngineError, parse_tlk
-from pcc_toolkit_gui.state import AppState
+from engine import EngineError, parse_tlk
+from state import AppState
 
 
 def _copy_to_clipboard(text: str) -> None:

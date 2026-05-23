@@ -2,8 +2,8 @@
 
 from imgui_bundle import hello_imgui, imgui, ImVec2
 
-from pcc_toolkit_gui.state import AppState
-from pcc_toolkit_gui.views import (
+from state import AppState
+from views import (
     render_dialogue,
     render_evidence,
     render_package,
@@ -103,7 +103,7 @@ def _open_tlk_dialog() -> str | None:
 
 
 def _before_exit() -> None:
-    from pcc_toolkit_gui.views.evidence import _kill_process
+    from views.evidence import _kill_process
     _kill_process()
 
 

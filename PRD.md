@@ -154,17 +154,16 @@ tools/pcc-toolkit-v2/
 │
 ├── gui/                             # Python GUI (thin renderer)
 │   └── src/
-│       └── pcc_toolkit_gui/
+│       ├── __init__.py
+│       ├── app.py                   # Main frame, menu, tab layout
+│       ├── state.py                 # UI state: selection, zoom, pan, paths
+│       ├── engine.py                # Go subprocess interface (symlink or copy of CLI's)
+│       └── views/
 │           ├── __init__.py
-│           ├── app.py               # Main frame, menu, tab layout
-│           ├── state.py             # UI state: selection, zoom, pan, paths
-│           ├── engine.py            # Go subprocess interface (symlink or copy of CLI's)
-│           └── views/
-│               ├── __init__.py
-│               ├── package.py       # Package viewer tab
-│               ├── tlk.py           # TLK viewer tab
-│               ├── dialogue.py      # Dialog explorer tab (graph + detail)
-│               └── evidence.py      # Evidence search tab
+│           ├── package.py           # Package viewer tab
+│           ├── tlk.py               # TLK viewer tab
+│           ├── dialogue.py          # Dialog explorer tab (graph + detail)
+│           └── evidence.py          # Evidence search tab
 │
 ├── tests/
 │   ├── conftest.py                  # Shared fixtures: synthetic PCC/TLK builders
@@ -731,7 +730,7 @@ Both CLI and GUI use the same `engine.py`. The GUI symlinks or copies it.
 
 ```python
 # Shared between cli/ and gui/
-# cli/src/engine.py  and  gui/src/pcc_toolkit_gui/engine.py
+# cli/src/engine.py  and  gui/src/engine.py
 
 import subprocess, json
 from pathlib import Path
@@ -1062,7 +1061,7 @@ tests/golden/
 4. Error messages and user guidance
 
 ### Phase 9: GUI
-1. Build `gui/src/pcc_toolkit_gui/` with empty tabs
+1. Build `gui/src/` with empty tabs
 2. Implement Package tab (uses `parse-pcc`)
 3. Implement TLK tab (uses `parse-tlk`)
 4. Implement Dialog tab (uses `layout-graph` + `parse-conversations`)
