@@ -23,13 +23,13 @@ type Node struct {
 }
 
 type File struct {
-	Path           string           `json:"path"`
-	Header         Header           `json:"header"`
-	MaleEntries    map[int32]int32  `json:"-"`
-	FemaleEntries  map[int32]int32  `json:"-"`
-	Nodes          []Node           `json:"-"`
-	Bits           []byte           `json:"-"`
-	TotalEntries   int              `json:"total_entries"`
+	Path          string          `json:"path"`
+	Header        Header          `json:"header"`
+	MaleEntries   map[int32]int32 `json:"-"`
+	FemaleEntries map[int32]int32 `json:"-"`
+	Nodes         []Node          `json:"-"`
+	Bits          []byte          `json:"-"`
+	TotalEntries  int             `json:"total_entries"`
 }
 
 type Entry struct {
@@ -39,7 +39,7 @@ type Entry struct {
 }
 
 type ResolveResult struct {
-	StringID     int32  `json:"string_id"`
-	Text         string `json:"text"`
-	SourceTLK    string `json:"source_tlk,omitempty"`
+	StringID  int32  `json:"string_id"`
+	Text      string `json:"text"`
+	SourceTLK string `json:"source_tlk,omitempty"`
 }

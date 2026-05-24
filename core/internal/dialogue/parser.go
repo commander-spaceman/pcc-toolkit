@@ -13,6 +13,7 @@ func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *
 	}
 
 	schema := GetSchemaForProfile(string(summary.GameProfile))
+	gameProfile := string(summary.GameProfile)
 
 	for _, export := range summary.Exports {
 		if export.ClassName != "BioConversation" {
@@ -23,7 +24,7 @@ func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *
 		}
 
 		if mode == "resilient" {
-			conv, err := parseOneConversation(rawData, summary.Names, export, schema)
+			conv, err := parseOneConversation(rawData, summary.Names, gameProfile, export, schema)
 			if err != nil {
 				result.Errors = append(result.Errors, ParseError{
 					ID:          exportName(export),
@@ -34,7 +35,7 @@ func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *
 			}
 			result.Conversations = append(result.Conversations, *conv)
 		} else {
-			conv, err := parseOneConversation(rawData, summary.Names, export, schema)
+			conv, err := parseOneConversation(rawData, summary.Names, gameProfile, export, schema)
 			if err != nil {
 				result.Errors = append(result.Errors, ParseError{
 					ID:          exportName(export),
@@ -56,7 +57,7 @@ func ParseConversation(summary *pcc.FileSummary, rawData []byte, convIndex int) 
 	}
 	export := summary.Exports[convIndex]
 	schema := GetSchemaForProfile(string(summary.GameProfile))
-	return parseOneConversation(rawData, summary.Names, export, schema)
+	return parseOneConversation(rawData, summary.Names, string(summary.GameProfile), export, schema)
 }
 
 func exportName(export pcc.Export) string {
@@ -66,10 +67,7 @@ func exportName(export pcc.Export) string {
 	return fmt.Sprintf("Export_%d", export.Index)
 }
 
-func parseOneConversation(data []byte, names []string, export pcc.Export, schema ConversationListSchema) (*Conversation, error) {
-	gameProfile := string(pcc.InferGameProfile(
-		len(names), len(names), 
-	))
+func parseOneConversation(data []byte, names []string, gameProfile string, export pcc.Export, schema ConversationListSchema) (*Conversation, error) {
 
 	if export.SerialOffset < 0 || export.SerialSize < 8 {
 		return nil, fmt.Errorf("export %d has invalid serial bounds", export.Index)

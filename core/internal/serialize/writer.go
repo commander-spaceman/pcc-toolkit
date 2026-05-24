@@ -14,14 +14,14 @@ type SerializedConversation struct {
 }
 
 type SerializedOutput struct {
-	File          string                              `json:"file"`
-	GameProfile   string                              `json:"game_profile"`
-	Compressed    bool                                `json:"compressed"`
-	Header        pcc.Header                          `json:"header"`
-	ExportCount   int                                 `json:"export_count"`
-	Conversations []SerializedConversation            `json:"conversations"`
-	Validation    *dialogue.ValidationReportSummary   `json:"validation_summary,omitempty"`
-	Errors        []string                            `json:"errors,omitempty"`
+	File          string                            `json:"file"`
+	GameProfile   string                            `json:"game_profile"`
+	Compressed    bool                              `json:"compressed"`
+	Header        pcc.Header                        `json:"header"`
+	ExportCount   int                               `json:"export_count"`
+	Conversations []SerializedConversation          `json:"conversations"`
+	Validation    *dialogue.ValidationReportSummary `json:"validation_summary,omitempty"`
+	Errors        []string                          `json:"errors,omitempty"`
 }
 
 func Run(
@@ -32,6 +32,10 @@ func Run(
 ) (*SerializedOutput, error) {
 	rawData, summary, err := pcc.ReadFileRaw(path)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := summary.RequireME2(); err != nil {
 		return nil, err
 	}
 
@@ -55,11 +59,11 @@ func Run(
 	validationReport := dialogue.BuildValidationReport(result)
 
 	output := &SerializedOutput{
-		File:          summary.Path,
-		GameProfile:   string(summary.GameProfile),
-		Compressed:    summary.Compressed,
-		Header:        summary.Header,
-		ExportCount:   len(summary.Exports),
+		File:        summary.Path,
+		GameProfile: string(summary.GameProfile),
+		Compressed:  summary.Compressed,
+		Header:      summary.Header,
+		ExportCount: len(summary.Exports),
 		Validation: &dialogue.ValidationReportSummary{
 			Total:   validationReport.Summary.Total,
 			Valid:   validationReport.Summary.Valid,

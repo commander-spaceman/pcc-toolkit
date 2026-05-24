@@ -96,3 +96,10 @@ func (h Header) String() string {
 		h.UnrealVersion, h.LicenseeVersion, h.Flags,
 		h.NameCount, h.ExportCount, h.ImportCount)
 }
+
+func (fs *FileSummary) RequireME2() error {
+	if fs.GameProfile != ProfileME2OT {
+		return fmt.Errorf("expected %s package, got %s", ProfileME2OT, fs.GameProfile)
+	}
+	return nil
+}

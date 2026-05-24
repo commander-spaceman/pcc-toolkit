@@ -11,8 +11,8 @@ type Edge struct {
 }
 
 type LayoutResult struct {
-	ConversationID string              `json:"conversation_id"`
-	NodeCount      int                 `json:"node_count"`
+	ConversationID string               `json:"conversation_id"`
+	NodeCount      int                  `json:"node_count"`
 	Positions      map[string][]float64 `json:"positions"`
-	Edges          []Edge              `json:"edges"`
+	Edges          []Edge               `json:"edges"`
 }

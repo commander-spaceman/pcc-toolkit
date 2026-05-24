@@ -1,8 +1,8 @@
 package evidence
 
 type NarrativeProfile struct {
-	Name        string            `json:"name"`
-	Keywords    []string          `json:"keywords"`
+	Name        string             `json:"name"`
+	Keywords    []string           `json:"keywords"`
 	WeightBonus map[string]float64 `json:"weight_bonus,omitempty"`
 }
 

@@ -121,6 +121,11 @@ func cmdParsePcc(args []string) {
 		os.Exit(1)
 	}
 
+	if err := summary.RequireME2(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
 	if *exportsOnly {
 		summary.Names = nil
 		summary.Imports = nil
@@ -145,6 +150,11 @@ func cmdParsePcc(args []string) {
 func cmdExportDetail(path string, index int, pretty bool) {
 	rawData, summary, err := pcc.ReadFileRaw(path)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := summary.RequireME2(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
@@ -204,11 +214,11 @@ func cmdParseTlk(args []string) {
 	}
 
 	type parseTlkOutput struct {
-		File         string        `json:"file"`
-		Header       tlk.Header    `json:"header"`
-		Entries      []tlk.Entry   `json:"entries,omitempty"`
-		Results      []tlk.Entry   `json:"results,omitempty"`
-		TotalEntries int           `json:"total_entries"`
+		File         string      `json:"file"`
+		Header       tlk.Header  `json:"header"`
+		Entries      []tlk.Entry `json:"entries,omitempty"`
+		Results      []tlk.Entry `json:"results,omitempty"`
+		TotalEntries int         `json:"total_entries"`
 	}
 
 	out := parseTlkOutput{
@@ -277,9 +287,9 @@ func cmdResolveTlk(args []string) {
 	}
 
 	type resolveTlkOutput struct {
-		Base    string               `json:"base"`
-		DlcDir  string               `json:"dlc_dir,omitempty"`
-		Results []tlk.ResolveResult  `json:"results"`
+		Base    string              `json:"base"`
+		DlcDir  string              `json:"dlc_dir,omitempty"`
+		Results []tlk.ResolveResult `json:"results"`
 	}
 
 	out := resolveTlkOutput{
@@ -332,6 +342,11 @@ func cmdParseConversations(args []string) {
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := summary.RequireME2(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
@@ -436,6 +451,11 @@ func cmdLayoutGraph(args []string) {
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := summary.RequireME2(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
@@ -586,6 +606,11 @@ func cmdValidate(args []string) {
 		os.Exit(1)
 	}
 
+	if err := summary.RequireME2(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
 	result := dialogue.ParseConversations(summary, rawData, "resilient")
 	report := dialogue.BuildValidationReport(result)
 
@@ -663,12 +688,12 @@ func cmdBatchValidate(args []string) {
 	}
 
 	type BatchResult struct {
-		File        string `json:"file"`
-		Total       int    `json:"total"`
-		Valid       int    `json:"valid"`
-		Warning     int    `json:"warning"`
-		Invalid     int    `json:"invalid"`
-		Error       string `json:"error,omitempty"`
+		File    string `json:"file"`
+		Total   int    `json:"total"`
+		Valid   int    `json:"valid"`
+		Warning int    `json:"warning"`
+		Invalid int    `json:"invalid"`
+		Error   string `json:"error,omitempty"`
 	}
 
 	type BatchReport struct {
@@ -695,6 +720,14 @@ func cmdBatchValidate(args []string) {
 		report.FilesFound++
 		rawData, summary, err := pcc.ReadFileRaw(m)
 		if err != nil {
+			report.FilesError++
+			report.Results = append(report.Results, BatchResult{
+				File:  m,
+				Error: err.Error(),
+			})
+			continue
+		}
+		if err := summary.RequireME2(); err != nil {
 			report.FilesError++
 			report.Results = append(report.Results, BatchResult{
 				File:  m,

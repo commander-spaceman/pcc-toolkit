@@ -32,15 +32,15 @@ type StartNode struct {
 }
 
 type Conversation struct {
-	ID              string       `json:"id"`
-	ExportIndex     int          `json:"export_index"`
-	GameProfile     string       `json:"game_profile"`
-	ParseMode       string       `json:"parse_mode"`
-	Entries         []EntryNode  `json:"entries"`
-	Replies         []ReplyNode  `json:"replies"`
-	Speakers        []Speaker    `json:"speakers"`
-	Starts          []StartNode  `json:"starts"`
-	Warnings        []string     `json:"warnings,omitempty"`
+	ID          string      `json:"id"`
+	ExportIndex int         `json:"export_index"`
+	GameProfile string      `json:"game_profile"`
+	ParseMode   string      `json:"parse_mode"`
+	Entries     []EntryNode `json:"entries"`
+	Replies     []ReplyNode `json:"replies"`
+	Speakers    []Speaker   `json:"speakers"`
+	Starts      []StartNode `json:"starts"`
+	Warnings    []string    `json:"warnings,omitempty"`
 }
 
 type ParseResult struct {

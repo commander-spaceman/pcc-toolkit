@@ -9,11 +9,11 @@ type ValidationIssue struct {
 }
 
 type ValidationResult struct {
-	ConversationID string             `json:"conversation_id"`
-	ExportIndex    int                `json:"export_index"`
-	Status         string             `json:"status"`
-	Issues         []ValidationIssue  `json:"issues,omitempty"`
-	Summary        ValidationSummary  `json:"summary"`
+	ConversationID string            `json:"conversation_id"`
+	ExportIndex    int               `json:"export_index"`
+	Status         string            `json:"status"`
+	Issues         []ValidationIssue `json:"issues,omitempty"`
+	Summary        ValidationSummary `json:"summary"`
 }
 
 type ValidationSummary struct {
@@ -202,13 +202,13 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		// Empty stub — speakers in fallback mode are garbage, ignore them
 		result.addIssue(ValidationIssue{
 			Severity: "info",
-			Message:  "empty stub: no entries or replies" + func() string {
+			Message: "empty stub: no entries or replies" + func() string {
 				if len(conv.Speakers) > 0 && conv.ParseMode != "count_or_value_fallback" {
 					return ", " + itoa(len(conv.Speakers)) + " speakers"
 				}
 				return ""
 			}(),
-			Cause:    "placeholder BioConversation export with no dialogue data — common in level transition and ambient master files",
+			Cause: "placeholder BioConversation export with no dialogue data — common in level transition and ambient master files",
 		})
 	}
 

@@ -16,10 +16,10 @@ func BuildReport(
 	resolver *tlk.Resolver,
 ) *EvidenceReport {
 	report := &EvidenceReport{
-		Query:       query,
-		TlkPath:     tlkPath,
-		DlcDir:      dlcDir,
-		BioGameRoot: bioGameRoot,
+		Query:         query,
+		TlkPath:       tlkPath,
+		DlcDir:        dlcDir,
+		BioGameRoot:   bioGameRoot,
 		FilesScanned:  scanReport.FilesScanned,
 		FilesWithHits: scanReport.FilesWithHits,
 		TotalHits:     scanReport.TotalHits,

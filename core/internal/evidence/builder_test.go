@@ -10,9 +10,9 @@ import (
 
 func TestClassifyTier(t *testing.T) {
 	tests := []struct {
-		className   string
-		hasBioC     bool
-		wantTier    EvidenceTier
+		className string
+		hasBioC   bool
+		wantTier  EvidenceTier
 	}{
 		{"BioConversation", false, TierBioConversation},
 		{"BioConversation", true, TierBioConversation},
@@ -59,7 +59,7 @@ func TestBuildReport(t *testing.T) {
 		TotalHits:     2,
 		Results: []scan.ScanResult{
 			{
-				FilePath: "test.pcc",
+				FilePath:           "test.pcc",
 				HasBioConversation: true,
 				Hits: []scan.ContainerHit{
 					{ContainerHit: pcc.ContainerHit{StrRef: 42, ExportIndex: 0, ClassName: "BioConversation", ExportName: "BioD_Test_Conv1"}},

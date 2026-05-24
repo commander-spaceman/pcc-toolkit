@@ -14,6 +14,41 @@ func ReadFile(path string) (*FileSummary, error) {
 	return ReadFileFromBytes(data, path)
 }
 
+func ReadFileHeaderOnly(path string) (*FileSummary, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("read file: %w", err)
+	}
+
+	header, err := parsePccHeader(data)
+	if err != nil {
+		return nil, fmt.Errorf("parse header: %w", err)
+	}
+
+	profile := InferGameProfile(header.UnrealVersion, header.LicenseeVersion)
+	compressed := header.Flags&CompressedFlag != 0
+
+	if compressed {
+		decompressed, decErr := decompressME2OT(data)
+		if decErr != nil {
+			return nil, fmt.Errorf("decompress: %w", decErr)
+		}
+		header, err = parsePccHeader(decompressed)
+		if err != nil {
+			return nil, fmt.Errorf("parse header after decompress: %w", err)
+		}
+		profile = InferGameProfile(header.UnrealVersion, header.LicenseeVersion)
+	}
+
+	return &FileSummary{
+		Path:        path,
+		GameProfile: profile,
+		Compressed:  compressed,
+		Header:      header,
+		Exports:     nil,
+	}, nil
+}
+
 func ReadFileFromBytes(data []byte, path string) (*FileSummary, error) {
 	header, err := parsePccHeader(data)
 	if err != nil {

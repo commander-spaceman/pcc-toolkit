@@ -333,3 +333,40 @@ func TestMapOffsetsToContainers(t *testing.T) {
 		t.Errorf("wrong export mapping: %v", hits)
 	}
 }
+
+func TestReadFileFromBytes_ME2OT(t *testing.T) {
+	data := buildMinimalPCC(512, 130)
+	summary, err := ReadFileFromBytes(data, "test.pcc")
+	if err != nil {
+		t.Fatalf("ReadFileFromBytes: %v", err)
+	}
+	if summary.GameProfile != ProfileME2OT {
+		t.Errorf("GameProfile = %q, want %q", summary.GameProfile, ProfileME2OT)
+	}
+	if summary.Compressed {
+		t.Error("Compressed should be false")
+	}
+	if summary.Header.UnrealVersion != 512 {
+		t.Errorf("UV = %d, want 512", summary.Header.UnrealVersion)
+	}
+	if summary.Names == nil {
+		t.Error("Names should not be nil for ReadFileFromBytes")
+	}
+}
+
+func TestRequireME2(t *testing.T) {
+	fs := &FileSummary{GameProfile: ProfileME2OT}
+	if err := fs.RequireME2(); err != nil {
+		t.Errorf("RequireME2 should pass for me2_ot: %v", err)
+	}
+
+	fs.GameProfile = ProfileLE2
+	if err := fs.RequireME2(); err == nil {
+		t.Error("RequireME2 should fail for le2")
+	}
+
+	fs.GameProfile = ProfileUnknown
+	if err := fs.RequireME2(); err == nil {
+		t.Error("RequireME2 should fail for unknown")
+	}
+}

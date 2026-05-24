@@ -29,11 +29,11 @@ type PropertyTag struct {
 }
 
 type ArrayLayoutInfo struct {
-	Count         int  `json:"count"`
-	PayloadSize   int  `json:"payload_size"`
-	BytesPerItem  *int `json:"bytes_per_item,omitempty"`
-	Remainder     int  `json:"remainder"`
-	IsTightI32    bool `json:"is_tight_i32"`
+	Count        int  `json:"count"`
+	PayloadSize  int  `json:"payload_size"`
+	BytesPerItem *int `json:"bytes_per_item,omitempty"`
+	Remainder    int  `json:"remainder"`
+	IsTightI32   bool `json:"is_tight_i32"`
 }
 
 func ParsePropertyTags(data []byte, names []string, startOffset, size int, strict bool) ([]PropertyTag, error) {
@@ -528,8 +528,8 @@ func AnalyzeArrayPropertyLayout(data []byte, tag PropertyTag) ArrayLayoutInfo {
 	bpi := payloadSize / count
 	rem := payloadSize % count
 	return ArrayLayoutInfo{
-		Count:       count,
-		PayloadSize: payloadSize,
+		Count:        count,
+		PayloadSize:  payloadSize,
 		BytesPerItem: &bpi,
 		Remainder:    rem,
 		IsTightI32:   rem == 0 && bpi == 4,

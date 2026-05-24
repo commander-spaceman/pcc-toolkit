@@ -115,9 +115,9 @@ func ParsePropertyCollection(data []byte, names []string, startOffset, maxSize i
 					pSize = 0
 				}
 				value = map[string]interface{}{
-					"count":           count,
-					"payload_offset":  valueOffset + 4,
-					"payload_size":    pSize,
+					"count":          count,
+					"payload_offset": valueOffset + 4,
+					"payload_size":   pSize,
 				}
 			}
 		case "StructProperty":

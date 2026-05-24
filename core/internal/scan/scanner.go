@@ -72,7 +72,7 @@ func ScanFile(path string, candidates []int32) (*ScanResult, error) {
 
 	if len(candidates) == 0 {
 		return &ScanResult{
-			FilePath:         path,
+			FilePath:           path,
 			HasBioConversation: hasBioC,
 		}, nil
 	}
@@ -82,7 +82,7 @@ func ScanFile(path string, candidates []int32) (*ScanResult, error) {
 	hits := pcc.MapOffsetsToContainers(summary.Exports, strRefOffsets, len(decompressed))
 
 	result := &ScanResult{
-		FilePath:         path,
+		FilePath:           path,
 		HasBioConversation: hasBioC,
 	}
 
@@ -122,8 +122,8 @@ func RunWithCache(files []FileEntry, candidates []int32, workers int, cache *Fil
 				}
 			}
 			cachedResults = append(cachedResults, ScanResult{
-				FilePath:         f.Path,
-				Hits:             hits,
+				FilePath:           f.Path,
+				Hits:               hits,
 				HasBioConversation: hasBioC,
 			})
 		} else {

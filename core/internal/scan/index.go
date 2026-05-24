@@ -12,10 +12,10 @@ type FileIndex struct {
 }
 
 type FileIndexEntry struct {
-	Path       string `json:"path"`
-	Hash       string `json:"hash"`
-	Size       int64  `json:"size"`
-	ModTime    int64  `json:"mod_time"`
+	Path    string `json:"path"`
+	Hash    string `json:"hash"`
+	Size    int64  `json:"size"`
+	ModTime int64  `json:"mod_time"`
 }
 
 func LoadIndex(path string) (*FileIndex, error) {

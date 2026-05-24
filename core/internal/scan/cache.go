@@ -11,10 +11,10 @@ import (
 const cacheVersion = 1
 
 type FileCacheEntry struct {
-	Size              int64  `json:"size"`
-	ModTime           int64  `json:"modtime"`
-	StrRefs           []int  `json:"strrefs"`
-	HasBioConversation  bool  `json:"has_bioconversation"`
+	Size               int64 `json:"size"`
+	ModTime            int64 `json:"modtime"`
+	StrRefs            []int `json:"strrefs"`
+	HasBioConversation bool  `json:"has_bioconversation"`
 }
 
 type FileCache struct {
@@ -68,9 +68,9 @@ func (fc *FileCache) SetEntry(filename string, size int64, modtime int64, strref
 	copy(sorted, strrefs)
 	sort.Ints(sorted)
 	fc.Files[key] = FileCacheEntry{
-		Size:              size,
-		ModTime:           modtime,
-		StrRefs:           sorted,
+		Size:               size,
+		ModTime:            modtime,
+		StrRefs:            sorted,
 		HasBioConversation: hasBioC,
 	}
 }
