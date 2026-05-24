@@ -99,6 +99,34 @@ func TestBuildDumpLines_EmptySpeakerTagFallback(t *testing.T) {
 
 	output := BuildDumpLines(result)
 
+	if output.Lines[0].SpeakerTag != "owner" {
+		t.Errorf("SpeakerTag = %q, want owner", output.Lines[0].SpeakerTag)
+	}
+}
+
+func TestBuildDumpLines_EmptySpeakerTagUsesSpeakerID(t *testing.T) {
+	playerID := -2
+	result := &dialogue.ParseResult{
+		File:        "test.pcc",
+		GameProfile: "me2_ot",
+		Conversations: []dialogue.Conversation{
+			{
+				ID:          "TestConv_02",
+				ExportIndex: 1,
+				GameProfile: "me2_ot",
+				ParseMode:   "row_payload_struct_matrix",
+				Entries: []dialogue.EntryNode{
+					{ID: 0, SpeakerID: &playerID, LineStrRef: intPtr(50), LineText: "..."},
+				},
+				Speakers: []dialogue.Speaker{
+					{ID: -2, Tag: "player"},
+				},
+			},
+		},
+	}
+
+	output := BuildDumpLines(result)
+
 	if output.Lines[0].SpeakerTag != "player" {
 		t.Errorf("SpeakerTag = %q, want player", output.Lines[0].SpeakerTag)
 	}
@@ -135,7 +163,7 @@ func TestResolveSpeakerTag_FindsFriendlyName(t *testing.T) {
 		{ID: 1, Tag: "tali", FriendlyName: "Tali'Zorah"},
 	}
 
-	got := resolveSpeakerTag("garrus", speakers)
+	got := resolveEntrySpeakerTag("garrus", nil, speakers)
 	if got != "Garrus Vakarian" {
 		t.Errorf("resolveSpeakerTag = %q, want Garrus Vakarian", got)
 	}
@@ -143,7 +171,7 @@ func TestResolveSpeakerTag_FindsFriendlyName(t *testing.T) {
 
 func TestResolveSpeakerTag_ReturnsTagWhenNoMatch(t *testing.T) {
 	speakers := []dialogue.Speaker{}
-	got := resolveSpeakerTag("unknown_tag", speakers)
+	got := resolveEntrySpeakerTag("unknown_tag", nil, speakers)
 	if got != "unknown_tag" {
 		t.Errorf("resolveSpeakerTag = %q, want unknown_tag", got)
 	}

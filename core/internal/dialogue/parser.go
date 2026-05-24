@@ -179,11 +179,17 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		semanticMode = true
 	}
 
-	missingKeys := []string{}
-	for _, key := range []string{"m_EntryList", "EntryList", "m_ReplyList", "ReplyList", "m_SpeakerList", "SpeakerList"} {
-		if _, ok := tagMap[key]; ok {
-			missingKeys = nil
-			break
+	var missingKeys []string
+	for _, group := range [][]string{{"m_EntryList", "EntryList"}, {"m_ReplyList", "ReplyList"}, {"m_SpeakerList", "SpeakerList"}} {
+		found := false
+		for _, key := range group {
+			if _, ok := tagMap[key]; ok {
+				found = true
+				break
+			}
+		}
+		if !found {
+			missingKeys = append(missingKeys, group[0])
 		}
 	}
 	if len(missingKeys) > 0 && !semanticMode {

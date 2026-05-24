@@ -6,7 +6,7 @@ func buildEntriesRowMode(entryRows, entryMatrix [][]int, schema ConversationList
 	entries := make([]EntryNode, len(entryRows))
 	for idx, row := range entryRows {
 		var speakerID *int
-		if row[1] >= 0 {
+		if len(row) > 1 {
 			speakerID = &row[1]
 		}
 		var lineStrRef *int

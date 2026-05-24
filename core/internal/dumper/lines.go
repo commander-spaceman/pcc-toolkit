@@ -42,7 +42,7 @@ func BuildDumpLines(result *dialogue.ParseResult) *DumpLinesOutput {
 				ExportIndex:    conv.ExportIndex,
 				NodeType:       "entry",
 				NodeID:         entry.ID,
-				SpeakerTag:     resolveSpeakerTag(entry.SpeakerTag, conv.Speakers),
+				SpeakerTag:     resolveEntrySpeakerTag(entry.SpeakerTag, entry.SpeakerID, conv.Speakers),
 				StrRef:         strref,
 				LineText:       entry.LineText,
 				File:           result.File,
@@ -74,11 +74,19 @@ func BuildDumpLines(result *dialogue.ParseResult) *DumpLinesOutput {
 	return output
 }
 
-func resolveSpeakerTag(tag string, speakers []dialogue.Speaker) string {
+func resolveEntrySpeakerTag(tag string, speakerID *int, speakers []dialogue.Speaker) string {
 	if tag == "" {
-		for _, s := range speakers {
-			if s.ID == -2 {
+		if speakerID != nil {
+			for _, s := range speakers {
+				if s.ID == *speakerID {
+					return displaySpeakerTag(s)
+				}
+			}
+			if *speakerID == -2 {
 				return "player"
+			}
+			if *speakerID == -1 {
+				return "owner"
 			}
 		}
 		return "owner"
@@ -92,4 +100,20 @@ func resolveSpeakerTag(tag string, speakers []dialogue.Speaker) string {
 		}
 	}
 	return tag
+}
+
+func displaySpeakerTag(s dialogue.Speaker) string {
+	if s.FriendlyName != "" {
+		return s.FriendlyName
+	}
+	if s.Tag != "" {
+		return s.Tag
+	}
+	if s.ID == -2 {
+		return "player"
+	}
+	if s.ID == -1 {
+		return "owner"
+	}
+	return "owner"
 }

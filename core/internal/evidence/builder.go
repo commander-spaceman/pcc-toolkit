@@ -123,6 +123,11 @@ type nodeInfo struct {
 	conversationID string
 }
 
+type nodeKey struct {
+	exportIndex int
+	strRef      int
+}
+
 func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 	filesToParse := make(map[string]bool)
 	for i := range report.Evidence {
@@ -136,7 +141,7 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 		return
 	}
 
-	fileNodeMaps := make(map[string]map[int]nodeInfo)
+	fileNodeMaps := make(map[string]map[nodeKey][]nodeInfo)
 	fileOwnerMaps := make(map[string]map[string]string)
 
 	for filePath := range filesToParse {
@@ -145,28 +150,30 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 			continue
 		}
 		result := dialogue.ParseConversations(summary, rawData, "resilient")
-		strRefMap := make(map[int]nodeInfo)
+		strRefMap := make(map[nodeKey][]nodeInfo)
 		for _, conv := range result.Conversations {
 			for _, entry := range conv.Entries {
 				if entry.LineStrRef != nil && *entry.LineStrRef > 0 {
-					strRefMap[*entry.LineStrRef] = nodeInfo{
+					key := nodeKey{exportIndex: conv.ExportIndex, strRef: *entry.LineStrRef}
+					strRefMap[key] = append(strRefMap[key], nodeInfo{
 						nodeType:       "entry",
 						nodeID:         entry.ID,
 						speakerTag:     entry.SpeakerTag,
 						listenerTag:    entry.ListenerTag,
 						conversationID: conv.ID,
-					}
+					})
 				}
 			}
 			for _, reply := range conv.Replies {
 				if reply.LineStrRef != nil && *reply.LineStrRef > 0 {
-					strRefMap[*reply.LineStrRef] = nodeInfo{
+					key := nodeKey{exportIndex: conv.ExportIndex, strRef: *reply.LineStrRef}
+					strRefMap[key] = append(strRefMap[key], nodeInfo{
 						nodeType:       "reply",
 						nodeID:         reply.ID,
 						speakerTag:     "player",
 						listenerTag:    "",
 						conversationID: conv.ID,
-					}
+					})
 				}
 			}
 		}
@@ -185,7 +192,8 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 		for j := range ev.BioConversation {
 			cm := &ev.BioConversation[j]
 			if nodeMap, ok := fileNodeMaps[cm.FilePath]; ok {
-				if info, ok := nodeMap[cm.StrRef]; ok {
+				if infos, ok := nodeMap[nodeKey{exportIndex: cm.ExportIndex, strRef: cm.StrRef}]; ok && len(infos) == 1 {
+					info := infos[0]
 					cm.NodeType = info.nodeType
 					cm.NodeID = info.nodeID
 					cm.SpeakerTag = info.speakerTag

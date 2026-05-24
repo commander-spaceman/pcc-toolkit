@@ -728,8 +728,6 @@ func cmdValidate(args []string) {
 	result := dialogue.ParseConversations(summary, rawData, "resilient")
 	report := dialogue.BuildValidationReport(result)
 
-	_ = strict
-
 	var enc *json.Encoder
 	if *pretty {
 		enc = json.NewEncoder(os.Stdout)
@@ -739,6 +737,9 @@ func cmdValidate(args []string) {
 	}
 	if err := enc.Encode(report); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+	if validationFailed(report.Summary.Invalid, report.Summary.Warning, *strict) {
 		os.Exit(1)
 	}
 }
@@ -829,8 +830,6 @@ func cmdBatchValidate(args []string) {
 		Pattern: *globFlag,
 	}
 
-	_ = strict
-
 	for _, m := range matches {
 		report.FilesFound++
 		rawData, summary, err := pcc.ReadFileRaw(m)
@@ -896,6 +895,16 @@ func cmdBatchValidate(args []string) {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}
+	if validationFailed(report.Invalid, report.Warning, *strict) {
+		os.Exit(1)
+	}
+}
+
+func validationFailed(invalid, warning int, strict bool) bool {
+	if invalid > 0 {
+		return true
+	}
+	return strict && warning > 0
 }
 
 func cmdBatchExtract(args []string) {

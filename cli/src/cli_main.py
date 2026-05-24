@@ -342,10 +342,6 @@ def dialogue_graph(
         typer.echo(f"  {key}: ({pos[0]:.1f}, {pos[1]:.1f})")
 
 
-if __name__ == "__main__":
-    main()
-
-
 # ── batch ────────────────────────────────────────────────────────────────────
 
 @batch_app.command("validate")
@@ -427,3 +423,7 @@ def evidence_scan(
         return
 
     evidence_report(result)
+
+
+if __name__ == "__main__":
+    main()

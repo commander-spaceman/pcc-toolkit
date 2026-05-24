@@ -102,7 +102,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 	for idx, item := range entryItems {
 		var speakerID *int
 		if spk, ok := item["nSpeakerIndex"]; ok {
-			if v, ok := spk.Value.(int); ok && v >= 0 {
+			if v, ok := spk.Value.(int); ok {
 				speakerID = &v
 			}
 		}
