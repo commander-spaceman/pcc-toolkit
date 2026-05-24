@@ -444,6 +444,32 @@ func ReadArrayPropertyPayloadInfo(data []byte, tag PropertyTag) (int, int, int) 
 	return count, payloadStart, payloadSize
 }
 
+func ReadArrayPropertyPayloadInfoWithStructMeta(data []byte, names []string, tag PropertyTag) (int, int, int) {
+	vo := tag.ValueOffset
+	if vo+4 > len(data) || tag.PropType != "ArrayProperty" {
+		return 0, vo, tag.Size
+	}
+
+	firstAtVo := readI32(data, vo)
+	if firstAtVo > 0 && firstAtVo <= 200000 && firstAtVo*4 <= tag.Size {
+		return ReadArrayPropertyPayloadInfo(data, tag)
+	}
+
+	if vo+8 <= len(data) {
+		count := readI32(data, vo+4)
+		if count > 0 && count <= 200000 {
+			payloadStart := vo + 8
+			payloadSize := tag.Size - 8
+			if payloadSize < 0 {
+				payloadSize = 0
+			}
+			return count, payloadStart, payloadSize
+		}
+	}
+
+	return ReadArrayPropertyPayloadInfo(data, tag)
+}
+
 func resolveArrayCountAndPayloadStart(data []byte, tag PropertyTag) (int, int) {
 	if tag.ValueOffset+4 > len(data) {
 		return 0, tag.ValueOffset
@@ -494,6 +520,131 @@ func ReadArrayPropertyI32Values(data []byte, tag PropertyTag) []int {
 		cursor += 4
 	}
 	return values
+}
+
+func ReadObjectPropertyValue(data []byte, tag PropertyTag) int {
+	if tag.PropType != "ObjectProperty" {
+		return -1
+	}
+	if tag.ValueOffset+4 > len(data) {
+		return -1
+	}
+	return readI32(data, tag.ValueOffset)
+}
+
+func ReadArrayPropertyObjectValues(data []byte, tag PropertyTag) []int {
+	return ReadArrayPropertyI32Values(data, tag)
+}
+
+func FindExtraPropertyTags(data []byte, names []string, serialOffset, serialSize int, wantedNames []string) map[string]PropertyTag {
+	nameToIdx := map[string]int{}
+	for i, n := range names {
+		nameToIdx[n] = i
+	}
+
+	keyNameIndices := map[int]string{}
+	for _, n := range wantedNames {
+		if idx, ok := nameToIdx[n]; ok {
+			keyNameIndices[idx] = n
+		}
+	}
+	if len(keyNameIndices) == 0 {
+		return nil
+	}
+
+	start := serialOffset
+	end := serialOffset + serialSize
+	if start < 0 || end > len(data) || start >= end {
+		return nil
+	}
+
+	found := map[string]PropertyTag{}
+	wantedNamesIdx := map[int]bool{}
+	for idx := range keyNameIndices {
+		wantedNamesIdx[idx] = true
+	}
+
+	resolveIdx := func(a, b int) int {
+		if _, ok := keyNameIndices[a]; ok {
+			return a
+		}
+		if _, ok := keyNameIndices[b]; ok {
+			return b
+		}
+		return -1
+	}
+
+	limit := end - 24
+	if limit < start {
+		limit = start
+	}
+	for pos := start; pos < limit; pos += 4 {
+		if pos+24 > end {
+			break
+		}
+		nameA := readI32(data, pos)
+		nameB := readI32(data, pos+4)
+		typeA := readI32(data, pos+8)
+		typeB := readI32(data, pos+12)
+
+		nameIdx := resolveIdx(nameA, nameB)
+		if nameIdx < 0 {
+			continue
+		}
+
+		typeIdx := resolveIdx(typeA, typeB)
+		typeAName := resolveName(typeA, names)
+		typeBName := resolveName(typeB, names)
+		if !PropertyTypeNames[typeAName] && !PropertyTypeNames[typeBName] {
+			continue
+		}
+		_ = typeIdx
+
+		propName := keyNameIndices[nameIdx]
+		if _, ok := found[propName]; ok {
+			continue
+		}
+
+		sizePos := pos + 8 + 8
+		if sizePos+8 > end {
+			continue
+		}
+		propSize := readI32(data, sizePos)
+		arrayIdx := readI32(data, sizePos+4)
+		if propSize < 0 || propSize > serialSize-(pos-start) {
+			continue
+		}
+
+		var propType string
+		if PropertyTypeNames[typeAName] {
+			propType = typeAName
+		} else {
+			propType = typeBName
+		}
+
+		valueOffset := sizePos + 8
+		if propType == "StructProperty" || propType == "ByteProperty" {
+			valueOffset += 8
+		} else if propType == "ArrayProperty" {
+			valueOffset += 16
+		}
+		if valueOffset+propSize > end {
+			continue
+		}
+
+		found[propName] = PropertyTag{
+			Name:        propName,
+			PropType:    propType,
+			Size:        propSize,
+			ArrayIndex:  arrayIdx,
+			ValueOffset: valueOffset,
+		}
+
+		if len(found) == len(wantedNames) {
+			break
+		}
+	}
+	return found
 }
 
 func ReadArrayPropertyI32Rows(data []byte, tag PropertyTag, itemWidth int) [][]int {

@@ -7,9 +7,13 @@ import (
 )
 
 type semanticResult struct {
-	entries  []EntryNode
-	replies  []ReplyNode
-	speakers []Speaker
+	entries          []EntryNode
+	replies          []ReplyNode
+	speakers         []Speaker
+	scriptList       []ScriptEntry
+	matineeSeqExport *int
+	faceFXMale       map[int]int
+	faceFXFemale     map[int]int
 }
 
 func findReplyChoicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty, entryID int) []ReplyChoice {
@@ -416,7 +420,50 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 		}
 	}
 
-	return &semanticResult{entries, replies, speakers}
+	var scriptList []ScriptEntry
+	scriptList = append(scriptList, ScriptEntry{ID: 0, Tag: "None", Name: "None"})
+	if tag, ok := lookupTag("m_ScriptList", "ScriptList"); ok {
+		scCount, scPayload, scPayloadSize := pcc.ReadArrayPropertyPayloadInfoWithStructMeta(data, names, tag)
+		if scCount > 0 && scPayloadSize > 0 {
+			scriptItems := parseStructArraySchemaGuided(data, names, "BioDialogScript", scPayload, scPayloadSize, scCount)
+			if len(scriptItems) == 0 {
+				scriptItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, scPayload, scPayloadSize, scCount)
+			}
+			for idx, item := range scriptItems {
+				var scriptTag string
+				if tp, ok := item["sScriptTag"]; ok {
+					if s, ok := tp.Value.(string); ok {
+						scriptTag = s
+					}
+				}
+				scriptList = append(scriptList, ScriptEntry{ID: idx + 1, Tag: scriptTag, Name: scriptTag})
+			}
+		}
+	}
+
+	var matineeSeqExport *int
+	if matTag, ok := lookupTag("MatineeSequence"); ok {
+		if val := pcc.ReadObjectPropertyValue(data, matTag); val >= 0 {
+			matineeSeqExport = &val
+		}
+	}
+
+	faceFXMale := map[int]int{}
+	faceFXFemale := map[int]int{}
+	if mTag, ok := lookupTag("m_aMaleFaceSets"); ok {
+		vals := pcc.ReadArrayPropertyObjectValues(data, mTag)
+		for spkID, uid := range vals {
+			faceFXMale[spkID-2] = uid
+		}
+	}
+	if fTag, ok := lookupTag("m_aFemaleFaceSets"); ok {
+		vals := pcc.ReadArrayPropertyObjectValues(data, fTag)
+		for spkID, uid := range vals {
+			faceFXFemale[spkID-2] = uid
+		}
+	}
+
+	return &semanticResult{entries, replies, speakers, scriptList, matineeSeqExport, faceFXMale, faceFXFemale}
 }
 
 func parseSpeakersDirect(data []byte, names []string, payloadStart, payloadSize, count int) []Speaker {
@@ -465,7 +512,7 @@ func parseStructArraySchemaGuided(data []byte, names []string, structType string
 	}
 
 	expectedFirstProp := ""
-	for _, propName := range []string{"nIndex", "srText", "sSpeakerTag", "nSpeakerIndex"} {
+	for _, propName := range []string{"nIndex", "srText", "sSpeakerTag", "nSpeakerIndex", "sScriptTag"} {
 		if _, ok := structProps[propName]; ok {
 			expectedFirstProp = propName
 			break

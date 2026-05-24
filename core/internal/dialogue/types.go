@@ -10,6 +10,12 @@ type ReplyChoice struct {
 	Category         string `json:"category,omitempty"`
 }
 
+type ScriptEntry struct {
+	ID   int    `json:"id"`
+	Tag  string `json:"tag,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
 type EntryNode struct {
 	ID                   int           `json:"id"`
 	SpeakerID            *int          `json:"speaker_id,omitempty"`
@@ -25,6 +31,7 @@ type EntryNode struct {
 	StateTransition      *int          `json:"state_transition,omitempty"`
 	StateTransitionParam *int          `json:"state_transition_param,omitempty"`
 	ScriptIndex          *int          `json:"script_index,omitempty"`
+	ScriptName           string        `json:"script_name,omitempty"`
 	FiresConditional     *bool         `json:"fires_conditional,omitempty"`
 	ExportID             *int          `json:"export_id,omitempty"`
 	Skippable            *bool         `json:"skippable,omitempty"`
@@ -47,6 +54,7 @@ type ReplyNode struct {
 	StateTransition      *int     `json:"state_transition,omitempty"`
 	StateTransitionParam *int     `json:"state_transition_param,omitempty"`
 	ScriptIndex          *int     `json:"script_index,omitempty"`
+	ScriptName           string   `json:"script_name,omitempty"`
 	FiresConditional     *bool    `json:"fires_conditional,omitempty"`
 	ExportID             *int     `json:"export_id,omitempty"`
 	Unskippable          *bool    `json:"unskippable,omitempty"`
@@ -57,11 +65,13 @@ type ReplyNode struct {
 }
 
 type Speaker struct {
-	ID           int    `json:"id"`
-	Tag          string `json:"tag,omitempty"`
-	DisplayName  string `json:"display_name,omitempty"`
-	StrRefID     *int   `json:"strref_id,omitempty"`
-	FriendlyName string `json:"friendly_name,omitempty"`
+	ID                int    `json:"id"`
+	Tag               string `json:"tag,omitempty"`
+	DisplayName       string `json:"display_name,omitempty"`
+	StrRefID          *int   `json:"strref_id,omitempty"`
+	FriendlyName      string `json:"friendly_name,omitempty"`
+	FaceFXMaleAnimSet *int   `json:"facefx_male_animset,omitempty"`
+	FaceFXFemAnimSet  *int   `json:"facefx_female_animset,omitempty"`
 }
 
 type StartNode struct {
@@ -71,15 +81,17 @@ type StartNode struct {
 }
 
 type Conversation struct {
-	ID          string      `json:"id"`
-	ExportIndex int         `json:"export_index"`
-	GameProfile string      `json:"game_profile"`
-	ParseMode   string      `json:"parse_mode"`
-	Entries     []EntryNode `json:"entries"`
-	Replies     []ReplyNode `json:"replies"`
-	Speakers    []Speaker   `json:"speakers"`
-	Starts      []StartNode `json:"starts"`
-	Warnings    []string    `json:"warnings,omitempty"`
+	ID                      string        `json:"id"`
+	ExportIndex             int           `json:"export_index"`
+	GameProfile             string        `json:"game_profile"`
+	ParseMode               string        `json:"parse_mode"`
+	Entries                 []EntryNode   `json:"entries"`
+	Replies                 []ReplyNode   `json:"replies"`
+	Speakers                []Speaker     `json:"speakers"`
+	Starts                  []StartNode   `json:"starts"`
+	ScriptList              []ScriptEntry `json:"script_list,omitempty"`
+	MatineeSequenceExportID *int          `json:"matinee_sequence_export_id,omitempty"`
+	Warnings                []string      `json:"warnings,omitempty"`
 }
 
 type ParseResult struct {

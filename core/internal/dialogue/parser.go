@@ -87,6 +87,18 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		tagMap[tag.Name] = tag
 	}
 
+	extraWanted := map[string]bool{
+		"m_ScriptList": true, "ScriptList": true,
+		"MatineeSequence": true,
+		"m_aMaleFaceSets": true, "m_aFemaleFaceSets": true,
+	}
+	allTags, _ := pcc.ParsePropertyTags(data, names, 0, len(data), false)
+	for _, tag := range allTags {
+		if extraWanted[tag.Name] {
+			tagMap[tag.Name] = tag
+		}
+	}
+
 	lookupTag := func(keys ...string) (pcc.PropertyTag, bool) {
 		for _, key := range keys {
 			if t, ok := tagMap[key]; ok {
@@ -388,16 +400,58 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	speakers = ensurePlayerAndOwnerSpeakers(speakers)
 	resolveSpeakerTags(entries, speakers)
 
+	var scriptList []ScriptEntry
+	var matineeSeqExport *int
+	if semanticNodes != nil {
+		scriptList = semanticNodes.scriptList
+
+		if semanticNodes.matineeSeqExport != nil {
+			matineeSeqExport = semanticNodes.matineeSeqExport
+		}
+
+		if len(semanticNodes.faceFXMale) > 0 || len(semanticNodes.faceFXFemale) > 0 {
+			for i := range speakers {
+				if uid, ok := semanticNodes.faceFXMale[speakers[i].ID]; ok {
+					speakers[i].FaceFXMaleAnimSet = &uid
+				}
+				if uid, ok := semanticNodes.faceFXFemale[speakers[i].ID]; ok {
+					speakers[i].FaceFXFemAnimSet = &uid
+				}
+			}
+		}
+
+		if len(scriptList) > 0 {
+			for i := range entries {
+				if entries[i].ScriptIndex != nil {
+					idx := *entries[i].ScriptIndex + 1
+					if idx >= 0 && idx < len(scriptList) {
+						entries[i].ScriptName = scriptList[idx].Name
+					}
+				}
+			}
+			for i := range replies {
+				if replies[i].ScriptIndex != nil {
+					idx := *replies[i].ScriptIndex + 1
+					if idx >= 0 && idx < len(scriptList) {
+						replies[i].ScriptName = scriptList[idx].Name
+					}
+				}
+			}
+		}
+	}
+
 	return &Conversation{
-		ID:          exportName(export),
-		ExportIndex: export.Index,
-		GameProfile: gameProfile,
-		ParseMode:   parseMode,
-		Entries:     entries,
-		Replies:     replies,
-		Speakers:    speakers,
-		Starts:      starts,
-		Warnings:    warnings,
+		ID:                      exportName(export),
+		ExportIndex:             export.Index,
+		GameProfile:             gameProfile,
+		ParseMode:               parseMode,
+		Entries:                 entries,
+		Replies:                 replies,
+		Speakers:                speakers,
+		Starts:                  starts,
+		ScriptList:              scriptList,
+		MatineeSequenceExportID: matineeSeqExport,
+		Warnings:                warnings,
 	}, nil
 }
 
