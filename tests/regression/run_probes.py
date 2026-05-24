@@ -1,11 +1,11 @@
-"""Regression probe runner for Phase 10 QA.
+r"""Regression probe runner for Phase 10 QA.
 
 Runs pcc-core against sample files, validates output shape,
 and optionally regenerates golden files.
 
 Usage:
-    python tests/regression/run_probes.py --samples-dir samples/
-    python tests/regression/run_probes.py --samples-dir samples/ --regenerate
+    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone
+    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone --regenerate
 """
 
 import argparse
@@ -18,7 +18,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
-SAMPLES_DIR = REPO_ROOT / "samples"
+SAMPLES_DIR = REPO_ROOT / "dropzone"
 
 PROBES = [
     {

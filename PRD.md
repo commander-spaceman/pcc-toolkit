@@ -12,7 +12,7 @@ A unified CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effec
 
 ### Guiding Principles
 
-- **Go core = ALL domain logic**: parsing, AST building, graph layout, evidence assembly, serialization, validation. Nothing domain-related lives in Python.
+- **Go core = ALL domain logic**: parsing, AST building, graph layout, evidence assembly, line dumping, owner scanning, serialization, validation. Nothing domain-related lives in Python.
 - **CLI = thin dispatch layer**: parse args, call Go core via subprocess, format output. Zero domain logic.
 - **GUI = pure renderer**: call Go core for data, render ImGui widgets. No parsing, no AST, no layout math.
 - **JSON contract over stdout**: Go core speaks structured JSON; CLI and GUI consume it.
@@ -76,6 +76,8 @@ A unified CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effec
 | Evidence scanning | **All** | — | — |
 | Evidence report assembly | **All** | — | — |
 | Narrative profiling | **All** | — | — |
+| Dialogue line dumping | **All** | — | — |
+| Conversation owner scanning | **All** | — | — |
 | Validation | **All** | — | — |
 | JSON serialization | **All** | — | — |
 | Batch aggregation | **All** | — | — |
@@ -93,99 +95,67 @@ A unified CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effec
 ## 3. Directory Structure
 
 ```
-tools/pcc-toolkit-v2/
-├── README.md
-├── PRD.md                        # This document
-├── pyproject.toml                   # Python project: CLI + GUI deps, scripts
+pcc-toolkit/
+├── AGENTS.md                        # Agent operating rules and verification workflow
+├── MAP.md                           # Fast repository navigation
+├── PRD.md                           # This document
+├── README.md                        # Project overview
+├── pyproject.toml                   # Python project metadata and pcc-toolkit script
+├── pytest.ini                       # Pytest config; pythonpath points at cli/src
+├── requirements.txt                 # Local Python dependency list
 │
 ├── core/                            # Go — ALL domain logic
 │   ├── go.mod
-│   ├── go.sum
 │   ├── cmd/
 │   │   └── pcc-core/
 │   │       └── main.go              # Single binary, subcommand dispatch
 │   └── internal/
-│       ├── pcc/                     # PCC file parsing
-│       │   ├── reader.go            # Header, name/import/export tables
-│   │   ├── decompress.go        # LZO decompression (ME2 OT only)
-│       │   ├── containers.go        # Offset-to-export mapping
-│       │   ├── strings.go           # Unreal string reading, name resolution
-│       │   ├── properties.go        # Property tag parser (ported from Python)
-│       │   ├── unreal_props.go      # Semantic struct property parser (ported from Python)
-│       │   ├── types.go             # pccHeader, pccExport, PropertyTag, etc.
-│       │   └── reader_test.go
-│       ├── dialogue/                # BioConversation parsing + AST
-│       │   ├── ast.go               # EntryNode, ReplyNode, Speaker, Conversation types
-│       │   ├── parser.go            # Multi-mode conversation parser (ported from Python)
-│       │   ├── schema.go            # ME2 OT column schema
-│       │   ├── validate.go          # Conversation validation
-│       │   └── parser_test.go
-│       ├── tlk/                     # TLK handling
-│       │   ├── reader.go            # TLK binary parser + Huffman decode
-│       │   ├── resolver.go          # DLC priority resolution (ported from Python)
-│       │   ├── types.go             # TlkFile, TlkEntry
-│       │   └── reader_test.go
-│       ├── scan/                    # Parallel file scanning
-│       │   ├── scanner.go           # Run, ParseStrrefs, findOffsets
-│       │   ├── files.go             # CollectPccFiles
-│       │   ├── index.go             # LoadIndex, SplitChangedFiles
-│       │   ├── types.go             # Result, FileEntry, ContainerHit, Report
-│       │   └── scanner_test.go
-│       ├── evidence/                # Evidence/narrative search
-│       │   ├── builder.go           # Tiered evidence assembly
-│       │   ├── profile.go           # Narrative contextual profiles
-│       │   └── builder_test.go
-│       ├── graph/                   # Graph layout computation
-│       │   ├── layout.go            # Sugiyama layout (ported from Python)
-│       │   └── layout_test.go
-│       ├── serialize/               # Output contract
-│       │   ├── writer.go            # JSON payload builder + validator
-│       │   └── writer_test.go
-│       └── cli/                     # Shared utilities
-│           └── flags.go             # Repeatable flag, validators
+│       ├── pcc/                     # PCC file parsing, LZO, names, properties
+│       ├── dialogue/                # BioConversation parsing, schemas, validation
+│       ├── tlk/                     # TLK parsing and DLC-aware resolution
+│       ├── graph/                   # Deterministic graph layout
+│       ├── evidence/                # Evidence report assembly and profiles
+│       ├── dumper/                  # Normalized dialogue line dumping
+│       ├── owners/                  # Kismet conversation owner scanning
+│       ├── scan/                    # Parallel PCC scanning and indexes
+│       └── serialize/               # Stable JSON output contract
 │
 ├── cli/                             # Python CLI (thin wrapper)
 │   └── src/
-│       ├── __init__.py              # __version__
-│       ├── __main__.py              # → cli_main()
-│       ├── cli_main.py              # Typer CLI, subcommand registration
-│       ├── engine.py                # Go subprocess interface (shared with GUI)
-│       └── format.py                # Terminal output formatting (tables, colors)
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── cli_main.py              # Typer CLI and subcommand registration
+│       ├── engine.py                # Go subprocess adapter
+│       └── format.py                # Terminal output formatting
 │
 ├── gui/                             # Python GUI (thin renderer)
 │   └── src/
 │       ├── __init__.py
-│       ├── app.py                   # Main frame, menu, tab layout
-│       ├── state.py                 # UI state: selection, zoom, pan, paths
-│       ├── engine.py                # Go subprocess interface (symlink or copy of CLI's)
+│       ├── app.py                   # HelloImGui bootstrap and tab layout
+│       ├── state.py                 # UI-only state
+│       ├── engine.py                # GUI subprocess adapter
 │       └── views/
 │           ├── __init__.py
-│           ├── package.py           # Package viewer tab
-│           ├── tlk.py               # TLK viewer tab
-│           ├── dialogue.py          # Dialog explorer tab (graph + detail)
-│           └── evidence.py          # Evidence search tab
+│           ├── package.py
+│           ├── tlk.py
+│           ├── dialogue.py
+│           └── evidence.py
 │
 ├── tests/
-│   ├── conftest.py                  # Shared fixtures: synthetic PCC/TLK builders
-│   ├── test_core_contract.py        # Go core output contract tests
-│   ├── test_cli.py                  # CLI dispatch tests
-│   ├── test_gui.py                  # GUI module tests (no window)
+│   ├── conftest.py
+│   ├── test_golden.py               # Golden regression tests for pcc-core output
 │   ├── fixtures/
-│   │   ├── pcc_builder.py           # Build synthetic PCC bytes
-│   │   └── tlk_builder.py           # Build synthetic TLK bytes
-│   └── golden/                      # Known-good output files for regression
-│       ├── conversation/            # parse-conversations output
-│       ├── tlk/                     # parse-tlk / resolve-tlk output
-│       ├── evidence/                # scan-evidence output
-│       └── graph/                   # layout-graph output
+│   │   └── synthetic/               # Synthetic fixtures that do not require game files
+│   ├── golden/                      # Known-good JSON outputs
+│   │   ├── conversation/
+│   │   ├── graph/
+│   │   ├── pcc/
+│   │   └── tlk/
+│   └── regression/
+│       └── run_probes.py            # Real-file probe runner and golden regeneration
 │
-├── samples/                         # Real game files (gitignored)
-│   └── README.md
-├── output/                          # Generated output (gitignored)
-│   └── .gitkeep
-└── docs/
-    ├── output-schema.md
-    └── evidence-contract.md
+├── dropzone/                        # Real ME2 OT files copied locally, gitignored
+└── output/                          # Generated output, gitignored except .gitkeep
 ```
 
 ---
@@ -197,11 +167,10 @@ tools/pcc-toolkit-v2/
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `github.com/anchore/go-lzo` | v0.1.0 | LZO1X decompression for ME2 OT compressed packages |
-| `gonum.org/v1/gonum/graph` | latest | Graph representation and algorithms for Sugiyama layout |
 | `encoding/json` | stdlib | JSON serialization (all subcommand output) |
 | `flag` | stdlib | CLI flag parsing for subcommand dispatch |
 
-No other external dependencies. The core binary is self-contained except for `go-lzo` and `gonum/graph`.
+No other external dependencies. The core binary is self-contained except for `go-lzo`.
 
 ### Python CLI (`cli/`)
 
@@ -217,7 +186,6 @@ Stdlib only otherwise: `subprocess`, `json`, `pathlib`.
 | Package | Version | Purpose |
 |---------|---------|---------|
 | `imgui-bundle` | >=1.90 | Dear ImGui bindings + HelloImGui for window/docking/layout |
-| `python-igraph` | >=0.11 | **Dev only** — layout oracle for golden file generation and regression testing. Not a runtime dependency. |
 
 Also depends on CLI packages (`typer`, `rich`). No other GUI runtime dependencies. Graph layout in production is done in Go core — the GUI only renders positions from `layout-graph` output.
 
@@ -225,7 +193,6 @@ Also depends on CLI packages (`typer`, `rich`). No other GUI runtime dependencie
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| `python-igraph` | >=0.11 | Layout oracle: generate golden layouts, validate Go Sugiyama output, experiment with alternative algorithms. Used during development and regression testing, never at runtime. |
 | `pytest` | >=9.0 | Test runner |
 
 ---
@@ -271,7 +238,9 @@ pcc-core parse-conversations --file <path>
                              [--conv-index <n>]
                              [--resolve-tlk <tlk_path>]
                              [--dlc-dir <path>]
+                             [--language <code>]
                              [--mode resilient|strict]
+                             [--pretty]
 ```
 
 Returns complete AST:
@@ -318,10 +287,11 @@ TLK resolution is built-in: if `--resolve-tlk` is provided, `line_text` is popul
 
 ```
 pcc-core layout-graph --file <path>
-                      [--conv-index <n>]
-                      [--algorithm sugiyama|tree|force]
+                      --conv-index <n>
+                      [--algorithm sugiyama]
                       [--node-width <px>] [--node-height <px>]
                       [--x-spacing <px>] [--y-spacing <px>]
+                      [--pretty]
 ```
 
 Takes a PCC file (internally calls parse-conversations), then computes 2D positions for every node. Returns:
@@ -345,7 +315,7 @@ Takes a PCC file (internally calls parse-conversations), then computes 2D positi
 
 GUI calls this when a conversation is selected. No layout logic in Python.
 
-Uses a pure Go graph layout implementation to avoid depending on igraph at runtime. The layout engine is implemented iteratively:
+Uses a pure Go graph layout implementation to avoid depending on igraph at runtime. `sugiyama` is the only implemented algorithm in the current core.
 
 **v1 — Barycenter heuristic:**
 - Simple layer assignment (BFS from starts and replies)
@@ -359,7 +329,7 @@ Uses a pure Go graph layout implementation to avoid depending on igraph at runti
 - Cycle removal heuristic
 - Weighted node ordering
 
-`python-igraph` is kept as a **development oracle**: during implementation, Go output is compared against igraph's `layout_sugiyama()` to validate layering quality, crossing minimization, and coordinate placement. igraph generates golden layouts committed to `tests/golden/graph/`. It is not a runtime dependency.
+Historical layout experiments used `python-igraph` as a development oracle. It is not a runtime dependency, and it is not part of the current declared dependency set.
 
 #### `parse-tlk` — Parse a TLK file
 
@@ -376,8 +346,10 @@ Returns all entries, or filtered by search/strref. Handles Huffman tree, bit dec
 
 ```
 pcc-core resolve-tlk --base <path>
-                     --dlc-dir <path>
-                     --strref <id> [--strref <id> ...]
+                      --dlc-dir <path>
+                      [--language <code>]
+                      --strref <id> [--strref <id> ...]
+                      [--pretty]
 ```
 
 Scans DLC directories, reads Mount.dlc for MountPriority, builds priority-ordered resolver, resolves each StrRef. Returns first-match text per StrRef.
@@ -386,12 +358,13 @@ Scans DLC directories, reads Mount.dlc for MountPriority, builds priority-ordere
 
 ```
 pcc-core scan-evidence --query <text>
-                       --tlk <path>
-                       [--dlc-dir <path>]
-                       [--biogame-root <path>]
-                       [--auto-index]
-                       [--candidate-index <path>]
-                       [--workers <n>]
+                        --tlk <path>
+                        [--dlc-dir <path>]
+                        [--language <code>]
+                        [--biogame-root <path>]
+                        [--cache <path>]
+                        [--workers <n>]
+                        [--pretty]
 ```
 
 The big one. Pipeline:
@@ -407,6 +380,7 @@ The big one. Pipeline:
 
 ```
 pcc-core validate --file <path> [--strict]
+                  [--pretty]
 ```
 
 Returns per-conversation validation report: valid/invalid/needs_schema_review, specific issues per conversation.
@@ -415,10 +389,10 @@ Returns per-conversation validation report: valid/invalid/needs_schema_review, s
 
 ```
 pcc-core serialize --file <path>
-                   [--output <path>]
                    [--game <profile>]
                    [--resolve-tlk <path>]
                    [--dlc-dir <path>]
+                   [--language <code>]
                    [--pretty]
 ```
 
@@ -431,9 +405,46 @@ pcc-core batch-validate --dir <path>
                         [--glob <pattern>]
                         [--strict]
                         [--output <path>]
+                        [--pretty]
 ```
 
 Aggregates validation across multiple PCC files. For scripting / AI agent use.
+
+#### `batch-extract` — Batch extraction
+
+```
+pcc-core batch-extract --dir <path>
+                       [--glob <pattern>]
+                       [--output-dir <path>]
+                       [--resolve-tlk <path>]
+                       [--dlc-dir <path>]
+                       [--language <code>]
+                       [--pretty]
+```
+
+Aggregates serialization across multiple PCC files and optionally writes one JSON file per PCC.
+
+#### `dump-lines` — Normalized dialogue line dump
+
+```
+pcc-core dump-lines --file <path>
+                    [--resolve-tlk <path>]
+                    [--dlc-dir <path>]
+                    [--language <code>]
+                    [--format json|csv]
+                    [--pretty]
+```
+
+Returns one row per dialogue line with conversation ID, node type, node ID, speaker tag, StrRef, resolved text, and source file.
+
+#### `scan-owners` — Conversation owner scan
+
+```
+pcc-core scan-owners --file <path>
+                     [--pretty]
+```
+
+Scans Kismet conversation-start exports and reports owner tags associated with conversations.
 
 #### `version` — Version and capabilities
 
@@ -456,7 +467,9 @@ pcc-core version
     "evidence_scan_v1",
     "validate_v1",
     "serialize_v1",
-    "batch_validate_v1"
+    "batch_validate_v1",
+    "dump_lines_v1",
+    "scan_owners_v1"
   ]
 }
 ```
@@ -566,36 +579,44 @@ Note: StageDirection extraction requires data exploration to determine the PCC p
 ```
 core/internal/
 ├── pcc/
-│   ├── reader.go          ← from old internal/scan/pcc.go (header, tables)
-│   ├── decompress.go      ← from old internal/scan/pcc.go (LZO)
-│   ├── containers.go      ← from old internal/scan/pcc.go (offset mapping)
-│   ├── strings.go         ← from old internal/scan/pcc.go (unreal strings)
-│   ├── properties.go      ← PORT from Python pcc/properties.py
-│   ├── unreal_props.go    ← PORT from Python pcc/unreal_props.py
-│   └── types.go           ← from old internal/scan/types.go + new types
+│   ├── reader.go          ← header, names, imports, exports, raw loading
+│   ├── decompress.go      ← LZO decompression for ME2 OT compressed packages
+│   ├── containers.go      ← offset-to-export mapping
+│   ├── strings.go         ← Unreal string reading and name resolution
+│   ├── properties.go      ← property tag and semantic property parsing
+│   ├── unreal_props.go    ← low-level Unreal property payload decoding
+│   └── types.go           ← PCC headers, exports, imports, property types
 ├── dialogue/
-│   ├── ast.go             ← PORT from Python model/ast.py
-│   ├── parser.go          ← PORT from Python dialogue/conversation_parser.py
-│   ├── schema.go          ← PORT from Python dialogue/schema.py
-│   └── validate.go        ← PORT from Python validation logic
+│   ├── types.go           ← EntryNode, ReplyNode, Speaker, Conversation types
+│   ├── parser.go          ← conversation extraction coordinator
+│   ├── parser_semantic.go ← schema-guided semantic property parsing
+│   ├── parser_row.go      ← row-payload fallback parsing
+│   ├── schema.go          ← schema helpers
+│   ├── structdb.go        ← ME2 dialogue struct metadata
+│   └── validate.go        ← conversation validation
 ├── tlk/
-│   ├── reader.go          ← NEW Go implementation (or port from Python)
-│   ├── resolver.go        ← PORT from Python tlk/resolver.py
+│   ├── reader.go          ← TLK parser and Huffman decoder
+│   ├── resolver.go        ← base TLK + DLC priority resolution
 │   └── types.go
 ├── scan/
-│   ├── scanner.go         ← from old internal/scan/scanner.go
-│   ├── files.go           ← from old internal/scan/files.go
-│   ├── index.go           ← from old internal/scan/index.go
-│   └── types.go           ← from old internal/scan/types.go
+│   ├── scanner.go         ← parallel StrRef scanning
+│   ├── files.go           ← PCC file collection
+│   ├── index.go           ← candidate/file indexing helpers
+│   ├── cache.go           ← file cache support
+│   └── types.go           ← scan reports and hits
 ├── evidence/
-│   ├── builder.go         ← PORT from Python cli.py evidence logic
-│   └── profile.go         ← PORT from Python narrative profiles
+│   ├── builder.go         ← tiered evidence assembly and AST enrichment
+│   ├── profile.go         ← narrative profiles
+│   └── types.go           ← evidence report types
 ├── graph/
-│   └── layout.go          ← PORT from Python gui/graph/layout.py
-├── serialize/
-│   └── writer.go          ← PORT from Python serialize/json_writer.py
-└── cli/
-    └── flags.go           ← from old cmd/pcc-scan/main.go multiFlag
+│   ├── layout.go          ← deterministic Sugiyama-style layout
+│   └── types.go           ← layout result types
+├── dumper/
+│   └── lines.go           ← normalized dialogue line dump output
+├── owners/
+│   └── scanner.go         ← Kismet conversation owner scan
+└── serialize/
+    └── writer.go          ← stable JSON serialization output
 ```
 
 ### 4.5 Data Flow: GUI Opens a File
@@ -937,13 +958,11 @@ All edges are cubic bezier curves with arrowheads at the target end. Control poi
 
 #### Graph Layout Algorithms
 
-The Go core `layout-graph` subcommand supports:
+The Go core `layout-graph` subcommand currently supports:
 
 | Algorithm | Flag | Description |
 |-----------|------|-------------|
 | Sugiyama | `--algorithm sugiyama` (default) | Layered digraph layout. Best for conversation trees. |
-| Reingold-Tilford | `--algorithm tree` | Waterfall-style tree layout. Good for linear conversations. |
-| Kamada-Kawai | `--algorithm force` | Force-directed layout. Fallback for cyclic graphs. |
 
 The GUI provides a layout selector dropdown and a "Re-layout" button that re-calls `pcc-core layout-graph`.
 
@@ -986,7 +1005,6 @@ tests/golden/
 │   └── miss_vas_normandy.json                  # scan-evidence "Miss vas Normandy"
 └── graph/
     ├── BioD_CitHub_300Dialogue_sugiyama.json   # layout-graph --algorithm sugiyama
-    └── BioD_CitHub_300Dialogue_tree.json       # layout-graph --algorithm tree
 ```
 
 **Workflow during porting:**
@@ -1001,8 +1019,13 @@ tests/golden/
 **Golden file rules:**
 - Committed to repo (they are small JSON, not binaries)
 - One golden file per capability × input combination
-- Input files are ME2 OT PCC/TLK files stored in `samples/` (gitignored)
+- Input files are ME2 OT PCC/TLK files copied into `dropzone/` from `C:\Program Files\EA Games\Mass Effect 2` (gitignored)
 - Golden files include `schema_version` to detect contract drift
+
+**Local verification workflow:**
+- Python tests must run through the repository virtual environment: `.venv\Scripts\python.exe -m pytest`.
+- Real-file probes must use copied files in `dropzone/`, not direct reads from the game install tree.
+- Run probes with `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone`.
 
 ### Phase 1: Core Skeleton
 1. Create directory structure (`core/`, `cli/`, `gui/`)
@@ -1028,7 +1051,7 @@ tests/golden/
 ### Phase 4: Conversation Parsing (Go)
 1. Port `src/pcc/properties.py` → `core/internal/pcc/properties.go`
 2. Port `src/pcc/unreal_props.py` → `core/internal/pcc/unreal_props.go`
-3. Port `src/model/ast.py` → `core/internal/dialogue/ast.go`
+3. Define AST data types in `core/internal/dialogue/types.go`
 4. Port `src/dialogue/conversation_parser.py` → `core/internal/dialogue/parser.go`
 5. Port `src/dialogue/schema.py` → `core/internal/dialogue/schema.go`
 6. Build `parse-conversations` subcommand
@@ -1138,7 +1161,7 @@ tests/golden/
 
 - `igraph` is a C library with Python bindings — architecturally wrong when the AST and graph model live in Go. Keeping layout in Python would create model duplication, intermediate format drift, and cross-language debugging friction.
 - Conversation graph layout is **domain logic**: it understands starts, entries, replies, categories, and branch semantics. It belongs in the core.
-- `python-igraph` remains as a **development oracle**: used during implementation to validate Go output against igraph's Sugiyama, generate golden layouts, and experiment with alternative algorithms. Not a runtime dependency.
+- `python-igraph` is not a runtime dependency. Any use as a layout oracle is optional historical/development work and is not required by the current project configuration.
 - Implementing Sugiyama in Go is iterative: v1 = barycenter heuristic, v2 = full Sugiyama with dummy nodes. Each step validated against igraph golden output.
 
 ---

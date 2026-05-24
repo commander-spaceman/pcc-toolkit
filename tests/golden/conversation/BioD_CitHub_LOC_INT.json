@@ -1,11 +1,11 @@
 {
-  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BioD_CitHub_LOC_INT.pcc",
+  "file": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BioD_CitHub_LOC_INT.pcc",
   "game_profile": "me2_ot",
   "conversations": [
     {
       "id": "cithub_arrival_ai_a_dlg",
       "export_index": 0,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "count_or_value_fallback",
       "entries": [],
       "replies": [],
@@ -1051,25 +1051,50 @@
     {
       "id": "cithub_first_amb_a_dlg",
       "export_index": 1,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 344594,
           "reply_links": [
             0
-          ]
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 389567,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 344595,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 66,
+          "conditional_param": 1,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 389568,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 344596,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 389569,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [
@@ -1080,7 +1105,20 @@
           ]
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1093,7 +1131,7 @@
     {
       "id": "cithub_taligarrus_h_dlg",
       "export_index": 2,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
@@ -1101,13 +1139,26 @@
           "id": 0
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": []
     },
     {
       "id": "nor_globalnews_a_dlg",
       "export_index": 3,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
@@ -1115,7 +1166,20 @@
           "id": 0
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": []
     }
   ]

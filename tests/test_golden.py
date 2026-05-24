@@ -1,8 +1,8 @@
-"""Golden file regression tests.
+r"""Golden file regression tests.
 
 Verifies pcc-core output matches known-good golden files.
 Golden files are committed to tests/golden/ and should not be edited manually.
-Regenerate with: python tests/regression/run_probes.py --regenerate
+Regenerate with: .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone --regenerate
 """
 
 import json
@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
 
 _samples_dir = os.environ.get("PCC_SAMPLES_DIR", "")
-SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "samples")
+SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "dropzone")
 
 CORE_BINARY = (
     REPO_ROOT / "build" / "pcc-core.exe"
@@ -92,7 +92,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="samples/ directory empty. Place ME2 OT files in samples/ to run golden tests.",
+        reason="dropzone/ directory empty. Copy needed ME2 OT files into dropzone/ to run golden tests.",
     )
     def test_conversation_BioD_CitHub_LOC_INT(self):
         """Verify parse-conversations output matches golden."""
@@ -136,7 +136,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="samples/ directory empty.",
+        reason="dropzone/ directory empty.",
     )
     def test_tlk_info(self):
         """Verify TLK header matches golden."""
@@ -159,7 +159,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="samples/ directory empty.",
+        reason="dropzone/ directory empty.",
     )
     def test_pcc_header(self):
         """Verify PCC header extraction matches golden."""
@@ -182,7 +182,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="samples/ directory empty.",
+        reason="dropzone/ directory empty.",
     )
     def test_graph_layout_sugiyama(self):
         """Verify layout-graph output matches golden and includes node metadata."""
@@ -190,7 +190,7 @@ class TestGoldenFiles:
         if not pcc_file.exists():
             pytest.skip(f"{pcc_file} not found")
 
-        conv_index = 0
+        conv_index = 1
         actual = run_core("layout-graph", file=str(pcc_file), conv_index=conv_index)
         golden = _load_golden("graph/cithub_first_amb_sugiyama.json")
         if golden is None:

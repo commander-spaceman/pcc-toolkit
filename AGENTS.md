@@ -42,7 +42,7 @@ There is no required session lifecycle file. Do not maintain `.opencode/current.
 | `tests/golden/` | Known-good regression outputs | Port validation and parser regression checks |
 | `tests/regression/` | Probe/regression runners | Golden or probe validation workflows |
 | `tests/fixtures/synthetic/` | Synthetic test fixture builders/data | Unit tests that do not require game files |
-| `samples/` | Real ME2 OT PCC/TLK files, gitignored | Local input for golden tests |
+| `dropzone/` | Real ME2 OT PCC/TLK files copied locally, gitignored | Local input for golden tests and real-file probes |
 | `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
 
 ## LegendaryExplorer Reference
@@ -69,6 +69,8 @@ Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicit
 - Golden files are the structural contract. Do not edit them manually unless the task is explicitly to regenerate and justify them.
 - Prefer additive, low-intrusion changes over broad rewrites.
 - Avoid touching unrelated systems.
+- Python commands must use this repository's virtual environment. On Windows, prefer `.venv\Scripts\python.exe -m pytest` and `.venv\Scripts\pcc-toolkit.exe`; do not run bare `pytest` or system Python unless the venv is unavailable and the user approves.
+- Real ME2 OT test assets must be copied into `dropzone/` from the local install at `C:\Program Files\EA Games\Mass Effect 2`. Do not run golden tests directly against the install tree, and never commit copied game files.
 
 ## Language Policy
 
@@ -91,7 +93,8 @@ Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicit
 
 - Go core tests: from `core/`, run `go test ./...`.
 - Go formatting: from `core/`, run `go fmt ./...`.
-- Python CLI/GUI tests: `pytest` once implemented.
+- Python CLI/GUI tests: from the repository root, run `.venv\Scripts\python.exe -m pytest`.
+- Real-file regression probes: copy only the needed ME2 OT `.pcc`/`.tlk` files from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/`, then run `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone`.
 
 No single top-level build command is guaranteed. If one is added, document it here.
 
@@ -99,7 +102,8 @@ No single top-level build command is guaranteed. If one is added, document it he
 
 - Choose the smallest verification set that proves the change.
 - From `core/`, run `go test ./...` for core parser, domain logic, or integration-sensitive Go changes.
-- Run `pytest` when Python code is affected and tests exist.
+- Run `.venv\Scripts\python.exe -m pytest` when Python code is affected and tests exist.
+- Use `dropzone/` as the local sample directory for golden tests. If real game files are needed, copy them from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/` first.
 - Compare against golden files when parser output changes.
 - Consult LegendaryExplorer through the GitHub MCP when LEX semantics matter.
 - Final summaries should mention what changed, what verification ran, and any skipped or failing checks.
