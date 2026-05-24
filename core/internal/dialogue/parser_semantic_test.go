@@ -212,6 +212,102 @@ func TestExportProperties_RealFile(t *testing.T) {
 	}
 }
 
+func TestParseConversation_RealFile_ReplyChoices(t *testing.T) {
+	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
+		t.Skipf("dropzone file not found: %s", pccPath)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(pccPath)
+	if err != nil {
+		t.Fatalf("ReadFileRaw: %v", err)
+	}
+	if err := summary.RequireME2(); err != nil {
+		t.Fatalf("RequireME2: %v", err)
+	}
+
+	convExport := -1
+	for _, e := range summary.Exports {
+		if e.ClassName == "BioConversation" {
+			convExport = e.Index
+			break
+		}
+	}
+	if convExport < 0 {
+		t.Fatal("no BioConversation export found")
+	}
+
+	conv, err := ParseConversation(summary, rawData, convExport)
+	if err != nil {
+		t.Fatalf("ParseConversation: %v", err)
+	}
+
+	hasReplyChoices := false
+	hasOrder := false
+	for _, entry := range conv.Entries {
+		if len(entry.ReplyChoices) > 0 {
+			hasReplyChoices = true
+			for _, rc := range entry.ReplyChoices {
+				if rc.Order > 0 {
+					hasOrder = true
+				}
+				if rc.FromEntryID != entry.ID {
+					t.Errorf("ReplyChoice.FromEntryID = %d, want %d", rc.FromEntryID, entry.ID)
+				}
+				if rc.ToReplyID == 0 && len(entry.ReplyChoices) == 1 {
+					continue
+				}
+			}
+		}
+	}
+
+	if !hasReplyChoices {
+		t.Error("no entries have reply_choices with ReplyListNew data")
+	}
+	if !hasOrder {
+		t.Log("no reply_choices with Order > 0 found (may be valid for this conversation)")
+	}
+}
+
+func TestParseConversation_RealFile_ReplyChoices_Category(t *testing.T) {
+	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
+		t.Skipf("dropzone file not found: %s", pccPath)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(pccPath)
+	if err != nil {
+		t.Fatalf("ReadFileRaw: %v", err)
+	}
+	if err := summary.RequireME2(); err != nil {
+		t.Fatalf("RequireME2: %v", err)
+	}
+
+	parseResult := ParseConversations(summary, rawData, "resilient")
+	if len(parseResult.Errors) > 0 {
+		t.Logf("ParseConversations warnings: %v", parseResult.Errors)
+	}
+
+	totalChoices := 0
+	withCategory := 0
+	for _, conv := range parseResult.Conversations {
+		for _, entry := range conv.Entries {
+			for _, rc := range entry.ReplyChoices {
+				totalChoices++
+				if rc.Category != "" {
+					withCategory++
+				}
+			}
+		}
+	}
+
+	if totalChoices == 0 {
+		t.Skip("no reply choices found in any conversation")
+	}
+
+	t.Logf("reply choices: %d total, %d with category", totalChoices, withCategory)
+}
+
 func putI32LE(buf []byte, offset int, v int) {
 	u := uint32(v)
 	buf[offset] = byte(u)

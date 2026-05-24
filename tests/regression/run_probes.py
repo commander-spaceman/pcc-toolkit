@@ -158,6 +158,20 @@ PROBES = [
             {"path": "conversations", "min_count": 1},
         ],
     },
+    {
+        "id": "tlk_dlc_resolve_precedence",
+        "description": "DLC TLK override precedence: base + DLC_3 (Kasumi) resolution",
+        "command": "resolve-tlk",
+        "args": {
+            "base": "BIOGame_INT.tlk",
+            "dlc_dir": "dlc",
+            "strref": [125303, 356043, 255877],
+        },
+        "golden": "tlk/resolve_dlc_precedence.json",
+        "checks": [
+            {"path": "results", "min_count": 3},
+        ],
+    },
 ]
 
 
@@ -297,7 +311,7 @@ def run_probes(
         skip = False
         for key, value in args_def.items():
             if isinstance(value, str):
-                if key in ("file", "base", "tlk", "dir"):
+                if key in ("file", "base", "tlk", "dir", "dlc_dir"):
                     fp = resolve_file_path(value, samples_dir)
                     if not fp.exists():
                         print(f"  SKIP: {key}={fp} not found")

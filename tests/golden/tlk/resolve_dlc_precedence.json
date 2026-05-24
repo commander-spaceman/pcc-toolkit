@@ -1,0 +1,24 @@
+{
+  "base": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BIOGame_INT.tlk",
+  "dlc_dir": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\dlc",
+  "results": [
+    {
+      "string_id": 125303,
+      "text": "Shepard",
+      "source_tlk": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BIOGame_INT.tlk",
+      "found": true
+    },
+    {
+      "string_id": 356043,
+      "text": "Good to finally meet you, Commander Shepard. Kasumi Goto. I'm a fan.",
+      "source_tlk": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\dlc\\DLC_HEN_MT\\CookedPC\\DLC_3_INT.tlk",
+      "found": true
+    },
+    {
+      "string_id": 255877,
+      "text": "I'd like to help you, Krios. You always done right by us. But I ain't gonna die for you.",
+      "source_tlk": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BIOGame_INT.tlk",
+      "found": true
+    }
+  ]
+}

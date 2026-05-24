@@ -1,12 +1,11 @@
 package tlk
 
 import (
+	"encoding/binary"
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 )
 
@@ -83,22 +82,35 @@ func (r *Resolver) Search(query string) []ResolveResult {
 	return results
 }
 
-var mountPriorityRe = regexp.MustCompile(`(?i)MountPriority\s*=\s*(\d+)`)
-
 func ReadMountPriority(dlcRoot string) int {
-	data, err := os.ReadFile(filepath.Join(dlcRoot, "Mount.dlc"))
-	if err != nil {
+	paths := []string{
+		filepath.Join(dlcRoot, "CookedPC", "Mount.dlc"),
+		filepath.Join(dlcRoot, "Mount.dlc"),
+	}
+	for _, p := range paths {
+		data, err := os.ReadFile(p)
+		if err != nil {
+			continue
+		}
+		pri := parseMountPriorityBinary(data)
+		if pri > 0 {
+			return pri
+		}
+	}
+	return 0
+}
+
+func parseMountPriorityBinary(data []byte) int {
+	if len(data) < 14 {
 		return 0
 	}
-	match := mountPriorityRe.FindSubmatch(data)
-	if len(match) < 2 {
-		return 0
+	if data[0] == 0x00 {
+		return int(binary.LittleEndian.Uint16(data[12:14]))
 	}
-	pri, err := strconv.Atoi(string(match[1]))
-	if err != nil {
-		return 0
+	if data[0] == 0xAC {
+		return int(binary.LittleEndian.Uint16(data[12:14]))
 	}
-	return pri
+	return 0
 }
 
 type tlkCandidate struct {
@@ -132,7 +144,7 @@ func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]st
 		dlcRoot := filepath.Join(dlcDir, name)
 		priority := ReadMountPriority(dlcRoot)
 
-		cookedMatches, _ := filepath.Glob(filepath.Join(dlcRoot, "CookedPC*", fmt.Sprintf("*_%s.TLK", language)))
+		cookedMatches, _ := filepath.Glob(filepath.Join(dlcRoot, "CookedPC*", fmt.Sprintf("*_%s.tlk", language)))
 		for _, match := range cookedMatches {
 			if !includeTestTlks && strings.Contains(strings.ToLower(filepath.Base(match)), "_test_") {
 				continue

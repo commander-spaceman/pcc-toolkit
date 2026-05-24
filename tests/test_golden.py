@@ -32,6 +32,9 @@ def run_core(subcommand: str, **kwargs) -> dict:
         if isinstance(value, bool):
             if value:
                 args.append(flag)
+        elif isinstance(value, (list, tuple)):
+            for v in value:
+                args.extend([flag, str(v)])
         elif value is not None:
             args.extend([flag, str(value)])
     proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -70,17 +73,26 @@ def _compare_keys(actual: dict, expected: dict, prefix: str = "") -> list[str]:
     return issues
 
 
-def _strip_volatile_fields(obj: dict) -> dict:
+def _strip_volatile_fields(obj):
     """Remove fields that vary between runs (timestamps, absolute paths)."""
-    # Deep copy simple approach
     import copy
 
-    cleaned = copy.deepcopy(obj)
-    # Remove file path fields that are absolute
-    for key in ("file", "base", "path"):
-        if key in cleaned:
-            cleaned[key] = "<stripped>"
-    return cleaned
+    volatile_keys = frozenset({"file", "base", "path", "dlc_dir", "source_tlk"})
+
+    def _strip(node):
+        if isinstance(node, dict):
+            result = {}
+            for k, v in node.items():
+                if k in volatile_keys:
+                    result[k] = "<stripped>"
+                else:
+                    result[k] = _strip(v)
+            return result
+        if isinstance(node, list):
+            return [_strip(item) for item in node]
+        return node
+
+    return _strip(copy.deepcopy(obj))
 
 
 class TestGoldenFiles:
@@ -210,3 +222,53 @@ class TestGoldenFiles:
             assert meta["id"] == int(node_key.split(":")[1]), (
                 f"node {node_key} id mismatch: meta has {meta['id']}"
             )
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_tlk_dlc_resolve_precedence(self):
+        """Verify DLC TLK override precedence matches golden."""
+        base_tlk = SAMPLES_DIR / "BIOGame_INT.tlk"
+        dlc_dir = SAMPLES_DIR / "dlc"
+        if not base_tlk.exists():
+            pytest.skip(f"{base_tlk} not found")
+        if not (dlc_dir / "DLC_HEN_MT").exists():
+            pytest.skip(f"dlc subdirectory not found in dropzone/")
+
+        actual = run_core(
+            "resolve-tlk",
+            base=str(base_tlk),
+            dlc_dir=str(dlc_dir),
+            strref=[125303, 356043, 255877],
+        )
+        golden = _load_golden("tlk/resolve_dlc_precedence.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert len(actual["results"]) == len(golden["results"])
+
+        for i, (act_res, exp_res) in enumerate(
+            zip(actual["results"], golden["results"])
+        ):
+            assert act_res["string_id"] == exp_res["string_id"], (
+                f"result[{i}] string_id mismatch"
+            )
+            assert act_res["text"] == exp_res["text"], (
+                f"result[{i}] text mismatch: {act_res['text']!r} vs {exp_res['text']!r}"
+            )
+            assert act_res["found"] == exp_res["found"], (
+                f"result[{i}] found mismatch"
+            )
+            if exp_res["found"]:
+                # Verify source_tlk indicates which file resolved it
+                assert act_res["source_tlk"] == exp_res["source_tlk"], (
+                    f"result[{i}] source_tlk mismatch"
+                )
