@@ -678,3 +678,38 @@ func FindStructArrayItemStarts(data []byte, names []string, start, end int, prop
 	}
 	return -1, 0, 0
 }
+
+type ExportProperties struct {
+	Tags          []PropertyTag             `json:"property_tags,omitempty"`
+	SemanticProps map[string]ParsedProperty `json:"semantic_props,omitempty"`
+}
+
+func ComputeExportProperties(rawData []byte, summary *FileSummary, includeTags, includeSemantic bool) map[int]ExportProperties {
+	result := map[int]ExportProperties{}
+	if rawData == nil || summary == nil {
+		return result
+	}
+	for _, exp := range summary.Exports {
+		if exp.SerialSize <= 0 || exp.SerialOffset < 0 ||
+			exp.SerialOffset+exp.SerialSize > len(rawData) {
+			continue
+		}
+		ep := ExportProperties{}
+		if includeTags {
+			tags, err := ParsePropertyTags(rawData, summary.Names, exp.SerialOffset, exp.SerialSize, false)
+			if err == nil {
+				ep.Tags = tags
+			}
+		}
+		if includeSemantic {
+			props, _ := ParsePropertyCollection(rawData, summary.Names, exp.SerialOffset, exp.SerialSize)
+			if props != nil {
+				ep.SemanticProps = props
+			}
+		}
+		if includeTags || includeSemantic {
+			result[exp.Index] = ep
+		}
+	}
+	return result
+}

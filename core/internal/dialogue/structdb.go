@@ -1,53 +1,75 @@
 package dialogue
 
-type StructField struct {
-	Name     string
-	PropType string
-	RefType  string
+type StructPropInfo struct {
+	PropType      string
+	ArrayElemType string
 }
 
-type StructLayout struct {
-	TypeName string
-	Fields   []StructField
-}
-
-var ME2StructLayouts = map[string]StructLayout{
+var ME2StructPropInfo = map[string]map[string]StructPropInfo{
+	"BioConversation": {
+		"EntryList":      {PropType: "ArrayProperty", ArrayElemType: "BioDialogEntryNode"},
+		"m_EntryList":    {PropType: "ArrayProperty", ArrayElemType: "BioDialogEntryNode"},
+		"ReplyList":      {PropType: "ArrayProperty", ArrayElemType: "BioDialogReplyNode"},
+		"m_ReplyList":    {PropType: "ArrayProperty", ArrayElemType: "BioDialogReplyNode"},
+		"ReplyListNew":   {PropType: "ArrayProperty", ArrayElemType: "BioDialogReplyNode"},
+		"SpeakerList":    {PropType: "ArrayProperty", ArrayElemType: "BioDialogSpeaker"},
+		"m_SpeakerList":  {PropType: "ArrayProperty", ArrayElemType: "BioDialogSpeaker"},
+		"m_StartingList": {PropType: "ArrayProperty", ArrayElemType: "IntProperty"},
+		"StartingList":   {PropType: "ArrayProperty", ArrayElemType: "IntProperty"},
+		"m_ScriptList":   {PropType: "ArrayProperty", ArrayElemType: "BioDialogScript"},
+		"ScriptList":     {PropType: "ArrayProperty", ArrayElemType: "BioDialogScript"},
+	},
 	"BioDialogEntryNode": {
-		TypeName: "BioDialogEntryNode",
-		Fields: []StructField{
-			{Name: "nIndex", PropType: "IntProperty"},
-			{Name: "nSpeakerIndex", PropType: "IntProperty"},
-			{Name: "srText", PropType: "StringRefProperty"},
-			{Name: "ReplyListNew", PropType: "ArrayProperty", RefType: "BioDialogReplyListDetails"},
-		},
+		"nIndex":         {PropType: "IntProperty"},
+		"nSpeakerIndex":  {PropType: "IntProperty"},
+		"srText":         {PropType: "StringRefProperty"},
+		"nListenerIndex": {PropType: "IntProperty"},
+		"ReplyListNew":   {PropType: "ArrayProperty", ArrayElemType: "BioDialogReplyListDetails"},
 	},
 	"BioDialogReplyNode": {
-		TypeName: "BioDialogReplyNode",
-		Fields: []StructField{
-			{Name: "srText", PropType: "StringRefProperty"},
-			{Name: "nConditionalFunc", PropType: "IntProperty"},
-			{Name: "nConditionalParam", PropType: "IntProperty"},
-			{Name: "nStateTransition", PropType: "IntProperty"},
-			{Name: "bFireConditional", PropType: "BoolProperty"},
-			{Name: "ReplyType", PropType: "EnumProperty"},
-			{Name: "EntryList", PropType: "ArrayProperty", RefType: "IntProperty"},
-		},
+		"srText":            {PropType: "StringRefProperty"},
+		"nConditionalFunc":  {PropType: "IntProperty"},
+		"nConditionalParam": {PropType: "IntProperty"},
+		"nStateTransition":  {PropType: "IntProperty"},
+		"bFireConditional":  {PropType: "BoolProperty"},
+		"ReplyType":         {PropType: "EnumProperty"},
+		"EntryList":         {PropType: "ArrayProperty", ArrayElemType: "IntProperty"},
+		"Category":          {PropType: "NameProperty"},
+		"nIndex":            {PropType: "IntProperty"},
+		"nEntryIndex":       {PropType: "IntProperty"},
 	},
 	"BioDialogReplyListDetails": {
-		TypeName: "BioDialogReplyListDetails",
-		Fields: []StructField{
-			{Name: "nIndex", PropType: "IntProperty"},
-		},
+		"nIndex": {PropType: "IntProperty"},
 	},
 	"BioDialogSpeaker": {
-		TypeName: "BioDialogSpeaker",
-		Fields: []StructField{
-			{Name: "sSpeakerTag", PropType: "NameProperty"},
-		},
+		"sSpeakerTag":        {PropType: "NameProperty"},
+		"nIndex":             {PropType: "IntProperty"},
+		"nDisplayNameStrRef": {PropType: "StringRefProperty"},
+	},
+	"BioDialogScript": {
+		"sScriptTag": {PropType: "NameProperty"},
 	},
 }
 
-func GetStructLayout(typeName string) (StructLayout, bool) {
-	layout, ok := ME2StructLayouts[typeName]
-	return layout, ok
+func GetStructArrayElementType(structType, propName string) string {
+	if props, ok := ME2StructPropInfo[structType]; ok {
+		if info, ok := props[propName]; ok {
+			return info.ArrayElemType
+		}
+	}
+	return ""
+}
+
+func IsKnownStructType(typeName string) bool {
+	_, ok := ME2StructPropInfo[typeName]
+	return ok
+}
+
+func GetStructPropertyType(structType, propName string) (string, bool) {
+	if props, ok := ME2StructPropInfo[structType]; ok {
+		if info, ok := props[propName]; ok {
+			return info.PropType, true
+		}
+	}
+	return "", false
 }

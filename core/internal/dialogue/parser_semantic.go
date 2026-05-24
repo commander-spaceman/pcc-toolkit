@@ -58,16 +58,22 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 		replyCount, replyPayload, replyPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, tag)
 	}
 
-	// Try parsing entries (required for full semantic mode)
+	// Try parsing entries schema-guided first, fall back to generic
 	var entryItems []map[string]pcc.ParsedProperty
 	if entryCount > 0 && entryPayloadSize > 0 {
-		entryItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, entryPayload, entryPayloadSize, entryCount)
+		entryItems = parseStructArraySchemaGuided(data, names, "BioDialogEntryNode", entryPayload, entryPayloadSize, entryCount)
+		if len(entryItems) == 0 {
+			entryItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, entryPayload, entryPayloadSize, entryCount)
+		}
 	}
 
-	// Try parsing replies
+	// Try parsing replies schema-guided first, fall back to generic
 	var replyItems []map[string]pcc.ParsedProperty
 	if replyCount > 0 && replyPayloadSize > 0 {
-		replyItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, replyPayload, replyPayloadSize, max(0, replyCount))
+		replyItems = parseStructArraySchemaGuided(data, names, "BioDialogReplyNode", replyPayload, replyPayloadSize, max(0, replyCount))
+		if len(replyItems) == 0 {
+			replyItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, replyPayload, replyPayloadSize, max(0, replyCount))
+		}
 	}
 
 	// Need at least entries or replies to proceed
@@ -163,7 +169,10 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 	if spkTag, ok := tagMap["SpeakerList"]; ok {
 		spkCount, spkPayload, spkPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, spkTag)
 		if spkCount > 0 && spkPayloadSize > 0 {
-			speakerItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
+			speakerItems := parseStructArraySchemaGuided(data, names, "BioDialogSpeaker", spkPayload, spkPayloadSize, spkCount)
+			if len(speakerItems) == 0 {
+				speakerItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
+			}
 			if len(speakerItems) > 0 {
 				speakers = make([]Speaker, len(speakerItems))
 				for idx, item := range speakerItems {
@@ -209,4 +218,109 @@ func parseSpeakersDirect(data []byte, names []string, payloadStart, payloadSize,
 		speakers[i] = Speaker{ID: i, Tag: tag}
 	}
 	return speakers
+}
+
+// parseStructArraySchemaGuided parses an ArrayProperty<StructProperty> payload
+// using the known ME2 OT struct layout from structdb. Returns nil if schema-guided
+// parsing fails, so the caller can fall back to generic heuristic parsing.
+func parseStructArraySchemaGuided(data []byte, names []string, structType string, payloadOffset, payloadSize, count int) []map[string]pcc.ParsedProperty {
+	if count <= 0 || payloadSize <= 0 {
+		return nil
+	}
+	structProps, ok := ME2StructPropInfo[structType]
+	if !ok {
+		return nil
+	}
+
+	end := payloadOffset + payloadSize
+	if end > len(data) {
+		end = len(data)
+	}
+
+	expectedFirstProp := ""
+	for _, propName := range []string{"nIndex", "srText", "sSpeakerTag", "nSpeakerIndex"} {
+		if _, ok := structProps[propName]; ok {
+			expectedFirstProp = propName
+			break
+		}
+	}
+	if expectedFirstProp == "" {
+		return nil
+	}
+
+	firstPropIdx := -1
+	for i, n := range names {
+		if n == expectedFirstProp {
+			firstPropIdx = i
+			break
+		}
+	}
+	if firstPropIdx < 0 {
+		return nil
+	}
+
+	expectedStr := map[string]bool{}
+	for name := range structProps {
+		expectedStr[name] = true
+	}
+
+	findItemStart := func(start int) int {
+		for pos := start; pos < end-24; pos += 4 {
+			a := pcc.ReadRawI32(data, pos)
+			b := pcc.ReadRawI32(data, pos+4)
+			if (a == firstPropIdx && b == 0) || (a == 0 && b == firstPropIdx) {
+				ta := pcc.ReadRawI32(data, pos+8)
+				tb := pcc.ReadRawI32(data, pos+12)
+				taName := ""
+				if ta >= 0 && ta < len(names) {
+					taName = names[ta]
+				}
+				tbName := ""
+				if tb >= 0 && tb < len(names) {
+					tbName = names[tb]
+				}
+				if pcc.PropertyTypeNames[taName] || pcc.PropertyTypeNames[tbName] {
+					return pos
+				}
+			}
+		}
+		return -1
+	}
+
+	firstStart := findItemStart(payloadOffset)
+	if firstStart < 0 {
+		return nil
+	}
+
+	var items []map[string]pcc.ParsedProperty
+	cursor := firstStart
+	for i := 0; i < count && cursor < end; i++ {
+		item, nextCursor := pcc.ParsePropertyCollection(data, names, cursor, end-cursor)
+		if item == nil {
+			break
+		}
+
+		hasExpected := false
+		for name := range item {
+			if expectedStr[name] {
+				hasExpected = true
+				break
+			}
+		}
+		if !hasExpected {
+			break
+		}
+
+		items = append(items, item)
+		if nextCursor <= cursor {
+			break
+		}
+		cursor = nextCursor
+	}
+
+	if len(items) == count {
+		return items
+	}
+
+	return nil
 }
