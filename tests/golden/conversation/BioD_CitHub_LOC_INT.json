@@ -1062,6 +1062,14 @@
           "reply_links": [
             0
           ],
+          "reply_choices": [
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 0,
+              "order": 0,
+              "paraphrase_strref": 344598
+            }
+          ],
           "conditional_param": -1,
           "state_transition_param": -1,
           "fires_conditional": true,

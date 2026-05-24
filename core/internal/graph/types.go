@@ -6,8 +6,11 @@ type NodeKey struct {
 }
 
 type Edge struct {
-	From NodeKey `json:"from"`
-	To   NodeKey `json:"to"`
+	From           NodeKey `json:"from"`
+	To             NodeKey `json:"to"`
+	Category       string  `json:"category,omitempty"`
+	ParaphraseText string  `json:"paraphrase_text,omitempty"`
+	InputIndex     *int    `json:"input_index,omitempty"`
 }
 
 type NodeMeta struct {

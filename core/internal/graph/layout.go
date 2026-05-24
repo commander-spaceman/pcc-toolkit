@@ -51,14 +51,32 @@ func LayoutConversation(
 
 	for _, e := range entries {
 		src := nStart + e.ID
-		for _, rid := range e.ReplyLinks {
-			dst := nStart + nEntry + rid
-			if src >= 0 && src < total && dst >= 0 && dst < total {
-				adj[src] = append(adj[src], dst)
-				allEdges = append(allEdges, Edge{
-					From: NodeKey{Type: "entry", ID: e.ID},
-					To:   NodeKey{Type: "reply", ID: rid},
-				})
+		if len(e.ReplyChoices) > 0 {
+			for _, rc := range e.ReplyChoices {
+				rid := rc.ToReplyID
+				dst := nStart + nEntry + rid
+				if src >= 0 && src < total && dst >= 0 && dst < total {
+					adj[src] = append(adj[src], dst)
+					order := rc.Order
+					allEdges = append(allEdges, Edge{
+						From:           NodeKey{Type: "entry", ID: e.ID},
+						To:             NodeKey{Type: "reply", ID: rid},
+						Category:       rc.Category,
+						ParaphraseText: rc.Paraphrase,
+						InputIndex:     &order,
+					})
+				}
+			}
+		} else {
+			for _, rid := range e.ReplyLinks {
+				dst := nStart + nEntry + rid
+				if src >= 0 && src < total && dst >= 0 && dst < total {
+					adj[src] = append(adj[src], dst)
+					allEdges = append(allEdges, Edge{
+						From: NodeKey{Type: "entry", ID: e.ID},
+						To:   NodeKey{Type: "reply", ID: rid},
+					})
+				}
 			}
 		}
 	}

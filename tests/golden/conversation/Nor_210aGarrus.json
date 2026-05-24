@@ -1,39 +1,108 @@
 {
-  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BioD_Nor_210aGarrus_LOC_INT.pcc",
+  "file": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BioD_Nor_210aGarrus_LOC_INT.pcc",
   "game_profile": "me2_ot",
   "conversations": [
     {
       "id": "norgr_loyalty_01_h_dlg",
       "export_index": 81,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273005,
           "reply_links": [
             0
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 0,
+              "order": 0,
+              "paraphrase_strref": 273028
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267349,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273006,
           "reply_links": [
             1,
             4,
             7,
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 273029
+            },
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 4,
+              "order": 1,
+              "paraphrase_strref": 273030
+            },
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 7,
+              "order": 2,
+              "paraphrase_strref": 273031
+            },
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 9,
+              "order": 3,
+              "paraphrase_strref": 273032
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition": 458,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267350,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273007,
           "reply_links": [
             2
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 2,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 273033
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267351,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 3,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273008,
           "reply_links": [
             3,
@@ -41,65 +110,251 @@
             4,
             7,
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 3,
+              "order": 0,
+              "paraphrase_strref": 273034
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 1,
+              "order": 1,
+              "paraphrase_strref": 273029
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 4,
+              "order": 2,
+              "paraphrase_strref": 273030
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 7,
+              "order": 3,
+              "paraphrase_strref": 273031
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 9,
+              "order": 4,
+              "paraphrase_strref": 273032
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267352,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 4,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273009,
           "reply_links": [
             1,
             4,
             7,
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 273029
+            },
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 4,
+              "order": 1,
+              "paraphrase_strref": 273030
+            },
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 7,
+              "order": 2,
+              "paraphrase_strref": 273031
+            },
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 9,
+              "order": 3,
+              "paraphrase_strref": 273032
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267353,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 5,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273010,
           "reply_links": [
             5
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 5,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 273035
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267354,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 6,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273011,
           "reply_links": [
             6
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 6,
+              "order": 0,
+              "paraphrase_strref": 273036
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267355,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 7,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273012,
           "reply_links": [
             1,
             4,
             7,
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 273029
+            },
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 4,
+              "order": 1,
+              "paraphrase_strref": 273030
+            },
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 7,
+              "order": 2,
+              "paraphrase_strref": 273031
+            },
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 9,
+              "order": 3,
+              "paraphrase_strref": 273032
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267356,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 8,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273013,
           "reply_links": [
             8
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 8,
+              "to_reply_id": 8,
+              "order": 0,
+              "paraphrase_strref": 273037
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267357,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 9,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273014,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267358,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 10,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273015,
           "reply_links": [
             10
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 10,
+              "to_reply_id": 10,
+              "order": 0,
+              "paraphrase_strref": 273038
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267359,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 11,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273016,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267360,
+          "skippable": true,
+          "ambient": false
         }
       ],
       "replies": [
@@ -182,7 +437,20 @@
           ]
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -195,82 +463,277 @@
     {
       "id": "norgr_relationship_00_h_dlg",
       "export_index": 82,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273110,
           "reply_links": [
             0,
             2,
             4
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 0,
+              "order": 0,
+              "paraphrase_strref": 273185
+            },
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 2,
+              "order": 1,
+              "paraphrase_strref": 273186
+            },
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 4,
+              "order": 2,
+              "paraphrase_strref": 273207
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition": 3410,
+          "state_transition_param": 3,
+          "fires_conditional": true,
+          "export_id": 265946,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273111,
           "reply_links": [
             1
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 273208
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267372,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273123,
           "reply_links": [
             3
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 2,
+              "to_reply_id": 3,
+              "order": 0,
+              "paraphrase_strref": 273209
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267373,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 3,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273125,
           "reply_links": [
             5,
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 8,
+              "order": 1,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 17,
+              "order": 2,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 26,
+              "order": 3,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267375,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 4,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273126,
           "reply_links": [
             6
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 6,
+              "order": 0,
+              "paraphrase_strref": 273215
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267376,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 5,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273127,
           "reply_links": [
             7
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 5,
+              "to_reply_id": 7,
+              "order": 0,
+              "paraphrase_strref": 273216
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267377,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 6,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273128,
           "reply_links": [
             5,
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 8,
+              "order": 1,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 17,
+              "order": 2,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 26,
+              "order": 3,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267378,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 7,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273132,
           "reply_links": [
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 9,
+              "order": 0,
+              "paraphrase_strref": 273220
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267382,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 8,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273133,
           "reply_links": [
             10
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 8,
+              "to_reply_id": 10,
+              "order": 0,
+              "paraphrase_strref": 273221
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267383,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 9,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273134,
           "reply_links": [
             11,
@@ -279,24 +742,102 @@
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 11,
+              "order": 0,
+              "paraphrase_strref": 273222
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 14,
+              "order": 1,
+              "paraphrase_strref": 273187
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 5,
+              "order": 2,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 8,
+              "order": 3,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 17,
+              "order": 4,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 26,
+              "order": 5,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267384,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 10,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273135,
           "reply_links": [
             12
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 10,
+              "to_reply_id": 12,
+              "order": 0,
+              "paraphrase_strref": 273188
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267385,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 11,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273136,
           "reply_links": [
             13
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 11,
+              "to_reply_id": 13,
+              "order": 0,
+              "paraphrase_strref": 273189
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267386,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 12,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273137,
           "reply_links": [
             11,
@@ -305,24 +846,102 @@
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 11,
+              "order": 0,
+              "paraphrase_strref": 273222
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 14,
+              "order": 1,
+              "paraphrase_strref": 273187
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 5,
+              "order": 2,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 8,
+              "order": 3,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 17,
+              "order": 4,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 26,
+              "order": 5,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267387,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 13,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273138,
           "reply_links": [
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 13,
+              "to_reply_id": 15,
+              "order": 0,
+              "paraphrase_strref": 273190
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267388,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 14,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273139,
           "reply_links": [
             16
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 14,
+              "to_reply_id": 16,
+              "order": 0,
+              "paraphrase_strref": 273191
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267389,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 15,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273140,
           "reply_links": [
             11,
@@ -331,45 +950,174 @@
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 11,
+              "order": 0,
+              "paraphrase_strref": 273222
+            },
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 14,
+              "order": 1,
+              "paraphrase_strref": 273187
+            },
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 5,
+              "order": 2,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 8,
+              "order": 3,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 17,
+              "order": 4,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 26,
+              "order": 5,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267390,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 16,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 302929,
           "reply_links": [
             18
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 16,
+              "to_reply_id": 18,
+              "order": 0,
+              "paraphrase_strref": 302933
+            }
+          ],
+          "conditional_func": 3923,
+          "conditional_param": 1,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 338819,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 17,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 302930,
           "reply_links": [
             19
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 17,
+              "to_reply_id": 19,
+              "order": 0,
+              "paraphrase_strref": 302934
+            }
+          ],
+          "conditional_func": 3922,
+          "conditional_param": 1,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 338820,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 18,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273141,
           "reply_links": [
             20
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 18,
+              "to_reply_id": 20,
+              "order": 0,
+              "paraphrase_strref": 273192
+            }
+          ],
+          "conditional_func": 2400,
+          "conditional_param": 1,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 267391,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 19,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273142,
           "reply_links": [
             21
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 19,
+              "to_reply_id": 21,
+              "order": 0,
+              "paraphrase_strref": 273193
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267392,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 20,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273143,
           "reply_links": [
             22
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 20,
+              "to_reply_id": 22,
+              "order": 0,
+              "paraphrase_strref": 273194
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267393,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 21,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273144,
           "reply_links": [
             23,
@@ -377,105 +1125,397 @@
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 23,
+              "order": 0,
+              "paraphrase_strref": 273195
+            },
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 5,
+              "order": 1,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 8,
+              "order": 2,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 17,
+              "order": 3,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 26,
+              "order": 4,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267394,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 22,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273145,
           "reply_links": [
             24
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 22,
+              "to_reply_id": 24,
+              "order": 0,
+              "paraphrase_strref": 273196
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267395,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 23,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273146,
           "reply_links": [
             25
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 23,
+              "to_reply_id": 25,
+              "order": 0,
+              "paraphrase_strref": 273197
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267396,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 24,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273112,
           "reply_links": [
             5,
             8,
             17,
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 273211
+            },
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 8,
+              "order": 1,
+              "paraphrase_strref": 273212
+            },
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 17,
+              "order": 2,
+              "paraphrase_strref": 273213
+            },
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 26,
+              "order": 3,
+              "paraphrase_strref": 273214
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267397,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 25,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273113,
           "reply_links": [
             27
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 25,
+              "to_reply_id": 27,
+              "order": 0,
+              "paraphrase_strref": 273198
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267398,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 26,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273114,
           "reply_links": [
             28
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 26,
+              "to_reply_id": 28,
+              "order": 0,
+              "paraphrase_strref": 273199
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267399,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 27,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273115,
           "reply_links": [
             29,
             31,
             33
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 27,
+              "to_reply_id": 29,
+              "order": 0,
+              "paraphrase_strref": 273200
+            },
+            {
+              "from_entry_id": 27,
+              "to_reply_id": 31,
+              "order": 1,
+              "paraphrase_strref": 273201
+            },
+            {
+              "from_entry_id": 27,
+              "to_reply_id": 33,
+              "order": 2,
+              "paraphrase_strref": 273202
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267400,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 28,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273116,
           "reply_links": [
             30
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 28,
+              "to_reply_id": 30,
+              "order": 0,
+              "paraphrase_strref": 273203
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267401,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 29,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273117,
           "reply_links": [
             29,
             31,
             33
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 29,
+              "to_reply_id": 29,
+              "order": 0,
+              "paraphrase_strref": 273200
+            },
+            {
+              "from_entry_id": 29,
+              "to_reply_id": 31,
+              "order": 1,
+              "paraphrase_strref": 273201
+            },
+            {
+              "from_entry_id": 29,
+              "to_reply_id": 33,
+              "order": 2,
+              "paraphrase_strref": 273202
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267402,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 30,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273118,
           "reply_links": [
             32
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 30,
+              "to_reply_id": 32,
+              "order": 0,
+              "paraphrase_strref": 273204
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267403,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 31,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273119,
           "reply_links": [
             29,
             31,
             33
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 31,
+              "to_reply_id": 29,
+              "order": 0,
+              "paraphrase_strref": 273200
+            },
+            {
+              "from_entry_id": 31,
+              "to_reply_id": 31,
+              "order": 1,
+              "paraphrase_strref": 273201
+            },
+            {
+              "from_entry_id": 31,
+              "to_reply_id": 33,
+              "order": 2,
+              "paraphrase_strref": 273202
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267404,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 32,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273120,
           "reply_links": [
             34
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 32,
+              "to_reply_id": 34,
+              "order": 0,
+              "paraphrase_strref": 273205
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267405,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 33,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273121,
           "reply_links": [
             35
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 33,
+              "to_reply_id": 35,
+              "order": 0,
+              "paraphrase_strref": 273206
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267406,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 34,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 273122,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 267407,
+          "skippable": true,
+          "ambient": false
         }
       ],
       "replies": [
@@ -730,7 +1770,20 @@
           ]
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,

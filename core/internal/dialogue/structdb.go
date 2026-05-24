@@ -59,7 +59,10 @@ var ME2StructPropInfo = map[string]map[string]StructPropInfo{
 		"nEntryIndex":           {PropType: "IntProperty"},
 	},
 	"BioDialogReplyListDetails": {
-		"nIndex": {PropType: "IntProperty"},
+		"nIndex":       {PropType: "IntProperty"},
+		"srParaphrase": {PropType: "StringRefProperty"},
+		"sParaphrase":  {PropType: "StrProperty"},
+		"Category":     {PropType: "NameProperty"},
 	},
 	"BioDialogSpeaker": {
 		"sSpeakerTag":        {PropType: "NameProperty"},

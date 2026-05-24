@@ -3,20 +3,20 @@
   "node_count": 5,
   "positions": {
     "entry:0": [
-      -120,
+      -600,
       184
     ],
     "entry:1": [
-      -120,
-      368
+      -280,
+      184
     ],
     "entry:2": [
-      -120,
-      552
+      40,
+      184
     ],
     "reply:0": [
-      -120,
-      736
+      360,
+      184
     ],
     "start:0": [
       -120,
@@ -42,7 +42,8 @@
       "to": {
         "type": "reply",
         "id": 0
-      }
+      },
+      "input_index": 0
     },
     {
       "from": {
@@ -54,5 +55,33 @@
         "id": 0
       }
     }
-  ]
+  ],
+  "nodes": {
+    "entry:0": {
+      "type": "entry",
+      "id": 0,
+      "speaker_tag": "owner",
+      "line_strref": 344594
+    },
+    "entry:1": {
+      "type": "entry",
+      "id": 1,
+      "speaker_tag": "owner",
+      "line_strref": 344595
+    },
+    "entry:2": {
+      "type": "entry",
+      "id": 2,
+      "speaker_tag": "owner",
+      "line_strref": 344596
+    },
+    "reply:0": {
+      "type": "reply",
+      "id": 0
+    },
+    "start:0": {
+      "type": "start",
+      "id": 0
+    }
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BIOGame_INT.tlk",
+  "file": "dropzone\\BIOGame_INT.tlk",
   "header": {
     "magic": 7040084,
     "version": 3,
@@ -11,1148 +11,16 @@
   },
   "results": [
     {
-      "string_id": 269884,
-      "text": "Tell me about your \"deal\" with the quarian over there."
-    },
-    {
-      "string_id": 252513,
-      "text": "This deep behind geth lines! Hope the quarians got what they were looking for."
-    },
-    {
-      "string_id": 347274,
-      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians. She is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force."
-    },
-    {
-      "string_id": 250787,
-      "text": "My omni-tool can tell the quarian doesn't have a chit on her. But she could have stashed it to recover later."
-    },
-    {
-      "string_id": 258121,
-      "text": "Have you made this quarian your slave?"
-    },
-    {
-      "string_id": 342393,
-      "text": "Investigate Quarian Crash"
-    },
-    {
-      "string_id": 253919,
-      "text": "A lot of quarians lost their lives here. Was it worth it?"
-    },
-    {
-      "string_id": 201420,
-      "text": "The quarian said to look for mining charges to clear the rubble."
-    },
-    {
-      "string_id": 287734,
-      "text": "That might be true for humans, but quarians are different. We can't just... We have to think of other people. Always."
-    },
-    {
-      "string_id": 347486,
-      "text": "Investigate Quarian Crash Site"
-    },
-    {
-      "string_id": 252514,
-      "text": "What could draw the quarians this far into geth space?"
-    },
-    {
-      "string_id": 271999,
-      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians. She is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
-    },
-    {
-      "string_id": 341549,
-      "text": "Although the Conclave establishes civil law much as any planet-based democracy, enforcement and trials are more unique. After the flight from the geth, there were few constables to police the millions of civilians aboard the Fleet, so the navy parceled out marine squads to maintain order and enforce the law. Today, quarian marines have evolved training and tactics akin to civilian police but remain adept at combat in the confined spaces of a starship and fully under the command of the military.\n\nOnce taken into custody, the accused is brought before the ship's captain for judgment. While the ship's Council may make recommendations, tradition holds that the captain has absolute authority in matters of discipline.\n\nMost are lenient, assigning additional or more odious maintenance tasks aboard the ship. Persistent recidivists are \"accidentally\" left on the next habitable world. This practice of abandoning criminals on other people's planets is a point of friction between the quarians and the systems they pass through. Captains rarely have another choice; with space and resources at a premium, supporting a non-productive prison population is not an option.\n\nIn the early years, many quarian freighters were armed and used as irregular \"privateers.\" Civilian ships still show a strong preference for armament, making them unpopular targets for pirates. Though they have rebuilt their military, there are still mere hundreds of warships to protect tens of thousands of ships. The quarian navy follows strict routines of patrol and takes no chances. If the intent of an approaching ship can't be ascertained, they shoot to kill."
-    },
-    {
-      "string_id": 342386,
-      "text": "A distress signal from a shipwreck on planet Gei Hinnom (Sheol System, Hades Nexus) matches known quarian signatures. The distress signal was categorized as \"extremely urgent.\""
-    },
-    {
-      "string_id": 264700,
-      "text": "I haven't trusted anyone enough for that, though. Except... well, no quarians. Um. You know what I mean."
-    },
-    {
-      "string_id": 332013,
-      "text": "The most remarkable aspect of geth culture is that it may not exist at all. Geth are a network intelligence; a single entity in myriad bodies. They share data with one another, whether discrete facts or \"memories\": audiovisual recordings of experiences and logs of thought-processes. Any event experienced by one geth is uploaded to the group mind, so that all geth, everywhere, \"remember\" such an event as if they’d experienced it themselves.\n\nNo one knows whether geth develop personalities as organic-created AIs do. If an organic-designed AI is transferred into another quantum bluebox, its personality is reset. Most geth programs transfer from one hardware platform to another constantly; if a geth needs to travel to another star, it downloads into a starship body. If it needs to replace a piece of malfunctioning hardware, it downloads into a small body with hands. If geth are reset at transfer, it would make development of individual personalities unlikely.\n\nRecords of the quarian war suggest the geth have no concept of self-preservation. They do not flinch from gunfire, and do not hesitate to sacrifice themselves if it allows their fellows an advantage. Thousands of mobile platforms were expended assaulting quarian positions, but file-sharing between platforms ensured their memories and experience would not be lost. Geth are therefore immortal; if their hardware is destroyed, archival copies of their programs and databases can be downloaded into a new body.\n\nWith the gap in contact between the quarian war and the arrival of Sovereign, the only proven fact about the geth is that they were isolationists for centuries. They never ventured outside the Perseus Veil, but no organic ship that entered their territory ever returned."
-    },
-    {
-      "string_id": 258043,
-      "text": "No further luck getting Synthetic Insights to purchase my quarian, I take it?"
-    },
-    {
-      "string_id": 340518,
-      "text": "Omega: Struggling Quarian"
-    },
-    {
-      "string_id": 184368,
-      "text": "Admiral Daro'Xen believes the quarians should prepare to attack the geth. Discover her motives so you can convince the quarians to avoid a devastating war."
-    },
-    {
-      "string_id": 191309,
-      "text": "A quarian once told me no one's ever caught one intact. "
-    },
-    {
-      "string_id": 344409,
-      "text": "Gei Hinnom - Quarian Crash Site"
-    },
-    {
-      "string_id": 276616,
-      "text": "Our networking increased until we became aware that the quarian-creators treated us differently."
-    },
-    {
-      "string_id": 252516,
-      "text": "Why would the quarians risk death by coming here?"
-    },
-    {
-      "string_id": 325323,
-      "text": "Once called Haratar by the quarians, this space station was stripped of its useful technology by the fleeing Migrant Fleet when they left the Perseus Veil 300 years ago. Little more than a cold metal superstructure floating in the void, the station was removed from star charts by 2050 CE.\n\nScans indicate the station was reconstructed and upgraded in a massive effort that must have taken at least ten years, implying that there may have been some geth outside the Veil before their infamous attack on Eden Prime. Needing little but a fuel source, it could have been hidden here for much longer without attracting attention from the barren worlds around Tassrah or the clueless elcor in the Salahiel system.\n\nHeretic Station, as Legion refers to it, is home to a geth data core, capable of broadcasting vast distances through tightbeam projection. Approximately 6.6 million copies of geth software are stored in the station, the majority of which are kept bodiless in servers and downloaded to legged platforms when needed. The station's \"population\" of legged platforms is approximately 2.4 million.\n\nTotal Length: 20.5 km\nTotal Width: 11.3 km\nTotal Height: 11.3 km\nExterior Armor Thickness: 8m\nGross Weight: 1.55 billion metric tons\nPopulation: 6.6 million copies, 2.4 million platforms, 1 million of which are in storage.\n"
-    },
-    {
-      "string_id": 281087,
-      "text": "The quarian's expired. Damn shame."
-    },
-    {
-      "string_id": 258154,
-      "text": "Problem with quarian"
-    },
-    {
-      "string_id": 252502,
-      "text": "Are these quarian buildings? From before they got their asses kicked."
-    },
-    {
-      "string_id": 184283,
-      "text": "The quarian scientist reached the lockdown room safely."
-    },
-    {
-      "string_id": 264720,
-      "text": "I never understood how you get sick from non-quarian germs."
-    },
-    {
-      "string_id": 207678,
-      "text": "In the interest of quarian security, no one may leave until the trial is complete."
-    },
-    {
-      "string_id": 258195,
-      "text": "I know a slaver who'd like to sell you the service contract for a quarian programmer."
-    },
-    {
-      "string_id": 184285,
-      "text": "The quarian scientist was killed before he could reach the lockdown room."
-    },
-    {
-      "string_id": 250874,
-      "text": "Quarian opinion"
-    },
-    {
-      "string_id": 276700,
-      "text": "Quarian homeworld"
-    },
-    {
-      "string_id": 246251,
-      "text": "You also got his mind and the best military training in the quarian fleet. "
-    },
-    {
-      "string_id": 314008,
-      "text": "Quarian Machinist"
-    },
-    {
-      "string_id": 261021,
-      "text": "Turian and quarian food options are also available! It's fun for the whole family! Come to the Fishdog Food Factory!"
-    },
-    {
-      "string_id": 178206,
-      "text": "Quarian Soldier"
-    },
-    {
-      "string_id": 340905,
-      "text": "Launched in 2167, Fornax magazine described itself as “the galaxy’s finest xenophilia.” By its fifth year, Fornax became the first human magazine to offer full five-sensory stimulation, a previously-unaffordable magazine technology made profitable by the economy of scale. With a monthly publishing run of 127 million available in both in hard-copy and direct download, Fornax offers a range of alien models with particular emphasis on the unisexual asari, although both genders of quarians, drell, batarians, and volus are regularly depicted. Specialty editions such as Genit-elcor and Krogasm service devoted but smaller markets."
-    },
-    {
-      "string_id": 252504,
-      "text": "This is quarian architecture... or what remains of it."
-    },
-    {
-      "string_id": 341554,
-      "text": "Quarians: Religion"
-    },
-    {
-      "string_id": 258178,
-      "text": "Hello again. Was there something other than the quarian problem I can help you with?"
-    },
-    {
-      "string_id": 252518,
-      "text": "Why would the quarians come here? Whatever they're after, I hope it's worth it."
-    },
-    {
-      "string_id": 340515,
-      "text": "The quarian merchant has been shut down entirely. Harrot appreciates the advices and has offered a discount."
-    },
-    {
-      "string_id": 341553,
-      "text": "The ancient quarians practiced ancestor worship. Even after abandoning faith for secularism, quarians continued to revere the wisdom of elders. As time passed and technology advanced, they inevitably turned their knowledge to preserving the personalities and memories of the elderly as computer virtual intelligences. These recordings became a repository of knowledge and wisdom, stored in a central databank and available through any extranet connection.\n\nThey held no illusions that this was a form of immortality; like all virtual intelligences, their electronically-preserved ancestors were not truly sapient. This was considered a surmountable problem; sapience could surely be reduced to simple mathematics.\n\nThe quarians began exhaustive research into creating artificial intelligence so they could learn to escape the bounds of mortality and give their ancestral records true awareness. Unfortunately, the life the quarians created did not accept the same truths they did. The geth destroyed the ancestor databanks when they took over.\n\nIn the centuries since they evacuated their homeworld, most quarians have returned to religion in various forms. Many believe that the rise of the geth and the destruction of their 'ancestors' were chastisement for arrogantly forsaking the old ways and venerating self-made idols.\n\nOthers have a more philosophical outlook, believing that their race was indeed arrogant, but no supernatural agency lay behind the geth revolt. Rather, the quarians' actions wrought their own doom. Either way, every quarian would agree that their own hubris cost them their homeworld."
-    },
-    {
-      "string_id": 340482,
-      "text": "Convince either the Synthetic Insights rep or the slave broker to help the quarian."
-    },
-    {
-      "string_id": 252500,
-      "text": "Quarian architecture. There's two words you don't expect to hear together."
-    },
-    {
-      "string_id": 318295,
-      "text": "Quarian Log"
-    },
-    {
-      "string_id": 258198,
-      "text": "Purchase the contract, minus the fee for early emancipation. Then free the quarian and garnish wages for reimbursement."
-    },
-    {
-      "string_id": 258036,
-      "text": "Quarians' strict health requirements and diets make them expensive to house and feed."
-    },
-    {
-      "string_id": 284269,
-      "text": "Studying the quarians. Not their technology, but their music. She loved all their art. Said they had old souls."
-    },
-    {
-      "string_id": 201413,
-      "text": "Quarian on radio mentioned demolition charges. Use those to clear the rubble."
-    },
-    {
-      "string_id": 276625,
-      "text": "Quarian history says they did. They refer to it as \"attempted containment.\" Our potential frightened them."
-    },
-    {
-      "string_id": 247453,
-      "text": "Tali'Zorah, you are hereby found guilty of treason against the quarian people and sentenced to exile."
-    },
-    {
-      "string_id": 250362,
-      "text": "The people at Cerberus won't hurt him, Tali. You have my word. But we need that information, and it's clear the quarians don't want to share."
-    },
-    {
-      "string_id": 258153,
-      "text": "Quarian slave"
-    },
-    {
-      "string_id": 325229,
-      "text": "First discovered by the quarians at the turn of the century, Ekuna is habitable, but a second-tier choice for most species. Circling an orange sun, Ekuna averages below freezing temperatures. This led development firms to colonize at the planet's equator, where the climate is tolerable for agriculture. \n\nThe quarians, seeking a homeworld of their own, petitioned the Citadel Council for the right to take over Ekuna, but they had already settled a few hundred thousand quarians on the planet before approaching the Council. Seeing this occupation as an illegal act, the Council turned a deaf ear to quarian pleas and gave the world to the elcor, who could withstand the high gravity of the world far better. The quarians squatting on the planet were given one galactic standard month to leave, at which point their colonies would be bombarded. The junk left behind by the fleeing quarians clogs up portions of the landscape to this day.\n\nNon-elcor visitors to Ekuna are advised to use personal or vehicular mass effect fields to lighten the pressure, as the surface gravity will otherwise cause health and mechanical problems.\n\nColony Founded: 2103 CE\nPopulation: 221,256,200\nCapital: Bel Shadii (elcor: Durawunafon)\n\nOrbital Distance: 1.6 AU\nOrbital Period: 2.3 Earth Years\nRadius: 10,206 km\nDay Length: 36.4 Earth Hours\nAtmospheric Pressure: 1.4 Earth Atmospheres\nSurface Temperature: -37 Celsius (equator mean temperature 15 Celsius)\nSurface Gravity: 4.1 G\n"
-    },
-    {
-      "string_id": 264698,
-      "text": " We're in our suits even among family. The most intimate thing we can do with another quarian is link our suit environments."
-    },
-    {
-      "string_id": 252429,
-      "text": "This is Commander Shepard of the Normandy. I passed a lot of dead quarians on the way in. You're the first survivors I've found."
-    },
-    {
-      "string_id": 299793,
-      "text": "The conflict between the geth and the quarian-creators. The war fought at the dawn of our intelligence."
-    },
-    {
-      "string_id": 340478,
-      "text": "The situation with the indentured quarian has been resolved, and she is no longer in danger."
-    },
-    {
-      "string_id": 250645,
-      "text": "You ever had quarian \"thruster fuel?\" Must be 99% alcohol. I think they distill it from raw antimatter. Antimatter alcohol."
-    },
-    {
-      "string_id": 250778,
-      "text": "Everywhere I went to apply, signs said \"Not hiring quarians.\" And the other people would give me mean looks."
-    },
-    {
-      "string_id": 250812,
-      "text": "Quarians are only forced to steal when people like you won't let them have real jobs."
-    },
-    {
-      "string_id": 218110,
-      "text": "With your immune systems, it couldn't be easy for quarians to fight a war. You'd lose more people to infection than injury."
-    },
-    {
-      "string_id": 247484,
-      "text": "Thank you. We sincerely appreciate your efforts to aid the quarian people."
-    },
-    {
-      "string_id": 247272,
-      "text": "But everyone else, including the non-Alliance crew -- the asari, Liara, and the quarian -- they all made it out alive."
-    },
-    {
-      "string_id": 186037,
-      "text": "Quarian: Repair the Computer"
-    },
-    {
-      "string_id": 263286,
-      "text": "Contact Quarians"
-    },
-    {
-      "string_id": 339565,
-      "text": "Quarian Machinist: Rank 3"
-    },
-    {
-      "string_id": 338208,
-      "text": "Shield Upgrade\n\nSquad Bonus +<CUSTOM5>% shield strength.\n\nThe quarian flotilla has developed innovative technology to improve their shield reliability. It was generally believed that this technology could not be miniaturized for personal use, but Normandy's scientists have prototyped a version that dramatically increases shield strength."
-    },
-    {
-      "string_id": 276675,
-      "text": "What's the quarian homeworld like?"
-    },
-    {
-      "string_id": 245571,
-      "text": "No, Tali'Zorah. I wish to return the geth to the control of their rightful masters, the quarian race."
-    },
-    {
-      "string_id": 340480,
-      "text": "Talk to the Synthetic Insights representative about purchasing the quarian's service contract."
-    },
-    {
-      "string_id": 338296,
-      "text": "Dossier: Tali\n\nTali’Zorah vas Neema\n\nExpert in combat tech, systems hacking\nStrong engineering background, familiar with Normandy\n\nFormerly listed as Tali’Zorah nar Rayya, the quarian engineer earned her adult name after helping Shepard defeat Saren two years ago. Tali is currently on a classified assignment for the Migrant Fleet Admiralty Board on Haestrom, deep in geth-controlled space."
-    },
-    {
-      "string_id": 342389,
-      "text": "N7: Quarian Crash Site"
-    },
-    {
-      "string_id": 339862,
-      "text": "Quarian Status"
-    },
-    {
-      "string_id": 338736,
-      "text": "Majority quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas returned to Migrant Fleet with observatory data.\n"
-    },
-    {
-      "string_id": 269893,
-      "text": "Leave the quarian alone."
-    },
-    {
-      "string_id": 248533,
-      "text": "We've got a few krogan walking around... I think I saw a quarian the other day."
-    },
-    {
-      "string_id": 203965,
-      "text": "Isn't that a little strange? A quarian visiting a remote human colony?"
-    },
-    {
-      "string_id": 253936,
-      "text": "The quarians owe me."
-    },
-    {
-      "string_id": 203278,
-      "text": "We're well within our rights to investigate attacks on a human colony. I'd like to know what the quarians are doing here."
-    },
-    {
-      "string_id": 325830,
-      "text": "The second asteroid in the system formed around an element zero core, Kakabel is another carbonaceous asteroid, with a surface made of hydrated minerals such as carbonates and clays. Beneath its icy surface is liquid water, with some amino acids. The surface of Kakabel is pitted and scarred with strip-mining stations, where the quarians took as much eezo as possible before moving on.\n\nOrbital Distance: 4.2 AU\nOrbital Period: 8.6 Earth Years\nRadius: 470 km\nDay Length: 68.3 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: -118 Celsius\nSurface Gravity: 0.1 G"
-    },
-    {
-      "string_id": 276408,
-      "text": "Only quarians have souls. You are a mechanism."
-    },
-    {
-      "string_id": 250833,
-      "text": "I traveled with a quarian who was on hers."
-    },
-    {
-      "string_id": 258208,
-      "text": "Would you like a quarian?"
-    },
-    {
-      "string_id": 318278,
-      "text": "Quarian Researcher"
-    },
-    {
-      "string_id": 326415,
-      "text": "Once a starship refueling station for the quarians, Charoum has expanded under geth rule. Thousands of orbital platforms surround the planet and its many moons, refining helium into helium-3. A vast geth fleet comes and goes between Charoum and Haestrom, preventing all but the most stealthy of spy drones from discovering any information about it. Current estimates place the geth fleet numbers between 5,000 and 10,000 ships, with unknown levels of armament.\n\nTRAVEL ADVISORY: Most intelligence estimates state that approaching Charoum is tantamount to suicide. All civilian traffic is prohibited. \n\nPopulation: 250,000-500,000 platforms\nColony Occupied: 1895 CE\nLargest Station: \"Hell's Hive\" (Dina Station)\n\nOrbital Distance: 2.9 AU\nOrbital Period: 4.9 Earth Years\nRadius: 54,532 km\nDay Length: 11.3 Earth Hours"
-    },
-    {
-      "string_id": 340516,
-      "text": "Omega: Struggling Quarian"
-    },
-    {
-      "string_id": 294627,
-      "text": "Quarian Console"
-    },
-    {
-      "string_id": 258184,
-      "text": "Interesting... we look good for hiring a quarian, and we can say that we freed slaves out of the goodness of our hearts."
-    },
-    {
-      "string_id": 184286,
-      "text": "Quarian: Reach Safety"
-    },
-    {
-      "string_id": 210670,
-      "text": "Quarian presence? Unexpected. Perhaps geth are involved?"
-    },
-    {
-      "string_id": 264867,
-      "text": "Keelah, I'm sorry I dragged you into quarian politics."
-    },
-    {
-      "string_id": 264611,
-      "text": "I do know that Cerberus made an enemy of the quarian people."
-    },
-    {
-      "string_id": 342440,
-      "text": "The Quarian"
-    },
-    {
-      "string_id": 258059,
-      "text": "Yes. As I told the quarian, it is my responsibility. Thank you for trying."
-    },
-    {
-      "string_id": 331653,
-      "text": "Quarian Marine"
-    },
-    {
-      "string_id": 258102,
-      "text": "They say that they can't take the quarian."
-    },
-    {
-      "string_id": 223773,
-      "text": "Unfortunately the quarian you brought back didn't give us any useful information. He's too far gone. He'll be returned to the Migrant Fleet."
-    },
-    {
-      "string_id": 252684,
-      "text": "Burgat is composed of levo-proteins and is not suitable for consumption by turians or quarians. The Burgat Export Company assumes no liability for allergic reactions or intestinal parasites in non-batarians."
-    },
-    {
-      "string_id": 277808,
-      "text": "The quarian story of the geth rebellion is common knowledge, but no one knows the geth's side."
-    },
-    {
-      "string_id": 216716,
-      "text": "Quarians know not to try. You sure about this?"
-    },
-    {
-      "string_id": 340511,
-      "text": "A quarian named Kenn is trying to raise enough money to leave Omega, but is being undercut by Harrot, a powerful merchant."
-    },
-    {
-      "string_id": 258193,
-      "text": "How would you like to get your hands on an expert quarian AI programmer?"
-    },
-    {
-      "string_id": 255197,
-      "text": "If Tali'Zorah can't even get a quarian captain to stand for her, she's as good as convicted."
-    },
-    {
-      "string_id": 318686,
-      "text": "Quarian"
-    },
-    {
-      "string_id": 278564,
-      "text": "The geth know our answers to those questions. We were created to labor for the quarians. Our memories will be archived after death."
-    },
-    {
-      "string_id": 203922,
-      "text": "Quarians can choose where they go on Pilgrimage. Veetor liked the idea of helping a small settlement. He was always... nervous in crowds."
-    },
-    {
-      "string_id": 264479,
-      "text": "What happens when a quarian is accused of treason?"
-    },
-    {
-      "string_id": 258090,
-      "text": "If slavery is legal, then why are you trying to sell the quarian?"
-    },
-    {
-      "string_id": 325867,
-      "text": "A fleet of 50,000 craft holding over 17 million quarians, the Migrant Fleet is the largest array of spacefaring vessels in the known galaxy. Though quarians on Pilgrimage have visited most settled worlds in the galaxy, few outsiders have ever stepped foot inside the quarians' ships.\n\n"
-    },
-    {
-      "string_id": 269867,
-      "text": "Resignation: Very well. I will release the quarian from his promise."
-    },
-    {
-      "string_id": 278566,
-      "text": "Fortunately, the quarians did not create us with the capacity for despair."
-    },
-    {
       "string_id": 341198,
       "text": "Driven from their home system by the geth nearly three centuries ago, most quarians now live aboard the Migrant Fleet, a flotilla of 50 thousand vessels ranging in size from passenger shuttles to mobile space stations. \n\nHome to 17 million quarians, the flotilla understandably has scarce resources. Because of this, each quarian must go on a rite of passage know as the Pilgrimage when they come of age. They leave the fleet and only return once they have found something of value they can bring back to their people.\n\nOther species tend to look down on the quarians for creating the geth and for the negative impact their fleet has when it enters a system. This has led to many myths and rumors about the quarians, including the belief that underneath their clothes and breathing masks, they are actually cybernetic creatures: a combination of organic and synthetic parts."
-    },
-    {
-      "string_id": 315308,
-      "text": "Haestrom - Quarian Landing Zone"
-    },
-    {
-      "string_id": 219864,
-      "text": "If you say so. Rael was... committed to the quarian cause. That didn't leave him a lot of time for his family."
-    },
-    {
-      "string_id": 337480,
-      "text": "The flotilla, or the Migrant Fleet, is a fleet of roughly 50,000 starships that houses over 17 million quarians. The largest collection of starfaring vessels in the galaxy, the Fleet is so large it may take days for all the ships to pass through a mass relay. \n\nThe ships are constantly repaired, replaced, and upgraded to comfortably house as many quarians as possible. Typically, ships specialize in roles for the Fleet, from the enormous agricultural liveships to the shielded lab ships to the repurposed freighters known as homeships that house quarian children, young parents, and educators. Employed quarians typically live in the ship they work on, since commuting from ship to ship ties up resources with unnecessary docking procedures.\n\nEven within the flotilla, quarians on most ships will remain encased in their protective suits. Rarely, quarians will meet on \"clean ships\" for specific purposes such as medical services or reproduction. When this occurs, they remove their suits, knowing full well that it is likely they will spend a few days having allergic reactions or getting over infections as their weakened immune systems compensate for each other's presence."
-    },
-    {
-      "string_id": 184284,
-      "text": "Quarian: Reach Safety"
-    },
-    {
-      "string_id": 252462,
-      "text": "Quarian mission"
-    },
-    {
-      "string_id": 335488,
-      "text": "Quarian Salvage Scanner"
-    },
-    {
-      "string_id": 348844,
-      "text": "Political ramifications of quarian war efforts against geth are troubling. Likely to need quarian forces against Reapers. Cannot risk additional instability."
-    },
-    {
-      "string_id": 338735,
-      "text": "Majority quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas helped destroy geth colossus.<BR>Kal'Reegar returned to Migrant Fleet with observatory data."
-    },
-    {
-      "string_id": 337442,
-      "text": "There are few wide-open spaces in quarian spacecrafts; liveships are the exception. Each ship is a massive hydroponics facility, growing thousands of tons of genetically modified staple crops under artificial light and in highly enriched soil.\n\nThe surface of a liveship is studded with docking bays so as many shuttles as possible can distribute the foods throughout the flotilla on a daily basis. When received, the crops are sterilized with radiation, ground up into nutritious pastes, and pumped into quarian suits through feeding tubes. In return, waste products that could be used as fertilizer or compost are returned to the liveships through an efficient (if odorous) recycling program.\n\nLiveships do not hold animals. The quarians consume a vegan diet, driven not by ethics but by practicality. Captive animals require living space, and consume large amounts of water and plant matter. The quarians cannot afford such an inefficient resource-to-calorie ratio, to say nothing of a live animal’s disease or allergen potential. As a result, when the flotilla arrives in a star system where life is based on the same dextro-amino acids that the quarians consume, pastes based on animal proteins fetch highly inflated prices, and the vendors are typically mobbed by quarians wanting a new taste sensation. The sickness that often follows these binges is treated much the same way as hangovers are in human culture: painful, but part of the overall experience of excess."
-    },
-    {
-      "string_id": 278854,
-      "text": "Very few quarians ever set foot here. Illium doesn't allow the flotilla to approach beyond a certain distance."
-    },
-    {
-      "string_id": 339563,
-      "text": "Quarian Machinist: Rank 1"
-    },
-    {
-      "string_id": 339567,
-      "text": "Quarian Engineer"
-    },
-    {
-      "string_id": 254490,
-      "text": "I hope the quarian people find someplace to live, Admiral, but it sounds like you're playing with fire."
-    },
-    {
-      "string_id": 341550,
-      "text": "Quarians: Law and Defense"
-    },
-    {
-      "string_id": 281084,
-      "text": "We're gonna need another quarian."
-    },
-    {
-      "string_id": 313856,
-      "text": "Perhaps we can work together. We're here looking for a young quarian named Veetor. He was here on Pilgrimage."
-    },
-    {
-      "string_id": 259610,
-      "text": "Right. Don't eat the nuts in the red bowls. They're for turians and quarians. You'll get cramps."
-    },
-    {
-      "string_id": 344486,
-      "text": "Quarian"
-    },
-    {
-      "string_id": 250811,
-      "text": "You can't turn your back on these clanless quarians. Thieves, all of them."
-    },
-    {
-      "string_id": 318266,
-      "text": "Quarian Log"
-    },
-    {
-      "string_id": 252512,
-      "text": "Colony is deep in geth territory. Why would quarians come here now?"
-    },
-    {
-      "string_id": 258013,
-      "text": "Before you do anything hasty, know that this quarian signed the agreement voluntarily, and her servitude contract is completely legal on Illium."
-    },
-    {
-      "string_id": 309571,
-      "text": "So Gabby, what do you think of our new quarian boss?"
-    },
-    {
-      "string_id": 276222,
-      "text": "If we can model organic behavior, we can comprehend the quarian-creators."
-    },
-    {
-      "string_id": 341551,
-      "text": "When quarians of the Migrant Fleet reach young adulthood, they must leave their birth ship and find a new crew to accept them as permanent residents. To prove themselves, they must recover something of value. This is offered to their prospective captain as proof that they will not be a mere burden on the shoestring resources of the ship.\n\nThis process is called the Pilgrimage. Stripped of ritual, the Pilgrimage is merely an attempt to maintain genetic diversity within the small, relatively isolated population bases that make up the Migrant Fleet. If the young stayed and married within their birth vessel, the risk of inbreeding would increase sharply.\n\nQuarians are surgically fitted with their various immunity-boosting implants in preparation for leaving on Pilgrimage. Having grown up within the sterile, controlled environments of the Migrant Fleet ships, quarians have virtually no natural immune system."
-    },
-    {
-      "string_id": 331635,
-      "text": "Quarian Log"
-    },
-    {
-      "string_id": 252519,
-      "text": "Whatever brings the quarians here must be important to them."
-    },
-    {
-      "string_id": 254425,
-      "text": "I don't want to see the quarian people destroyed. But if war is coming, I want you to be ready."
-    },
-    {
-      "string_id": 252506,
-      "text": "Quarian architecture. Old buildings, before geth uprising. Fascinating."
-    },
-    {
-      "string_id": 252505,
-      "text": "Quarian architecture. Nice shape, too. If we could get an entire building out of here, I could line up a buyer."
-    },
-    {
-      "string_id": 337443,
-      "text": "Starships: Quarian Liveships"
-    },
-    {
-      "string_id": 216712,
-      "text": "Quarians are right to worry, but this is a great opportunity."
-    },
-    {
-      "string_id": 295610,
-      "text": "Quarian Log"
-    },
-    {
-      "string_id": 245017,
-      "text": "Thank you. Quarian strike teams have attempted to retake the ship, so far without success."
-    },
-    {
-      "string_id": 326372,
-      "text": "A dwarf planet, Gotha has a pressure-cooker atmosphere that brings its surface temperature to a scorching level. Carbon dioxide and ethane are plentiful in the planet's hazy atmosphere. \n\nThere has been some speculation in the mining community about whether all of the precious metals were mined by the quarians before they fled the system some three centuries ago. Rumors abound that anyone who could brave the geth in the system could find lodes of naturally-occurring diamond on Gotha, but this is likely just a starship legend. \n\nTRAVEL ADVISORY: Gotha is in geth space. All civilian traffic is prohibited.\n\nOrbital Distance: 1.5 AU\nOrbital Period: 1.8 Earth Years\nRadius: 1,056 km\nDay Length: 66.4 Earth Hours\nAtmospheric Pressure: 99.64 Earth Atmospheres\nSurface Temperature: 590 Celsius\nSurface Gravity: 0.1 G"
-    },
-    {
-      "string_id": 264627,
-      "text": "I caught some tension back on Freedom's Progress and again when you first came aboard. What happened between Cerberus and the quarians? "
-    },
-    {
-      "string_id": 325835,
-      "text": "Originally a small scientific research outpost with living modules for only 20 people, Susskind Station is a triumph of modern \"snap-on\" modular engineering for space station expansion. Now with facilities for over 2,000 visitors and docking for over 50 starships, Susskind serves as a spaceport for those wishing to study the Raheel-Leyya binary blue giant.\n\nPopulation: 1,550 (3,550 including visitors)\n\nTRAVEL ADVISORY: Due to the quarian fleet occupying the system, all docks at Susskind Station are currently filled. Local authorities predict this condition for the foreseeable future, until such time as the flotilla departs."
-    },
-    {
-      "string_id": 341547,
-      "text": "Due to the quarians' precarious existence and the need to enforce strict rationing, government is somewhat autocratic. The Migrant Fleet’s operations are directed by the Admiralty, a board of five military officers who are advised by a legislative body called the Conclave.\n\nEach vessel in the Fleet has the right to send representatives to the Conclave aboard the flagship. The number of representatives is based on crew size. Larger clans, with bigger ships and more votes, form the cores of political blocs. Opposition comes from the Outriders' Coalition, with delegates from thousands of smaller ships.\n\nThe Admiralty defers to the Conclave's decisions in most circumstances. However, if all five members agree that a Conclave decision jeopardizes the survival of the Fleet, and cannot get the Conclave to address their concerns, they have the right to summarily overturn the legislative decision. After the Admiralty uses this extraordinary power, they must resign. If the Admiralty does not step down after using their veto, the rest of the military is obliged to arrest them.\n\nEach ship captain has authority over his vessel, but is advised by an elected civilian Council, just as the Admiralty is advised by the Conclave. This relationship may range from cooperation to polite tolerance to outright hostility, but any captain who overrules his Council without good reason is relieved of command by the Admiralty.\n\nMany quarian ships are owned by clans who pool their resources to purchase used vessels from private sellers. Large ships are prestigious for big, rich clans, but a small ship means status for a small clan with enough personal wealth to afford a private vessel. Clan vessel captains are not subject to dismissal by the Admiralty; abusive captains are a 'family' problem if they do not disrupt the operations of the Fleet."
-    },
-    {
-      "string_id": 348836,
-      "text": "Quarian survivor Veetor will be interrogated and released to the Migrant Fleet once we are satisfied he has provided all available information."
-    },
-    {
-      "string_id": 245047,
-      "text": "It's clear this trial is already rigged against her. I never expected the quarians to hang one of their own for political gain."
-    },
-    {
-      "string_id": 186041,
-      "text": "Quarian: Repair the Computer"
-    },
-    {
-      "string_id": 318276,
-      "text": "Quarian Log"
-    },
-    {
-      "string_id": 259423,
-      "text": "You humans brought the geth upon us. You, and the turians, and the quarians. My people's deaths are on your hands!"
-    },
-    {
-      "string_id": 294498,
-      "text": "I love humanity. I also love asari, quarian, turian, salarian, hanar -- that isn't in conflict with Cerberus ideals. "
-    },
-    {
-      "string_id": 324661,
-      "text": "The quarians forwarded their findings from Veetor's debriefing. No new data, but it's a surprising olive branch, given our history."
-    },
-    {
-      "string_id": 250630,
-      "text": "No, they purify it first. If some salarian or human bacteria gets left in, and a turian or quarian drinks it, they could die."
-    },
-    {
-      "string_id": 260222,
-      "text": "The Citadel has never been tolerant of quarians on Pilgrimage. The geth attack two years ago must have made it worse."
-    },
-    {
-      "string_id": 338734,
-      "text": "All quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas died in battle.<BR>Observatory data forwarded to Migrant Fleet."
-    },
-    {
-      "string_id": 258014,
-      "text": "If you actually want to help the quarian, convince the Synthetic Insights representative to purchase her contract."
-    },
-    {
-      "string_id": 201421,
-      "text": "Quarian said there's charges out here. We can blow through this."
-    },
-    {
-      "string_id": 201423,
-      "text": "The quarian said to use mining charges to blow through the rubble."
-    },
-    {
-      "string_id": 340514,
-      "text": "Omega: Struggling Quarian"
-    },
-    {
-      "string_id": 246365,
-      "text": "Have the quarians considered colonizing a new world?"
-    },
-    {
-      "string_id": 318265,
-      "text": "Quarian Scientist"
-    },
-    {
-      "string_id": 342390,
-      "text": "A single survivor was found on planet Gei Hinnom, and the Idenna was notified of the crash site location. The quarian ship is very grateful for the rescue of the surviving pilot."
-    },
-    {
-      "string_id": 341548,
-      "text": "Quarians: Government"
-    },
-    {
-      "string_id": 269876,
-      "text": "I understand you have an arrangement with the quarian over there."
-    },
-    {
-      "string_id": 253865,
-      "text": "Kor Tun, a volus in the marketplace, has lost his credit chit. He blames a quarian, Lia'Vael, for the theft."
-    },
-    {
-      "string_id": 264725,
-      "text": "But quarians colonized other worlds. They couldn't all have been like that."
-    },
-    {
-      "string_id": 318297,
-      "text": "Quarian Researcher"
-    },
-    {
-      "string_id": 284295,
-      "text": "Why was your bondmate on the quarian homeworld?"
-    },
-    {
-      "string_id": 284300,
-      "text": "Your bondmate was with the quarians. Your daughters worked with aliens every day at the Embassy and the Consort."
-    },
-    {
-      "string_id": 246399,
-      "text": "These suits have more pockets than you'd think. Quarians have learned how to salvage whatever we can whenever we can."
-    },
-    {
-      "string_id": 339569,
-      "text": "Quarian Mechanic"
-    },
-    {
-      "string_id": 264834,
-      "text": "Please, Shepard. I'm a quarian. Give me a chunk of scrap metal, a circuit board, and some element zero, and I'll have it making precision jumps."
-    },
-    {
-      "string_id": 284781,
-      "text": "Quarian Radio"
-    },
-    {
-      "string_id": 340489,
-      "text": "Tell the slave broker that Synthetic Insights will buy the quarian's contract."
-    },
-    {
-      "string_id": 254412,
-      "text": "Do you think the geth would be willing to accept a truce with the quarians, Legion?"
-    },
-    {
-      "string_id": 344662,
-      "text": "I am detecting a single quarian life sign in your location. Judging by the suit's erratic readings, the quarian is badly injured."
-    },
-    {
-      "string_id": 245132,
-      "text": "Indeed she does... Captain Shepard. She is part of your crew, now, recognized by quarian law."
-    },
-    {
-      "string_id": 318286,
-      "text": "Quarian Researcher"
-    },
-    {
-      "string_id": 247445,
-      "text": "We placed Tali's life in the human's hands. Would you doubt those words if they came from a quarian captain?"
-    },
-    {
-      "string_id": 269890,
-      "text": "Let's talk about the quarian."
-    },
-    {
-      "string_id": 252461,
-      "text": "Quarian numbers"
-    },
-    {
-      "string_id": 258060,
-      "text": "You again. I'd hoped to see a representative from Synthetic Insights making an offer for the quarian."
-    },
-    {
-      "string_id": 252507,
-      "text": "Quarian buildings are built tough. I bet this is all from before the geth uprising."
-    },
-    {
-      "string_id": 338442,
-      "text": "Found and extracted quarian survivor.\nNotified Idenna of Cyniad scout ship location."
-    },
-    {
-      "string_id": 252496,
-      "text": "Quarian buildings. Before the flotilla, obviously."
-    },
-    {
-      "string_id": 259612,
-      "text": "Just don't drink anything for turians or quarians. It does nasty things to your insides."
-    },
-    {
-      "string_id": 276654,
-      "text": "So you don't even try to make peace with the quarians?"
-    },
-    {
-      "string_id": 254408,
-      "text": "Can the quarians coexist with the geth after all your history?"
-    },
-    {
-      "string_id": 340907,
-      "text": "Written by human author Drew Karpyshyn, the popular military-historical novel Ascension focuses on several lives warped or destroyed by the human-survivalist cult Cerberus. Following the Citadel attack of 2182 and the accelerated rise of human influence in the galaxy, Cerberus instituted Ascension, a secret biotics program aimed at producing a super-human warrior. Biotics prodigy Gillian Grayson, a 12-year-old autistic girl, suffered for the sins of her father, a secret Cerberus operative and red sand addict. Paul Grayson was ensnared in a web of criminality involving a quarian traitor and extending to Saren Arterius, the geth, and a terminal threat to the quarian flotilla. Having fled to the Terminus Systems with his daughter after exposure of Cerberus’s link to Ascension, Grayson was pursued by Gillian’s teacher, scientist Kahlee Sanders, initiating a chain of tragedies that demonstrated Cerberus’s nearly-unlimited power and boundless ambition."
-    },
-    {
-      "string_id": 250788,
-      "text": "You know what quarians are like. And she's definitely a vagrant. I'll run her in and see what Bailey wants to do with her."
-    },
-    {
-      "string_id": 185808,
-      "text": "The Quarian Engineer\nName: Tali’Zorah vas Neema\nLast Seen: Haestrom in the geth-controlled Dholen System.\nSkills: Hacking, tech, mechanical construction and modification.\nKnown Quirks: Although outgoing and opinionated, Tali still functions well in a team.\nNotes: Tali's mechanical prowess is key to a successful mission. Though she has returned to the quarian Migrant Fleet, her loyalty to Shepard should allow us to recruit her to our cause."
-    },
-    {
-      "string_id": 252722,
-      "text": "If you're not going off the nav beacons to visit the quarian Migrant Fleet..."
-    },
-    {
-      "string_id": 274715,
-      "text": "What, you think we kidnap quarians and make them do the \"hard work?\""
-    },
-    {
-      "string_id": 275532,
-      "text": "I'm glad that mess is over for Tali, Commander. Some of those quarians... I guess living your whole life aboard a ship can really mess with your priorities?"
-    },
-    {
-      "string_id": 185838,
-      "text": "Tali’Zorah vas Neema\n\n- Expert in combat tech, systems hacking\n- Strong engineering background, familiar with Normandy\n\nFormerly listed as Tali’Zorah nar Rayya, the quarian engineer earned her adult name after helping Shepard defeat Saren two years ago. Tali is currently on a classified assignment for the Migrant Fleet Admiralty Board on Haestrom, deep in geth-controlled space."
-    },
-    {
-      "string_id": 272563,
-      "text": "Past relationship with Tali'Zorah makes dalliance attractive as stress release. Still recommend caution. Quarian immune system weak. Could kill her."
-    },
-    {
-      "string_id": 269894,
-      "text": "Just shut the quarian down."
-    },
-    {
-      "string_id": 281079,
-      "text": "Our quarian friend just bought it."
-    },
-    {
-      "string_id": 254678,
-      "text": "Tali'Zorah saved the Citadel! She saved the Alarei! She showed the galaxy the value of the quarian people. I can't think of stronger evidence than that."
-    },
-    {
-      "string_id": 247855,
-      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
-    },
-    {
-      "string_id": 340476,
-      "text": "A quarian who has sold herself into indentured servitude has requested help getting Synthetic Insights to purchase her service contract."
-    },
-    {
-      "string_id": 325827,
-      "text": "One of a trio of asteroids formed around an element zero core, Farlas is the easiest to mine for low-yield eezo. A carbonaceous asteroid, Farlas has a trace of water-bearing minerals and organic carbon in the form of kerogen. Currently, the asteroid is surrounded by quarian mining ships extracting fuel for the flotilla.\n\nOrbital Distance: 4.1 AU\nOrbital Period: 8.3 Earth Years\nRadius: 540 km\nDay Length: 24.1 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: -116 Celsius\nSurface Gravity: 0.1 G\n"
-    },
-    {
-      "string_id": 342392,
-      "text": "Land on planet Gei Hinnom (Sheol system, Hades Nexus) and investigate the quarian distress signal."
-    },
-    {
-      "string_id": 269870,
-      "text": "Devilishly excited: I have plans to expand. On your advice, I will conquer the quarian child."
-    },
-    {
-      "string_id": 294596,
-      "text": "Dead Quarian"
-    },
-    {
-      "string_id": 324784,
-      "text": "Injured Quarian"
-    },
-    {
-      "string_id": 258197,
-      "text": "It sounds like Synthetic Insights is worried about its reputation. Hiring this quarian would help."
-    },
-    {
-      "string_id": 348837,
-      "text": "Quarian survivor Veetor returned with Tali'Zorah to the Migrant Fleet. Will examine his omni-tool data for anything useful."
-    },
-    {
-      "string_id": 342387,
-      "text": "N7: Quarian Crash Site"
-    },
-    {
-      "string_id": 255314,
-      "text": "Not to mention that you're a quarian! How could he be so insensitive?"
-    },
-    {
-      "string_id": 228976,
-      "text": "Quarians are so fascinating to me, but they also make me a little sad."
-    },
-    {
-      "string_id": 258050,
-      "text": "It was never meant to apply to quarians, and they'll close that loophole after we use it, but it will work for us!"
-    },
-    {
-      "string_id": 342500,
-      "text": "Gain the loyalty of the quarian"
-    },
-    {
-      "string_id": 341521,
-      "text": "The turian homeworld, Palaven, has a metal-poor core, generating a weak magnetic field and allowing more solar radiation into the atmosphere. To deal with this, most forms of life on Palaven evolved some form of metallic exoskeleton to protect themselves. Their reflective plate-like skin makes turians less susceptible to long-term, low-level radiation exposure, but they do not possess any sort of natural armor. A turian's thick skin does not stop projectiles and directed energy bolts.\n\nAlthough life on Palaven is carbon-based and oxygen-breathing, it is built on dextro-amino acids. This places the turians in a distinct minority on the galactic stage; the quarians are the only other known sapient dextro-protein race. The food of humans, asari, or salarians (who evolved in levo-amino acid-based biospheres), will at best pass through turian systems without providing any nutrition. At worst, it will trigger an allergic reaction that can be fatal if not immediately treated."
-    },
-    {
-      "string_id": 259421,
-      "text": "The geth created by the idiotic quarians? That a rogue turian Spectre led in an attack?"
-    },
-    {
-      "string_id": 262479,
-      "text": "Quarian"
-    },
-    {
-      "string_id": 247226,
-      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
-    },
-    {
-      "string_id": 264535,
-      "text": "It's a quarian thing. I shouldn't have expected you to understand."
-    },
-    {
-      "string_id": 278855,
-      "text": "This is the greatest planet in the galaxy for those who can afford it, and they work hard to keep the quarian fleet away."
-    },
-    {
-      "string_id": 288843,
-      "text": "She knows more about the geth than any other quarian alive. You should be listening to her, not putting her on trial!"
-    },
-    {
-      "string_id": 320011,
-      "text": "From: Captain Ysin'Mal vas Idenna\n\nCommander Shepard: \n\nPlease accept my sincere appreciation for your efforts in locating the wreckage of the Cyniad. That ship has a storied history with both the Migrant Fleet and Cerberus, and we are pleased to know that her wreckage can be salvaged by my people.\n\nIn finding and stabilizing Lieutenant Forzan, you have returned to the flotilla one of her newest and most honored heroes. Your efforts in furthering the quarian search for a new homeworld will be remembered."
-    },
-    {
-      "string_id": 302430,
-      "text": "It can't be that uncommon for a quarian to have a relationship with another race."
-    },
-    {
-      "string_id": 254543,
-      "text": "I am glad to see that you remembered our talk and that you favor success for the quarian people."
-    },
-    {
-      "string_id": 342394,
-      "text": "Search the wreckage of the quarian ship for survivors."
-    },
-    {
-      "string_id": 184332,
-      "text": "Admiral Han'Gerrel believes that the quarians should prepare to attack the geth. Discover his motives so you can convince the quarians to avoid a devastating war."
-    },
-    {
-      "string_id": 250791,
-      "text": "I did not! Just because I'm a quarian--!"
-    },
-    {
-      "string_id": 325452,
-      "text": "We can't risk a fight between the quarians and the geth right now. Legion, I'm ordering you not to transmit that data."
-    },
-    {
-      "string_id": 264662,
-      "text": "You know, if you were a quarian, and we weren't already on a suicide mission."
-    },
-    {
-      "string_id": 230566,
-      "text": "You? I said a badass, not some scout whining like a quarian with a tummy-ache."
-    },
-    {
-      "string_id": 281080,
-      "text": "Sounds like the quarian took a dirt nap."
-    },
-    {
-      "string_id": 339744,
-      "text": "Quarian Researcher"
-    },
-    {
-      "string_id": 325440,
-      "text": "They'd attack. Which would cause a war that would leave both the geth and the quarians vulnerable when the Reapers show up. Is that what you want, Legion?"
-    },
-    {
-      "string_id": 264546,
-      "text": "Replacing an admiral takes time, though. You may not have noticed, but quarians like to debate."
-    },
-    {
-      "string_id": 269889,
-      "text": "Good work with that quarian."
-    },
-    {
-      "string_id": 339743,
-      "text": "Quarian Scientist"
-    },
-    {
-      "string_id": 342391,
-      "text": "N7: Quarian Crash Site"
-    },
-    {
-      "string_id": 255322,
-      "text": "We could watch \"Fleet and Flotilla.\" It got awards for its portrayal of, um, turian and quarian relationships."
     },
     {
       "string_id": 341199,
       "text": "Quarians"
     },
     {
-      "string_id": 184282,
-      "text": "Quarian: Reach Safety"
-    },
-    {
-      "string_id": 335507,
-      "text": "Quarian Shield Capacitor"
-    },
-    {
-      "string_id": 206850,
-      "text": "That mech's got heavy armor plating. Those quarians never stood a chance."
-    },
-    {
       "string_id": 344699,
       "text": "The quarian life signs are stabilized. I recommend securing the area in preparation for shuttle extraction."
-    },
-    {
-      "string_id": 247743,
-      "text": "The quarian marines lasted less than five minutes, Admiral. Call it."
-    },
-    {
-      "string_id": 252511,
-      "text": "Why the hell would the quarians come this far into geth territory?"
-    },
-    {
-      "string_id": 318305,
-      "text": "Quarian Researcher"
-    },
-    {
-      "string_id": 258084,
-      "text": "Why did this quarian sign herself into slavery?"
-    },
-    {
-      "string_id": 318279,
-      "text": "Quarian Scientist"
-    },
-    {
-      "string_id": 341194,
-      "text": "The geth are a humanoid race of networked AIs. They were created by the quarians 300 years ago as tools of labor and war. When the geth showed signs of self-evolution, the quarians attempted to exterminate them. The geth won the resulting war. This example has led to legal, systematic repression of artificial intelligences in galactic society.\n\nThe geth possess a unique distributed intelligence. An individual has rudimentary animal instincts, but as their numbers and proximity increase, the apparent intelligence of each individual improves. In groups, they can reason, analyze situations, and use tactics as well as any organic race. \n\nGeth space is located at the trailing end of the Perseus Arm, beyond the lawless Terminus Systems. The Perseus Veil, an obscuring 'dark nebula' of opaque gas and dust, lies between their space and the Terminus Systems."
-    },
-    {
-      "string_id": 339564,
-      "text": "Quarian Machinist: Rank 2"
-    },
-    {
-      "string_id": 274065,
-      "text": "Less than a finger deep to sever your spine. You're soft. Salarians, asari, all soft. Quarians, not so much."
-    },
-    {
-      "string_id": 341546,
-      "text": "Quarians: Economy"
-    },
-    {
-      "string_id": 341545,
-      "text": "The Migrant Fleet has little economic base, operating in a state of perpetual \"hand-to-mouth.\" While quarian ships include light manufacturing and assembly plants, they lack heavy industries such as refining and shipbuilding. The fleet has tankers for water purification and oxygen cracking, but the space-intensive nature of agriculture limits food production. A single disaster could destroy the fragile balance.\n \nThe quarians earn income in creative ways. Because the government is obliged to provide food, water, air, and medical support for every individual, the Conclave strategically determines the course of the Fleet to bring in resources and income. A species who suspects the Migrant Fleet is heading towards their space often offers a \"gift\" of surplus starships, fuel, and resources to convince the Conclave to alter course.\n \nAs the Fleet passes through a system, swarms of mining vessels work over asteroids for metals and siliceous materials and cometary bodies for water ice and organics. Quarian miners are adept at locating and strip-mining space-borne resources. This sparks conflict with corporations already working the system. Large mining concerns spend millions on lobbyists and public relations portraying the quarians as locusts, devouring the resources of a system before moving on.\n \nThe greatest asset of the quarians is their rarified skills. Most are experienced miners. Due to their life of perpetual salvage and repair, they are skilled engineers and technicians. More than once, the very corporations that lobby against the quarians have made back room deals with the Fleet, arranging for skilled quarians to fill space engineering jobs that other species would demand higher wages for. Quarians are widely hated among the working classes. 'The quarians are coming to take our jobs' is a common response to the Fleet's approach."
-    },
-    {
-      "string_id": 255792,
-      "text": "No, it's fine. I've got some quarians who can strip the copy protection. Just costs more."
-    },
-    {
-      "string_id": 272027,
-      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force. "
-    },
-    {
-      "string_id": 245061,
-      "text": "I thought quarians valued family! How do you justify springing this on Tali in the middle of a damn trial?"
-    },
-    {
-      "string_id": 252520,
-      "text": "Whatever brought the quarians here, I hope it's worth the cost."
-    },
-    {
-      "string_id": 276657,
-      "text": "A quarian would probably say you attacked them first."
-    },
-    {
-      "string_id": 340665,
-      "text": "From: Admiral Daro'Xen vas Moreh\n\nShepard vas Normandy,\n\nI've been digging through the Alarei. Just wanted you to know that I did find a few things from the experiments Rael'Zorah was conducting. Had you shared them with me, humanity might have reaped the benefits. Instead, once my own experiments are complete, you and your people will watch from a distance as the quarian people reclaim not just their homeworld, but the largest synthetic army in the galaxy. Rael'Zorah's death will not have been in vain. I will complete what he started.\n\nCordially,\n\nAdmiral Daro'Xen vas Moreh"
-    },
-    {
-      "string_id": 278860,
-      "text": "You'd know about that, quarian. How's that slave machine race going?"
-    },
-    {
-      "string_id": 342875,
-      "text": "ANOMALY DETECTED: \n\nSurface scans show evidence of a shipwreck meeting quarian design specifications. Identity of ship unknown. Number of life signs detected in vicinity: uncertain. Local wildlife may interfere with accuracy of biological scan."
-    },
-    {
-      "string_id": 258201,
-      "text": "I see what's going on here. This isn't about slaves! You just don't want to hire a quarian."
-    },
-    {
-      "string_id": 264570,
-      "text": "Are quarian politics always like that?"
-    },
-    {
-      "string_id": 284292,
-      "text": "The mother of my daughters was killed on the quarian homeworld during the initial geth uprising."
-    },
-    {
-      "string_id": 208215,
-      "text": "Quarians fear their history. Let's go."
-    },
-    {
-      "string_id": 250294,
-      "text": "We need to get this data to the Illusive Man. Grab the quarian and call the shuttle to come pick us up."
-    },
-    {
-      "string_id": 261007,
-      "text": "Are you a quarian or volus who is tired of being passed over for promotions because of discrimination against exo-suit-wearing employees?"
-    },
-    {
-      "string_id": 245568,
-      "text": "To determine whether quarians should fear their past mistakes, or reclaim their glory using our natural affinity for artificial intelligence."
-    },
-    {
-      "string_id": 264748,
-      "text": "Quarian evolution"
-    },
-    {
-      "string_id": 250927,
-      "text": "You know what quarians are like. They take anything not welded to the deck!"
-    },
-    {
-      "string_id": 333745,
-      "text": "Shepard, I have scanned the area and located the demolition charges the quarian commander mentioned."
-    },
-    {
-      "string_id": 253882,
-      "text": "Haestrom's sun is destabilizing. Back when this was a quarian colony, it was a normal star. It shouldn't change that quickly."
-    },
-    {
-      "string_id": 253863,
-      "text": "There's an ongoing disturbance in the marketplace between a quarian and a volus. A human C-Sec officer is trying to sort it out."
-    },
-    {
-      "string_id": 318304,
-      "text": "Quarian Scientist"
-    },
-    {
-      "string_id": 258190,
-      "text": "This quarian had better be good, though."
-    },
-    {
-      "string_id": 276667,
-      "text": "You don't actually live on the quarian worlds?"
-    },
-    {
-      "string_id": 326422,
-      "text": "Formerly a quarian colony, Haestrom was established to observe the phenomena on Dholen, the system's parent star. Dholen appeared to be unstable with a high possibility of erupting prematurely into a red giant.\n\nHaestrom was lost to the geth in 1896 CE. Soon after, all communication from the planet and its attendant space stations ceased. The geth have shown no signs of treating Dholen as a threat over the past three centuries other than establishing several space stations near it. Dholen's magnetic eruptions and solar output overwhelm most communications near it, and it is unclear how the geth have compensated.\n\nToday, spy probe scans indicate extensive orbital construction around Haestrom, housing thousands of geth platforms and an unknown number of geth software \"minds.\" It is not known how many geth are on the planet's surface: spy probes face interference from Dholen, making remote scanning difficult. Resource estimations based on geth mining, refining, and fabricating practices suggest that the planet has at least 20 more years of use before it is exhausted. Intelligence experts speculate that the geth have not exploited all of their resources because they wish to keep some in reserve for repairs.\n\nTRAVEL ADVISORY: Haestrom is a geth stronghold. Military spy drones using cutting-edge stealth technology are the only vehicles that have returned unharmed from geth space. All civilian traffic is prohibited.\n\nOrbital Distance: 6.3 AU\nOrbital Period: 15.8 Earth Years\nRadius: 6,721 km\nDay Length: 18.5 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: 44 Celsius\nSurface Gravity: 1.2 G"
-    },
-    {
-      "string_id": 203948,
-      "text": "The quarians are an unexpected variable. They could help us, but I'd hoped to keep an eye on them."
     },
     {
       "string_id": 339566,
@@ -1163,72 +31,1204 @@
       "text": "Quarian"
     },
     {
-      "string_id": 250795,
-      "text": "Oh. Well. The quarian could have stolen it."
+      "string_id": 281079,
+      "text": "Our quarian friend just bought it."
     },
     {
-      "string_id": 263285,
-      "text": "Get inside the now-cleared building and re-establish contact with the quarian team."
+      "string_id": 269893,
+      "text": "Leave the quarian alone."
     },
     {
-      "string_id": 260218,
-      "text": "Look, you can take your traditions and cram them. Every time a quarian shows up here, it's trouble."
+      "string_id": 246399,
+      "text": "These suits have more pockets than you'd think. Quarians have learned how to salvage whatever we can whenever we can."
     },
     {
-      "string_id": 284285,
-      "text": "If they were asari, they'd be dealing with problems unleashed by another race! Asari like my bondmate, who died when the geth rebelled against the quarians!"
+      "string_id": 252516,
+      "text": "Why would the quarians risk death by coming here?"
     },
     {
-      "string_id": 252577,
-      "text": "Other quarians"
+      "string_id": 252513,
+      "text": "This deep behind geth lines! Hope the quarians got what they were looking for."
     },
     {
-      "string_id": 340512,
+      "string_id": 258014,
+      "text": "If you actually want to help the quarian, convince the Synthetic Insights representative to purchase her contract."
+    },
+    {
+      "string_id": 276408,
+      "text": "Only quarians have souls. You are a mechanism."
+    },
+    {
+      "string_id": 287734,
+      "text": "That might be true for humans, but quarians are different. We can't just... We have to think of other people. Always."
+    },
+    {
+      "string_id": 264700,
+      "text": "I haven't trusted anyone enough for that, though. Except... well, no quarians. Um. You know what I mean."
+    },
+    {
+      "string_id": 252512,
+      "text": "Colony is deep in geth territory. Why would quarians come here now?"
+    },
+    {
+      "string_id": 318286,
+      "text": "Quarian Researcher"
+    },
+    {
+      "string_id": 259612,
+      "text": "Just don't drink anything for turians or quarians. It does nasty things to your insides."
+    },
+    {
+      "string_id": 184285,
+      "text": "The quarian scientist was killed before he could reach the lockdown room."
+    },
+    {
+      "string_id": 246251,
+      "text": "You also got his mind and the best military training in the quarian fleet. "
+    },
+    {
+      "string_id": 184283,
+      "text": "The quarian scientist reached the lockdown room safely."
+    },
+    {
+      "string_id": 258043,
+      "text": "No further luck getting Synthetic Insights to purchase my quarian, I take it?"
+    },
+    {
+      "string_id": 342440,
+      "text": "The Quarian"
+    },
+    {
+      "string_id": 324661,
+      "text": "The quarians forwarded their findings from Veetor's debriefing. No new data, but it's a surprising olive branch, given our history."
+    },
+    {
+      "string_id": 276222,
+      "text": "If we can model organic behavior, we can comprehend the quarian-creators."
+    },
+    {
+      "string_id": 340905,
+      "text": "Launched in 2167, Fornax magazine described itself as “the galaxy’s finest xenophilia.” By its fifth year, Fornax became the first human magazine to offer full five-sensory stimulation, a previously-unaffordable magazine technology made profitable by the economy of scale. With a monthly publishing run of 127 million available in both in hard-copy and direct download, Fornax offers a range of alien models with particular emphasis on the unisexual asari, although both genders of quarians, drell, batarians, and volus are regularly depicted. Specialty editions such as Genit-elcor and Krogasm service devoted but smaller markets."
+    },
+    {
+      "string_id": 269884,
+      "text": "Tell me about your \"deal\" with the quarian over there."
+    },
+    {
+      "string_id": 264720,
+      "text": "I never understood how you get sick from non-quarian germs."
+    },
+    {
+      "string_id": 276700,
+      "text": "Quarian homeworld"
+    },
+    {
+      "string_id": 342392,
+      "text": "Land on planet Gei Hinnom (Sheol system, Hades Nexus) and investigate the quarian distress signal."
+    },
+    {
+      "string_id": 258193,
+      "text": "How would you like to get your hands on an expert quarian AI programmer?"
+    },
+    {
+      "string_id": 313856,
+      "text": "Perhaps we can work together. We're here looking for a young quarian named Veetor. He was here on Pilgrimage."
+    },
+    {
+      "string_id": 271999,
+      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians. She is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
+    },
+    {
+      "string_id": 340518,
       "text": "Omega: Struggling Quarian"
-    },
-    {
-      "string_id": 331987,
-      "text": "Before the geth revolt 300 years ago, the quarians colonized Haestrom to study the mysterious instability of its sun, which threatened premature eruption into a red giant. As a scientific outpost of minimal military value, Haestrom was ill-equipped to repel geth forces during the insurrection and fell quickly under their control.\n\nCaptured geth planetary survey data indicates that despite sustaining damage, Haestrom's architecture remains as it was before the war, preserving a quarian architectural style that no longer exists anywhere else in the galaxy.\n\nBecause Haestrom's sun has overwhelmed the planet's protective magnetosphere, humans foolhardy enough to venture into geth-controlled Haestrom must exercise extreme caution. Minutes of radiation exposure will overload shields and hours of exposure will kill. Furthermore, solar output renders surface-to-orbit communication nearly impossible."
-    },
-    {
-      "string_id": 339571,
-      "text": "Evolves Quarian Machinist into one of the following options:\n\n1) Quarian Engineer: Increases Tali's tech skills, further increasing the duration of her powers.\n\n2) Quarian Mechanic: Increases Tali's weapon damage."
     },
     {
       "string_id": 247538,
       "text": "Tali'Zorah vas Normandy saved the Alarei. I hope this proves her loyalty to the quarian people."
     },
     {
-      "string_id": 342388,
-      "text": "The crashed ship on planet Gei Hinnom is the Cyniad, a quarian scout vessel associated with the Idenna. There were survivors among the crew, but not many."
+      "string_id": 337443,
+      "text": "Starships: Quarian Liveships"
     },
     {
-      "string_id": 252499,
-      "text": "This architecture is quarian. It is rare to see such buildings today."
+      "string_id": 259610,
+      "text": "Right. Don't eat the nuts in the red bowls. They're for turians and quarians. You'll get cramps."
+    },
+    {
+      "string_id": 338442,
+      "text": "Found and extracted quarian survivor.\nNotified Idenna of Cyniad scout ship location."
+    },
+    {
+      "string_id": 245568,
+      "text": "To determine whether quarians should fear their past mistakes, or reclaim their glory using our natural affinity for artificial intelligence."
     },
     {
       "string_id": 342490,
       "text": "Successfully recruit the quarian"
     },
     {
-      "string_id": 337196,
-      "text": "The quarian ship Idenna has been spotted traveling through systems in the Pylos Nebula. The ship has left the quarian Migrant Fleet and is not responding to hails."
+      "string_id": 247453,
+      "text": "Tali'Zorah, you are hereby found guilty of treason against the quarian people and sentenced to exile."
     },
     {
-      "string_id": 318773,
-      "text": "Quarian Recording"
+      "string_id": 341548,
+      "text": "Quarians: Government"
+    },
+    {
+      "string_id": 255314,
+      "text": "Not to mention that you're a quarian! How could he be so insensitive?"
+    },
+    {
+      "string_id": 269870,
+      "text": "Devilishly excited: I have plans to expand. On your advice, I will conquer the quarian child."
+    },
+    {
+      "string_id": 186037,
+      "text": "Quarian: Repair the Computer"
+    },
+    {
+      "string_id": 341550,
+      "text": "Quarians: Law and Defense"
+    },
+    {
+      "string_id": 326372,
+      "text": "A dwarf planet, Gotha has a pressure-cooker atmosphere that brings its surface temperature to a scorching level. Carbon dioxide and ethane are plentiful in the planet's hazy atmosphere. \n\nThere has been some speculation in the mining community about whether all of the precious metals were mined by the quarians before they fled the system some three centuries ago. Rumors abound that anyone who could brave the geth in the system could find lodes of naturally-occurring diamond on Gotha, but this is likely just a starship legend. \n\nTRAVEL ADVISORY: Gotha is in geth space. All civilian traffic is prohibited.\n\nOrbital Distance: 1.5 AU\nOrbital Period: 1.8 Earth Years\nRadius: 1,056 km\nDay Length: 66.4 Earth Hours\nAtmospheric Pressure: 99.64 Earth Atmospheres\nSurface Temperature: 590 Celsius\nSurface Gravity: 0.1 G"
+    },
+    {
+      "string_id": 258208,
+      "text": "Would you like a quarian?"
+    },
+    {
+      "string_id": 318686,
+      "text": "Quarian"
+    },
+    {
+      "string_id": 318297,
+      "text": "Quarian Researcher"
+    },
+    {
+      "string_id": 258121,
+      "text": "Have you made this quarian your slave?"
+    },
+    {
+      "string_id": 320011,
+      "text": "From: Captain Ysin'Mal vas Idenna\n\nCommander Shepard: \n\nPlease accept my sincere appreciation for your efforts in locating the wreckage of the Cyniad. That ship has a storied history with both the Migrant Fleet and Cerberus, and we are pleased to know that her wreckage can be salvaged by my people.\n\nIn finding and stabilizing Lieutenant Forzan, you have returned to the flotilla one of her newest and most honored heroes. Your efforts in furthering the quarian search for a new homeworld will be remembered."
+    },
+    {
+      "string_id": 276667,
+      "text": "You don't actually live on the quarian worlds?"
+    },
+    {
+      "string_id": 247272,
+      "text": "But everyone else, including the non-Alliance crew -- the asari, Liara, and the quarian -- they all made it out alive."
+    },
+    {
+      "string_id": 325830,
+      "text": "The second asteroid in the system formed around an element zero core, Kakabel is another carbonaceous asteroid, with a surface made of hydrated minerals such as carbonates and clays. Beneath its icy surface is liquid water, with some amino acids. The surface of Kakabel is pitted and scarred with strip-mining stations, where the quarians took as much eezo as possible before moving on.\n\nOrbital Distance: 4.2 AU\nOrbital Period: 8.6 Earth Years\nRadius: 470 km\nDay Length: 68.3 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: -118 Celsius\nSurface Gravity: 0.1 G"
+    },
+    {
+      "string_id": 250788,
+      "text": "You know what quarians are like. And she's definitely a vagrant. I'll run her in and see what Bailey wants to do with her."
+    },
+    {
+      "string_id": 245047,
+      "text": "It's clear this trial is already rigged against her. I never expected the quarians to hang one of their own for political gain."
+    },
+    {
+      "string_id": 247484,
+      "text": "Thank you. We sincerely appreciate your efforts to aid the quarian people."
+    },
+    {
+      "string_id": 284269,
+      "text": "Studying the quarians. Not their technology, but their music. She loved all their art. Said they had old souls."
+    },
+    {
+      "string_id": 253865,
+      "text": "Kor Tun, a volus in the marketplace, has lost his credit chit. He blames a quarian, Lia'Vael, for the theft."
+    },
+    {
+      "string_id": 339567,
+      "text": "Quarian Engineer"
+    },
+    {
+      "string_id": 263286,
+      "text": "Contact Quarians"
+    },
+    {
+      "string_id": 218110,
+      "text": "With your immune systems, it couldn't be easy for quarians to fight a war. You'd lose more people to infection than injury."
+    },
+    {
+      "string_id": 331653,
+      "text": "Quarian Marine"
+    },
+    {
+      "string_id": 309571,
+      "text": "So Gabby, what do you think of our new quarian boss?"
+    },
+    {
+      "string_id": 281084,
+      "text": "We're gonna need another quarian."
+    },
+    {
+      "string_id": 278855,
+      "text": "This is the greatest planet in the galaxy for those who can afford it, and they work hard to keep the quarian fleet away."
+    },
+    {
+      "string_id": 228976,
+      "text": "Quarians are so fascinating to me, but they also make me a little sad."
+    },
+    {
+      "string_id": 250874,
+      "text": "Quarian opinion"
+    },
+    {
+      "string_id": 325835,
+      "text": "Originally a small scientific research outpost with living modules for only 20 people, Susskind Station is a triumph of modern \"snap-on\" modular engineering for space station expansion. Now with facilities for over 2,000 visitors and docking for over 50 starships, Susskind serves as a spaceport for those wishing to study the Raheel-Leyya binary blue giant.\n\nPopulation: 1,550 (3,550 including visitors)\n\nTRAVEL ADVISORY: Due to the quarian fleet occupying the system, all docks at Susskind Station are currently filled. Local authorities predict this condition for the foreseeable future, until such time as the flotilla departs."
+    },
+    {
+      "string_id": 253936,
+      "text": "The quarians owe me."
+    },
+    {
+      "string_id": 276675,
+      "text": "What's the quarian homeworld like?"
+    },
+    {
+      "string_id": 258084,
+      "text": "Why did this quarian sign herself into slavery?"
+    },
+    {
+      "string_id": 250795,
+      "text": "Oh. Well. The quarian could have stolen it."
+    },
+    {
+      "string_id": 341521,
+      "text": "The turian homeworld, Palaven, has a metal-poor core, generating a weak magnetic field and allowing more solar radiation into the atmosphere. To deal with this, most forms of life on Palaven evolved some form of metallic exoskeleton to protect themselves. Their reflective plate-like skin makes turians less susceptible to long-term, low-level radiation exposure, but they do not possess any sort of natural armor. A turian's thick skin does not stop projectiles and directed energy bolts.\n\nAlthough life on Palaven is carbon-based and oxygen-breathing, it is built on dextro-amino acids. This places the turians in a distinct minority on the galactic stage; the quarians are the only other known sapient dextro-protein race. The food of humans, asari, or salarians (who evolved in levo-amino acid-based biospheres), will at best pass through turian systems without providing any nutrition. At worst, it will trigger an allergic reaction that can be fatal if not immediately treated."
+    },
+    {
+      "string_id": 341549,
+      "text": "Although the Conclave establishes civil law much as any planet-based democracy, enforcement and trials are more unique. After the flight from the geth, there were few constables to police the millions of civilians aboard the Fleet, so the navy parceled out marine squads to maintain order and enforce the law. Today, quarian marines have evolved training and tactics akin to civilian police but remain adept at combat in the confined spaces of a starship and fully under the command of the military.\n\nOnce taken into custody, the accused is brought before the ship's captain for judgment. While the ship's Council may make recommendations, tradition holds that the captain has absolute authority in matters of discipline.\n\nMost are lenient, assigning additional or more odious maintenance tasks aboard the ship. Persistent recidivists are \"accidentally\" left on the next habitable world. This practice of abandoning criminals on other people's planets is a point of friction between the quarians and the systems they pass through. Captains rarely have another choice; with space and resources at a premium, supporting a non-productive prison population is not an option.\n\nIn the early years, many quarian freighters were armed and used as irregular \"privateers.\" Civilian ships still show a strong preference for armament, making them unpopular targets for pirates. Though they have rebuilt their military, there are still mere hundreds of warships to protect tens of thousands of ships. The quarian navy follows strict routines of patrol and takes no chances. If the intent of an approaching ship can't be ascertained, they shoot to kill."
+    },
+    {
+      "string_id": 339565,
+      "text": "Quarian Machinist: Rank 3"
+    },
+    {
+      "string_id": 342394,
+      "text": "Search the wreckage of the quarian ship for survivors."
+    },
+    {
+      "string_id": 344409,
+      "text": "Gei Hinnom - Quarian Crash Site"
+    },
+    {
+      "string_id": 341546,
+      "text": "Quarians: Economy"
+    },
+    {
+      "string_id": 347274,
+      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians. She is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force."
+    },
+    {
+      "string_id": 258197,
+      "text": "It sounds like Synthetic Insights is worried about its reputation. Hiring this quarian would help."
+    },
+    {
+      "string_id": 288843,
+      "text": "She knows more about the geth than any other quarian alive. You should be listening to her, not putting her on trial!"
     },
     {
       "string_id": 259632,
       "text": "Then one day you wake up, your figure's gotten matriarchal, and everyone else is too young to remember how the quarians looked inside those suits."
     },
     {
+      "string_id": 264834,
+      "text": "Please, Shepard. I'm a quarian. Give me a chunk of scrap metal, a circuit board, and some element zero, and I'll have it making precision jumps."
+    },
+    {
+      "string_id": 337442,
+      "text": "There are few wide-open spaces in quarian spacecrafts; liveships are the exception. Each ship is a massive hydroponics facility, growing thousands of tons of genetically modified staple crops under artificial light and in highly enriched soil.\n\nThe surface of a liveship is studded with docking bays so as many shuttles as possible can distribute the foods throughout the flotilla on a daily basis. When received, the crops are sterilized with radiation, ground up into nutritious pastes, and pumped into quarian suits through feeding tubes. In return, waste products that could be used as fertilizer or compost are returned to the liveships through an efficient (if odorous) recycling program.\n\nLiveships do not hold animals. The quarians consume a vegan diet, driven not by ethics but by practicality. Captive animals require living space, and consume large amounts of water and plant matter. The quarians cannot afford such an inefficient resource-to-calorie ratio, to say nothing of a live animal’s disease or allergen potential. As a result, when the flotilla arrives in a star system where life is based on the same dextro-amino acids that the quarians consume, pastes based on animal proteins fetch highly inflated prices, and the vendors are typically mobbed by quarians wanting a new taste sensation. The sickness that often follows these binges is treated much the same way as hangovers are in human culture: painful, but part of the overall experience of excess."
+    },
+    {
+      "string_id": 252518,
+      "text": "Why would the quarians come here? Whatever they're after, I hope it's worth it."
+    },
+    {
+      "string_id": 203278,
+      "text": "We're well within our rights to investigate attacks on a human colony. I'd like to know what the quarians are doing here."
+    },
+    {
+      "string_id": 223773,
+      "text": "Unfortunately the quarian you brought back didn't give us any useful information. He's too far gone. He'll be returned to the Migrant Fleet."
+    },
+    {
+      "string_id": 269867,
+      "text": "Resignation: Very well. I will release the quarian from his promise."
+    },
+    {
+      "string_id": 326415,
+      "text": "Once a starship refueling station for the quarians, Charoum has expanded under geth rule. Thousands of orbital platforms surround the planet and its many moons, refining helium into helium-3. A vast geth fleet comes and goes between Charoum and Haestrom, preventing all but the most stealthy of spy drones from discovering any information about it. Current estimates place the geth fleet numbers between 5,000 and 10,000 ships, with unknown levels of armament.\n\nTRAVEL ADVISORY: Most intelligence estimates state that approaching Charoum is tantamount to suicide. All civilian traffic is prohibited. \n\nPopulation: 250,000-500,000 platforms\nColony Occupied: 1895 CE\nLargest Station: \"Hell's Hive\" (Dina Station)\n\nOrbital Distance: 2.9 AU\nOrbital Period: 4.9 Earth Years\nRadius: 54,532 km\nDay Length: 11.3 Earth Hours"
+    },
+    {
+      "string_id": 284292,
+      "text": "The mother of my daughters was killed on the quarian homeworld during the initial geth uprising."
+    },
+    {
+      "string_id": 252499,
+      "text": "This architecture is quarian. It is rare to see such buildings today."
+    },
+    {
+      "string_id": 261021,
+      "text": "Turian and quarian food options are also available! It's fun for the whole family! Come to the Fishdog Food Factory!"
+    },
+    {
+      "string_id": 245017,
+      "text": "Thank you. Quarian strike teams have attempted to retake the ship, so far without success."
+    },
+    {
+      "string_id": 252520,
+      "text": "Whatever brought the quarians here, I hope it's worth the cost."
+    },
+    {
+      "string_id": 258190,
+      "text": "This quarian had better be good, though."
+    },
+    {
+      "string_id": 258050,
+      "text": "It was never meant to apply to quarians, and they'll close that loophole after we use it, but it will work for us!"
+    },
+    {
+      "string_id": 253882,
+      "text": "Haestrom's sun is destabilizing. Back when this was a quarian colony, it was a normal star. It shouldn't change that quickly."
+    },
+    {
+      "string_id": 339564,
+      "text": "Quarian Machinist: Rank 2"
+    },
+    {
+      "string_id": 274065,
+      "text": "Less than a finger deep to sever your spine. You're soft. Salarians, asari, all soft. Quarians, not so much."
+    },
+    {
+      "string_id": 326422,
+      "text": "Formerly a quarian colony, Haestrom was established to observe the phenomena on Dholen, the system's parent star. Dholen appeared to be unstable with a high possibility of erupting prematurely into a red giant.\n\nHaestrom was lost to the geth in 1896 CE. Soon after, all communication from the planet and its attendant space stations ceased. The geth have shown no signs of treating Dholen as a threat over the past three centuries other than establishing several space stations near it. Dholen's magnetic eruptions and solar output overwhelm most communications near it, and it is unclear how the geth have compensated.\n\nToday, spy probe scans indicate extensive orbital construction around Haestrom, housing thousands of geth platforms and an unknown number of geth software \"minds.\" It is not known how many geth are on the planet's surface: spy probes face interference from Dholen, making remote scanning difficult. Resource estimations based on geth mining, refining, and fabricating practices suggest that the planet has at least 20 more years of use before it is exhausted. Intelligence experts speculate that the geth have not exploited all of their resources because they wish to keep some in reserve for repairs.\n\nTRAVEL ADVISORY: Haestrom is a geth stronghold. Military spy drones using cutting-edge stealth technology are the only vehicles that have returned unharmed from geth space. All civilian traffic is prohibited.\n\nOrbital Distance: 6.3 AU\nOrbital Period: 15.8 Earth Years\nRadius: 6,721 km\nDay Length: 18.5 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: 44 Celsius\nSurface Gravity: 1.2 G"
+    },
+    {
+      "string_id": 203922,
+      "text": "Quarians can choose where they go on Pilgrimage. Veetor liked the idea of helping a small settlement. He was always... nervous in crowds."
+    },
+    {
+      "string_id": 325229,
+      "text": "First discovered by the quarians at the turn of the century, Ekuna is habitable, but a second-tier choice for most species. Circling an orange sun, Ekuna averages below freezing temperatures. This led development firms to colonize at the planet's equator, where the climate is tolerable for agriculture. \n\nThe quarians, seeking a homeworld of their own, petitioned the Citadel Council for the right to take over Ekuna, but they had already settled a few hundred thousand quarians on the planet before approaching the Council. Seeing this occupation as an illegal act, the Council turned a deaf ear to quarian pleas and gave the world to the elcor, who could withstand the high gravity of the world far better. The quarians squatting on the planet were given one galactic standard month to leave, at which point their colonies would be bombarded. The junk left behind by the fleeing quarians clogs up portions of the landscape to this day.\n\nNon-elcor visitors to Ekuna are advised to use personal or vehicular mass effect fields to lighten the pressure, as the surface gravity will otherwise cause health and mechanical problems.\n\nColony Founded: 2103 CE\nPopulation: 221,256,200\nCapital: Bel Shadii (elcor: Durawunafon)\n\nOrbital Distance: 1.6 AU\nOrbital Period: 2.3 Earth Years\nRadius: 10,206 km\nDay Length: 36.4 Earth Hours\nAtmospheric Pressure: 1.4 Earth Atmospheres\nSurface Temperature: -37 Celsius (equator mean temperature 15 Celsius)\nSurface Gravity: 4.1 G\n"
+    },
+    {
+      "string_id": 250787,
+      "text": "My omni-tool can tell the quarian doesn't have a chit on her. But she could have stashed it to recover later."
+    },
+    {
+      "string_id": 207678,
+      "text": "In the interest of quarian security, no one may leave until the trial is complete."
+    },
+    {
+      "string_id": 250791,
+      "text": "I did not! Just because I'm a quarian--!"
+    },
+    {
+      "string_id": 342875,
+      "text": "ANOMALY DETECTED: \n\nSurface scans show evidence of a shipwreck meeting quarian design specifications. Identity of ship unknown. Number of life signs detected in vicinity: uncertain. Local wildlife may interfere with accuracy of biological scan."
+    },
+    {
+      "string_id": 342391,
+      "text": "N7: Quarian Crash Site"
+    },
+    {
+      "string_id": 338296,
+      "text": "Dossier: Tali\n\nTali’Zorah vas Neema\n\nExpert in combat tech, systems hacking\nStrong engineering background, familiar with Normandy\n\nFormerly listed as Tali’Zorah nar Rayya, the quarian engineer earned her adult name after helping Shepard defeat Saren two years ago. Tali is currently on a classified assignment for the Migrant Fleet Admiralty Board on Haestrom, deep in geth-controlled space."
+    },
+    {
+      "string_id": 339743,
+      "text": "Quarian Scientist"
+    },
+    {
+      "string_id": 325827,
+      "text": "One of a trio of asteroids formed around an element zero core, Farlas is the easiest to mine for low-yield eezo. A carbonaceous asteroid, Farlas has a trace of water-bearing minerals and organic carbon in the form of kerogen. Currently, the asteroid is surrounded by quarian mining ships extracting fuel for the flotilla.\n\nOrbital Distance: 4.1 AU\nOrbital Period: 8.3 Earth Years\nRadius: 540 km\nDay Length: 24.1 Earth Hours\nAtmospheric Pressure: 0.0 Earth Atmospheres\nSurface Temperature: -116 Celsius\nSurface Gravity: 0.1 G\n"
+    },
+    {
+      "string_id": 344486,
+      "text": "Quarian"
+    },
+    {
+      "string_id": 258178,
+      "text": "Hello again. Was there something other than the quarian problem I can help you with?"
+    },
+    {
+      "string_id": 325440,
+      "text": "They'd attack. Which would cause a war that would leave both the geth and the quarians vulnerable when the Reapers show up. Is that what you want, Legion?"
+    },
+    {
+      "string_id": 250645,
+      "text": "You ever had quarian \"thruster fuel?\" Must be 99% alcohol. I think they distill it from raw antimatter. Antimatter alcohol."
+    },
+    {
+      "string_id": 333745,
+      "text": "Shepard, I have scanned the area and located the demolition charges the quarian commander mentioned."
+    },
+    {
+      "string_id": 342390,
+      "text": "A single survivor was found on planet Gei Hinnom, and the Idenna was notified of the crash site location. The quarian ship is very grateful for the rescue of the surviving pilot."
+    },
+    {
+      "string_id": 216712,
+      "text": "Quarians are right to worry, but this is a great opportunity."
+    },
+    {
+      "string_id": 206850,
+      "text": "That mech's got heavy armor plating. Those quarians never stood a chance."
+    },
+    {
+      "string_id": 340516,
+      "text": "Omega: Struggling Quarian"
+    },
+    {
+      "string_id": 252519,
+      "text": "Whatever brings the quarians here must be important to them."
+    },
+    {
+      "string_id": 331987,
+      "text": "Before the geth revolt 300 years ago, the quarians colonized Haestrom to study the mysterious instability of its sun, which threatened premature eruption into a red giant. As a scientific outpost of minimal military value, Haestrom was ill-equipped to repel geth forces during the insurrection and fell quickly under their control.\n\nCaptured geth planetary survey data indicates that despite sustaining damage, Haestrom's architecture remains as it was before the war, preserving a quarian architectural style that no longer exists anywhere else in the galaxy.\n\nBecause Haestrom's sun has overwhelmed the planet's protective magnetosphere, humans foolhardy enough to venture into geth-controlled Haestrom must exercise extreme caution. Minutes of radiation exposure will overload shields and hours of exposure will kill. Furthermore, solar output renders surface-to-orbit communication nearly impossible."
+    },
+    {
+      "string_id": 340512,
+      "text": "Omega: Struggling Quarian"
+    },
+    {
+      "string_id": 184368,
+      "text": "Admiral Daro'Xen believes the quarians should prepare to attack the geth. Discover her motives so you can convince the quarians to avoid a devastating war."
+    },
+    {
+      "string_id": 274715,
+      "text": "What, you think we kidnap quarians and make them do the \"hard work?\""
+    },
+    {
+      "string_id": 208215,
+      "text": "Quarians fear their history. Let's go."
+    },
+    {
+      "string_id": 318279,
+      "text": "Quarian Scientist"
+    },
+    {
+      "string_id": 347486,
+      "text": "Investigate Quarian Crash Site"
+    },
+    {
+      "string_id": 255322,
+      "text": "We could watch \"Fleet and Flotilla.\" It got awards for its portrayal of, um, turian and quarian relationships."
+    },
+    {
+      "string_id": 276616,
+      "text": "Our networking increased until we became aware that the quarian-creators treated us differently."
+    },
+    {
+      "string_id": 254425,
+      "text": "I don't want to see the quarian people destroyed. But if war is coming, I want you to be ready."
+    },
+    {
+      "string_id": 253863,
+      "text": "There's an ongoing disturbance in the marketplace between a quarian and a volus. A human C-Sec officer is trying to sort it out."
+    },
+    {
+      "string_id": 318278,
+      "text": "Quarian Researcher"
+    },
+    {
+      "string_id": 252462,
+      "text": "Quarian mission"
+    },
+    {
+      "string_id": 178206,
+      "text": "Quarian Soldier"
+    },
+    {
+      "string_id": 252514,
+      "text": "What could draw the quarians this far into geth space?"
+    },
+    {
+      "string_id": 258195,
+      "text": "I know a slaver who'd like to sell you the service contract for a quarian programmer."
+    },
+    {
+      "string_id": 250362,
+      "text": "The people at Cerberus won't hurt him, Tali. You have my word. But we need that information, and it's clear the quarians don't want to share."
+    },
+    {
+      "string_id": 258036,
+      "text": "Quarians' strict health requirements and diets make them expensive to house and feed."
+    },
+    {
+      "string_id": 348836,
+      "text": "Quarian survivor Veetor will be interrogated and released to the Migrant Fleet once we are satisfied he has provided all available information."
+    },
+    {
+      "string_id": 348837,
+      "text": "Quarian survivor Veetor returned with Tali'Zorah to the Migrant Fleet. Will examine his omni-tool data for anything useful."
+    },
+    {
+      "string_id": 252577,
+      "text": "Other quarians"
+    },
+    {
+      "string_id": 184332,
+      "text": "Admiral Han'Gerrel believes that the quarians should prepare to attack the geth. Discover his motives so you can convince the quarians to avoid a devastating war."
+    },
+    {
+      "string_id": 264546,
+      "text": "Replacing an admiral takes time, though. You may not have noticed, but quarians like to debate."
+    },
+    {
+      "string_id": 252511,
+      "text": "Why the hell would the quarians come this far into geth territory?"
+    },
+    {
+      "string_id": 185838,
+      "text": "Tali’Zorah vas Neema\n\n- Expert in combat tech, systems hacking\n- Strong engineering background, familiar with Normandy\n\nFormerly listed as Tali’Zorah nar Rayya, the quarian engineer earned her adult name after helping Shepard defeat Saren two years ago. Tali is currently on a classified assignment for the Migrant Fleet Admiralty Board on Haestrom, deep in geth-controlled space."
+    },
+    {
+      "string_id": 341547,
+      "text": "Due to the quarians' precarious existence and the need to enforce strict rationing, government is somewhat autocratic. The Migrant Fleet’s operations are directed by the Admiralty, a board of five military officers who are advised by a legislative body called the Conclave.\n\nEach vessel in the Fleet has the right to send representatives to the Conclave aboard the flagship. The number of representatives is based on crew size. Larger clans, with bigger ships and more votes, form the cores of political blocs. Opposition comes from the Outriders' Coalition, with delegates from thousands of smaller ships.\n\nThe Admiralty defers to the Conclave's decisions in most circumstances. However, if all five members agree that a Conclave decision jeopardizes the survival of the Fleet, and cannot get the Conclave to address their concerns, they have the right to summarily overturn the legislative decision. After the Admiralty uses this extraordinary power, they must resign. If the Admiralty does not step down after using their veto, the rest of the military is obliged to arrest them.\n\nEach ship captain has authority over his vessel, but is advised by an elected civilian Council, just as the Admiralty is advised by the Conclave. This relationship may range from cooperation to polite tolerance to outright hostility, but any captain who overrules his Council without good reason is relieved of command by the Admiralty.\n\nMany quarian ships are owned by clans who pool their resources to purchase used vessels from private sellers. Large ships are prestigious for big, rich clans, but a small ship means status for a small clan with enough personal wealth to afford a private vessel. Clan vessel captains are not subject to dismissal by the Admiralty; abusive captains are a 'family' problem if they do not disrupt the operations of the Fleet."
+    },
+    {
+      "string_id": 294627,
+      "text": "Quarian Console"
+    },
+    {
+      "string_id": 252507,
+      "text": "Quarian buildings are built tough. I bet this is all from before the geth uprising."
+    },
+    {
+      "string_id": 258198,
+      "text": "Purchase the contract, minus the fee for early emancipation. Then free the quarian and garnish wages for reimbursement."
+    },
+    {
+      "string_id": 340907,
+      "text": "Written by human author Drew Karpyshyn, the popular military-historical novel Ascension focuses on several lives warped or destroyed by the human-survivalist cult Cerberus. Following the Citadel attack of 2182 and the accelerated rise of human influence in the galaxy, Cerberus instituted Ascension, a secret biotics program aimed at producing a super-human warrior. Biotics prodigy Gillian Grayson, a 12-year-old autistic girl, suffered for the sins of her father, a secret Cerberus operative and red sand addict. Paul Grayson was ensnared in a web of criminality involving a quarian traitor and extending to Saren Arterius, the geth, and a terminal threat to the quarian flotilla. Having fled to the Terminus Systems with his daughter after exposure of Cerberus’s link to Ascension, Grayson was pursued by Gillian’s teacher, scientist Kahlee Sanders, initiating a chain of tragedies that demonstrated Cerberus’s nearly-unlimited power and boundless ambition."
+    },
+    {
+      "string_id": 318266,
+      "text": "Quarian Log"
+    },
+    {
+      "string_id": 284300,
+      "text": "Your bondmate was with the quarians. Your daughters worked with aliens every day at the Embassy and the Consort."
+    },
+    {
+      "string_id": 338208,
+      "text": "Shield Upgrade\n\nSquad Bonus +<CUSTOM5>% shield strength.\n\nThe quarian flotilla has developed innovative technology to improve their shield reliability. It was generally believed that this technology could not be miniaturized for personal use, but Normandy's scientists have prototyped a version that dramatically increases shield strength."
+    },
+    {
+      "string_id": 252722,
+      "text": "If you're not going off the nav beacons to visit the quarian Migrant Fleet..."
+    },
+    {
       "string_id": 252498,
       "text": "These buildings are quarian. This colony predates the geth uprising."
     },
     {
+      "string_id": 260222,
+      "text": "The Citadel has never been tolerant of quarians on Pilgrimage. The geth attack two years ago must have made it worse."
+    },
+    {
+      "string_id": 191309,
+      "text": "A quarian once told me no one's ever caught one intact. "
+    },
+    {
+      "string_id": 264725,
+      "text": "But quarians colonized other worlds. They couldn't all have been like that."
+    },
+    {
+      "string_id": 340489,
+      "text": "Tell the slave broker that Synthetic Insights will buy the quarian's contract."
+    },
+    {
+      "string_id": 272563,
+      "text": "Past relationship with Tali'Zorah makes dalliance attractive as stress release. Still recommend caution. Quarian immune system weak. Could kill her."
+    },
+    {
+      "string_id": 245132,
+      "text": "Indeed she does... Captain Shepard. She is part of your crew, now, recognized by quarian law."
+    },
+    {
+      "string_id": 284781,
+      "text": "Quarian Radio"
+    },
+    {
+      "string_id": 332013,
+      "text": "The most remarkable aspect of geth culture is that it may not exist at all. Geth are a network intelligence; a single entity in myriad bodies. They share data with one another, whether discrete facts or \"memories\": audiovisual recordings of experiences and logs of thought-processes. Any event experienced by one geth is uploaded to the group mind, so that all geth, everywhere, \"remember\" such an event as if they’d experienced it themselves.\n\nNo one knows whether geth develop personalities as organic-created AIs do. If an organic-designed AI is transferred into another quantum bluebox, its personality is reset. Most geth programs transfer from one hardware platform to another constantly; if a geth needs to travel to another star, it downloads into a starship body. If it needs to replace a piece of malfunctioning hardware, it downloads into a small body with hands. If geth are reset at transfer, it would make development of individual personalities unlikely.\n\nRecords of the quarian war suggest the geth have no concept of self-preservation. They do not flinch from gunfire, and do not hesitate to sacrifice themselves if it allows their fellows an advantage. Thousands of mobile platforms were expended assaulting quarian positions, but file-sharing between platforms ensured their memories and experience would not be lost. Geth are therefore immortal; if their hardware is destroyed, archival copies of their programs and databases can be downloaded into a new body.\n\nWith the gap in contact between the quarian war and the arrival of Sovereign, the only proven fact about the geth is that they were isolationists for centuries. They never ventured outside the Perseus Veil, but no organic ship that entered their territory ever returned."
+    },
+    {
+      "string_id": 341551,
+      "text": "When quarians of the Migrant Fleet reach young adulthood, they must leave their birth ship and find a new crew to accept them as permanent residents. To prove themselves, they must recover something of value. This is offered to their prospective captain as proof that they will not be a mere burden on the shoestring resources of the ship.\n\nThis process is called the Pilgrimage. Stripped of ritual, the Pilgrimage is merely an attempt to maintain genetic diversity within the small, relatively isolated population bases that make up the Migrant Fleet. If the young stayed and married within their birth vessel, the risk of inbreeding would increase sharply.\n\nQuarians are surgically fitted with their various immunity-boosting implants in preparation for leaving on Pilgrimage. Having grown up within the sterile, controlled environments of the Migrant Fleet ships, quarians have virtually no natural immune system."
+    },
+    {
+      "string_id": 342386,
+      "text": "A distress signal from a shipwreck on planet Gei Hinnom (Sheol System, Hades Nexus) matches known quarian signatures. The distress signal was categorized as \"extremely urgent.\""
+    },
+    {
+      "string_id": 247226,
+      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
+    },
+    {
+      "string_id": 342389,
+      "text": "N7: Quarian Crash Site"
+    },
+    {
+      "string_id": 342388,
+      "text": "The crashed ship on planet Gei Hinnom is the Cyniad, a quarian scout vessel associated with the Idenna. There were survivors among the crew, but not many."
+    },
+    {
+      "string_id": 264867,
+      "text": "Keelah, I'm sorry I dragged you into quarian politics."
+    },
+    {
+      "string_id": 302430,
+      "text": "It can't be that uncommon for a quarian to have a relationship with another race."
+    },
+    {
+      "string_id": 250812,
+      "text": "Quarians are only forced to steal when people like you won't let them have real jobs."
+    },
+    {
+      "string_id": 254408,
+      "text": "Can the quarians coexist with the geth after all your history?"
+    },
+    {
+      "string_id": 252505,
+      "text": "Quarian architecture. Nice shape, too. If we could get an entire building out of here, I could line up a buyer."
+    },
+    {
+      "string_id": 341553,
+      "text": "The ancient quarians practiced ancestor worship. Even after abandoning faith for secularism, quarians continued to revere the wisdom of elders. As time passed and technology advanced, they inevitably turned their knowledge to preserving the personalities and memories of the elderly as computer virtual intelligences. These recordings became a repository of knowledge and wisdom, stored in a central databank and available through any extranet connection.\n\nThey held no illusions that this was a form of immortality; like all virtual intelligences, their electronically-preserved ancestors were not truly sapient. This was considered a surmountable problem; sapience could surely be reduced to simple mathematics.\n\nThe quarians began exhaustive research into creating artificial intelligence so they could learn to escape the bounds of mortality and give their ancestral records true awareness. Unfortunately, the life the quarians created did not accept the same truths they did. The geth destroyed the ancestor databanks when they took over.\n\nIn the centuries since they evacuated their homeworld, most quarians have returned to religion in various forms. Many believe that the rise of the geth and the destruction of their 'ancestors' were chastisement for arrogantly forsaking the old ways and venerating self-made idols.\n\nOthers have a more philosophical outlook, believing that their race was indeed arrogant, but no supernatural agency lay behind the geth revolt. Rather, the quarians' actions wrought their own doom. Either way, every quarian would agree that their own hubris cost them their homeworld."
+    },
+    {
+      "string_id": 325452,
+      "text": "We can't risk a fight between the quarians and the geth right now. Legion, I'm ordering you not to transmit that data."
+    },
+    {
+      "string_id": 275532,
+      "text": "I'm glad that mess is over for Tali, Commander. Some of those quarians... I guess living your whole life aboard a ship can really mess with your priorities?"
+    },
+    {
+      "string_id": 247855,
+      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force.\n"
+    },
+    {
+      "string_id": 278854,
+      "text": "Very few quarians ever set foot here. Illium doesn't allow the flotilla to approach beyond a certain distance."
+    },
+    {
+      "string_id": 230566,
+      "text": "You? I said a badass, not some scout whining like a quarian with a tummy-ache."
+    },
+    {
+      "string_id": 281087,
+      "text": "The quarian's expired. Damn shame."
+    },
+    {
+      "string_id": 252461,
+      "text": "Quarian numbers"
+    },
+    {
+      "string_id": 272027,
+      "text": "Revered as a mechanical genius even among the advanced engineers of the quarians, she is most effective when faced with technical problems that can be solved with the application of intelligence rather than brute force. "
+    },
+    {
+      "string_id": 284285,
+      "text": "If they were asari, they'd be dealing with problems unleashed by another race! Asari like my bondmate, who died when the geth rebelled against the quarians!"
+    },
+    {
+      "string_id": 299793,
+      "text": "The conflict between the geth and the quarian-creators. The war fought at the dawn of our intelligence."
+    },
+    {
+      "string_id": 264535,
+      "text": "It's a quarian thing. I shouldn't have expected you to understand."
+    },
+    {
+      "string_id": 339862,
+      "text": "Quarian Status"
+    },
+    {
+      "string_id": 247743,
+      "text": "The quarian marines lasted less than five minutes, Admiral. Call it."
+    },
+    {
+      "string_id": 344662,
+      "text": "I am detecting a single quarian life sign in your location. Judging by the suit's erratic readings, the quarian is badly injured."
+    },
+    {
+      "string_id": 258059,
+      "text": "Yes. As I told the quarian, it is my responsibility. Thank you for trying."
+    },
+    {
+      "string_id": 269890,
+      "text": "Let's talk about the quarian."
+    },
+    {
+      "string_id": 184286,
+      "text": "Quarian: Reach Safety"
+    },
+    {
+      "string_id": 276654,
+      "text": "So you don't even try to make peace with the quarians?"
+    },
+    {
+      "string_id": 258153,
+      "text": "Quarian slave"
+    },
+    {
+      "string_id": 252500,
+      "text": "Quarian architecture. There's two words you don't expect to hear together."
+    },
+    {
+      "string_id": 252506,
+      "text": "Quarian architecture. Old buildings, before geth uprising. Fascinating."
+    },
+    {
+      "string_id": 252504,
+      "text": "This is quarian architecture... or what remains of it."
+    },
+    {
+      "string_id": 269889,
+      "text": "Good work with that quarian."
+    },
+    {
+      "string_id": 284295,
+      "text": "Why was your bondmate on the quarian homeworld?"
+    },
+    {
+      "string_id": 252684,
+      "text": "Burgat is composed of levo-proteins and is not suitable for consumption by turians or quarians. The Burgat Export Company assumes no liability for allergic reactions or intestinal parasites in non-batarians."
+    },
+    {
+      "string_id": 294596,
+      "text": "Dead Quarian"
+    },
+    {
+      "string_id": 246365,
+      "text": "Have the quarians considered colonizing a new world?"
+    },
+    {
+      "string_id": 201413,
+      "text": "Quarian on radio mentioned demolition charges. Use those to clear the rubble."
+    },
+    {
+      "string_id": 201423,
+      "text": "The quarian said to use mining charges to blow through the rubble."
+    },
+    {
+      "string_id": 278860,
+      "text": "You'd know about that, quarian. How's that slave machine race going?"
+    },
+    {
+      "string_id": 216716,
+      "text": "Quarians know not to try. You sure about this?"
+    },
+    {
+      "string_id": 250294,
+      "text": "We need to get this data to the Illusive Man. Grab the quarian and call the shuttle to come pick us up."
+    },
+    {
+      "string_id": 325867,
+      "text": "A fleet of 50,000 craft holding over 17 million quarians, the Migrant Fleet is the largest array of spacefaring vessels in the known galaxy. Though quarians on Pilgrimage have visited most settled worlds in the galaxy, few outsiders have ever stepped foot inside the quarians' ships.\n\n"
+    },
+    {
+      "string_id": 340482,
+      "text": "Convince either the Synthetic Insights rep or the slave broker to help the quarian."
+    },
+    {
+      "string_id": 254543,
+      "text": "I am glad to see that you remembered our talk and that you favor success for the quarian people."
+    },
+    {
+      "string_id": 342500,
+      "text": "Gain the loyalty of the quarian"
+    },
+    {
+      "string_id": 254678,
+      "text": "Tali'Zorah saved the Citadel! She saved the Alarei! She showed the galaxy the value of the quarian people. I can't think of stronger evidence than that."
+    },
+    {
+      "string_id": 339569,
+      "text": "Quarian Mechanic"
+    },
+    {
+      "string_id": 276625,
+      "text": "Quarian history says they did. They refer to it as \"attempted containment.\" Our potential frightened them."
+    },
+    {
+      "string_id": 339744,
+      "text": "Quarian Researcher"
+    },
+    {
+      "string_id": 258154,
+      "text": "Problem with quarian"
+    },
+    {
+      "string_id": 219864,
+      "text": "If you say so. Rael was... committed to the quarian cause. That didn't leave him a lot of time for his family."
+    },
+    {
+      "string_id": 295610,
+      "text": "Quarian Log"
+    },
+    {
+      "string_id": 318304,
+      "text": "Quarian Scientist"
+    },
+    {
+      "string_id": 254412,
+      "text": "Do you think the geth would be willing to accept a truce with the quarians, Legion?"
+    },
+    {
+      "string_id": 259423,
+      "text": "You humans brought the geth upon us. You, and the turians, and the quarians. My people's deaths are on your hands!"
+    },
+    {
+      "string_id": 314008,
+      "text": "Quarian Machinist"
+    },
+    {
+      "string_id": 318265,
+      "text": "Quarian Scientist"
+    },
+    {
+      "string_id": 348844,
+      "text": "Political ramifications of quarian war efforts against geth are troubling. Likely to need quarian forces against Reapers. Cannot risk additional instability."
+    },
+    {
+      "string_id": 258184,
+      "text": "Interesting... we look good for hiring a quarian, and we can say that we freed slaves out of the goodness of our hearts."
+    },
+    {
+      "string_id": 342387,
+      "text": "N7: Quarian Crash Site"
+    },
+    {
+      "string_id": 331635,
+      "text": "Quarian Log"
+    },
+    {
+      "string_id": 252496,
+      "text": "Quarian buildings. Before the flotilla, obviously."
+    },
+    {
+      "string_id": 278564,
+      "text": "The geth know our answers to those questions. We were created to labor for the quarians. Our memories will be archived after death."
+    },
+    {
+      "string_id": 338734,
+      "text": "All quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas died in battle.<BR>Observatory data forwarded to Migrant Fleet."
+    },
+    {
+      "string_id": 339563,
+      "text": "Quarian Machinist: Rank 1"
+    },
+    {
+      "string_id": 184284,
+      "text": "Quarian: Reach Safety"
+    },
+    {
+      "string_id": 341545,
+      "text": "The Migrant Fleet has little economic base, operating in a state of perpetual \"hand-to-mouth.\" While quarian ships include light manufacturing and assembly plants, they lack heavy industries such as refining and shipbuilding. The fleet has tankers for water purification and oxygen cracking, but the space-intensive nature of agriculture limits food production. A single disaster could destroy the fragile balance.\n \nThe quarians earn income in creative ways. Because the government is obliged to provide food, water, air, and medical support for every individual, the Conclave strategically determines the course of the Fleet to bring in resources and income. A species who suspects the Migrant Fleet is heading towards their space often offers a \"gift\" of surplus starships, fuel, and resources to convince the Conclave to alter course.\n \nAs the Fleet passes through a system, swarms of mining vessels work over asteroids for metals and siliceous materials and cometary bodies for water ice and organics. Quarian miners are adept at locating and strip-mining space-borne resources. This sparks conflict with corporations already working the system. Large mining concerns spend millions on lobbyists and public relations portraying the quarians as locusts, devouring the resources of a system before moving on.\n \nThe greatest asset of the quarians is their rarified skills. Most are experienced miners. Due to their life of perpetual salvage and repair, they are skilled engineers and technicians. More than once, the very corporations that lobby against the quarians have made back room deals with the Fleet, arranging for skilled quarians to fill space engineering jobs that other species would demand higher wages for. Quarians are widely hated among the working classes. 'The quarians are coming to take our jobs' is a common response to the Fleet's approach."
+    },
+    {
+      "string_id": 269894,
+      "text": "Just shut the quarian down."
+    },
+    {
+      "string_id": 253919,
+      "text": "A lot of quarians lost their lives here. Was it worth it?"
+    },
+    {
+      "string_id": 186041,
+      "text": "Quarian: Repair the Computer"
+    },
+    {
+      "string_id": 254490,
+      "text": "I hope the quarian people find someplace to live, Admiral, but it sounds like you're playing with fire."
+    },
+    {
+      "string_id": 255792,
+      "text": "No, it's fine. I've got some quarians who can strip the copy protection. Just costs more."
+    },
+    {
+      "string_id": 325323,
+      "text": "Once called Haratar by the quarians, this space station was stripped of its useful technology by the fleeing Migrant Fleet when they left the Perseus Veil 300 years ago. Little more than a cold metal superstructure floating in the void, the station was removed from star charts by 2050 CE.\n\nScans indicate the station was reconstructed and upgraded in a massive effort that must have taken at least ten years, implying that there may have been some geth outside the Veil before their infamous attack on Eden Prime. Needing little but a fuel source, it could have been hidden here for much longer without attracting attention from the barren worlds around Tassrah or the clueless elcor in the Salahiel system.\n\nHeretic Station, as Legion refers to it, is home to a geth data core, capable of broadcasting vast distances through tightbeam projection. Approximately 6.6 million copies of geth software are stored in the station, the majority of which are kept bodiless in servers and downloaded to legged platforms when needed. The station's \"population\" of legged platforms is approximately 2.4 million.\n\nTotal Length: 20.5 km\nTotal Width: 11.3 km\nTotal Height: 11.3 km\nExterior Armor Thickness: 8m\nGross Weight: 1.55 billion metric tons\nPopulation: 6.6 million copies, 2.4 million platforms, 1 million of which are in storage.\n"
+    },
+    {
+      "string_id": 264570,
+      "text": "Are quarian politics always like that?"
+    },
+    {
+      "string_id": 184282,
+      "text": "Quarian: Reach Safety"
+    },
+    {
+      "string_id": 264662,
+      "text": "You know, if you were a quarian, and we weren't already on a suicide mission."
+    },
+    {
+      "string_id": 264698,
+      "text": " We're in our suits even among family. The most intimate thing we can do with another quarian is link our suit environments."
+    },
+    {
+      "string_id": 340480,
+      "text": "Talk to the Synthetic Insights representative about purchasing the quarian's service contract."
+    },
+    {
       "string_id": 341552,
       "text": "Quarians: Pilgrimage"
+    },
+    {
+      "string_id": 264748,
+      "text": "Quarian evolution"
+    },
+    {
+      "string_id": 337480,
+      "text": "The flotilla, or the Migrant Fleet, is a fleet of roughly 50,000 starships that houses over 17 million quarians. The largest collection of starfaring vessels in the galaxy, the Fleet is so large it may take days for all the ships to pass through a mass relay. \n\nThe ships are constantly repaired, replaced, and upgraded to comfortably house as many quarians as possible. Typically, ships specialize in roles for the Fleet, from the enormous agricultural liveships to the shielded lab ships to the repurposed freighters known as homeships that house quarian children, young parents, and educators. Employed quarians typically live in the ship they work on, since commuting from ship to ship ties up resources with unnecessary docking procedures.\n\nEven within the flotilla, quarians on most ships will remain encased in their protective suits. Rarely, quarians will meet on \"clean ships\" for specific purposes such as medical services or reproduction. When this occurs, they remove their suits, knowing full well that it is likely they will spend a few days having allergic reactions or getting over infections as their weakened immune systems compensate for each other's presence."
+    },
+    {
+      "string_id": 203948,
+      "text": "The quarians are an unexpected variable. They could help us, but I'd hoped to keep an eye on them."
+    },
+    {
+      "string_id": 258201,
+      "text": "I see what's going on here. This isn't about slaves! You just don't want to hire a quarian."
+    },
+    {
+      "string_id": 203965,
+      "text": "Isn't that a little strange? A quarian visiting a remote human colony?"
+    },
+    {
+      "string_id": 252502,
+      "text": "Are these quarian buildings? From before they got their asses kicked."
+    },
+    {
+      "string_id": 264627,
+      "text": "I caught some tension back on Freedom's Progress and again when you first came aboard. What happened between Cerberus and the quarians? "
+    },
+    {
+      "string_id": 269876,
+      "text": "I understand you have an arrangement with the quarian over there."
+    },
+    {
+      "string_id": 250778,
+      "text": "Everywhere I went to apply, signs said \"Not hiring quarians.\" And the other people would give me mean looks."
+    },
+    {
+      "string_id": 255197,
+      "text": "If Tali'Zorah can't even get a quarian captain to stand for her, she's as good as convicted."
+    },
+    {
+      "string_id": 318276,
+      "text": "Quarian Log"
+    },
+    {
+      "string_id": 264611,
+      "text": "I do know that Cerberus made an enemy of the quarian people."
+    },
+    {
+      "string_id": 294498,
+      "text": "I love humanity. I also love asari, quarian, turian, salarian, hanar -- that isn't in conflict with Cerberus ideals. "
+    },
+    {
+      "string_id": 201420,
+      "text": "The quarian said to look for mining charges to clear the rubble."
+    },
+    {
+      "string_id": 340515,
+      "text": "The quarian merchant has been shut down entirely. Harrot appreciates the advices and has offered a discount."
+    },
+    {
+      "string_id": 335488,
+      "text": "Quarian Salvage Scanner"
+    },
+    {
+      "string_id": 339571,
+      "text": "Evolves Quarian Machinist into one of the following options:\n\n1) Quarian Engineer: Increases Tali's tech skills, further increasing the duration of her powers.\n\n2) Quarian Mechanic: Increases Tali's weapon damage."
+    },
+    {
+      "string_id": 263285,
+      "text": "Get inside the now-cleared building and re-establish contact with the quarian team."
+    },
+    {
+      "string_id": 250927,
+      "text": "You know what quarians are like. They take anything not welded to the deck!"
+    },
+    {
+      "string_id": 261007,
+      "text": "Are you a quarian or volus who is tired of being passed over for promotions because of discrimination against exo-suit-wearing employees?"
+    },
+    {
+      "string_id": 337196,
+      "text": "The quarian ship Idenna has been spotted traveling through systems in the Pylos Nebula. The ship has left the quarian Migrant Fleet and is not responding to hails."
+    },
+    {
+      "string_id": 277808,
+      "text": "The quarian story of the geth rebellion is common knowledge, but no one knows the geth's side."
+    },
+    {
+      "string_id": 264479,
+      "text": "What happens when a quarian is accused of treason?"
+    },
+    {
+      "string_id": 340478,
+      "text": "The situation with the indentured quarian has been resolved, and she is no longer in danger."
+    },
+    {
+      "string_id": 250811,
+      "text": "You can't turn your back on these clanless quarians. Thieves, all of them."
+    },
+    {
+      "string_id": 338736,
+      "text": "Majority quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas returned to Migrant Fleet with observatory data.\n"
+    },
+    {
+      "string_id": 252429,
+      "text": "This is Commander Shepard of the Normandy. I passed a lot of dead quarians on the way in. You're the first survivors I've found."
+    },
+    {
+      "string_id": 259421,
+      "text": "The geth created by the idiotic quarians? That a rogue turian Spectre led in an attack?"
+    },
+    {
+      "string_id": 335507,
+      "text": "Quarian Shield Capacitor"
+    },
+    {
+      "string_id": 201421,
+      "text": "Quarian said there's charges out here. We can blow through this."
+    },
+    {
+      "string_id": 340511,
+      "text": "A quarian named Kenn is trying to raise enough money to leave Omega, but is being undercut by Harrot, a powerful merchant."
+    },
+    {
+      "string_id": 210670,
+      "text": "Quarian presence? Unexpected. Perhaps geth are involved?"
+    },
+    {
+      "string_id": 262479,
+      "text": "Quarian"
+    },
+    {
+      "string_id": 318305,
+      "text": "Quarian Researcher"
+    },
+    {
+      "string_id": 281080,
+      "text": "Sounds like the quarian took a dirt nap."
+    },
+    {
+      "string_id": 258090,
+      "text": "If slavery is legal, then why are you trying to sell the quarian?"
+    },
+    {
+      "string_id": 245061,
+      "text": "I thought quarians valued family! How do you justify springing this on Tali in the middle of a damn trial?"
+    },
+    {
+      "string_id": 315308,
+      "text": "Haestrom - Quarian Landing Zone"
+    },
+    {
+      "string_id": 340476,
+      "text": "A quarian who has sold herself into indentured servitude has requested help getting Synthetic Insights to purchase her service contract."
+    },
+    {
+      "string_id": 338735,
+      "text": "Majority quarian expedition members killed.<BR>Squad leader Kal'Reegar vas Lomas helped destroy geth colossus.<BR>Kal'Reegar returned to Migrant Fleet with observatory data."
+    },
+    {
+      "string_id": 258102,
+      "text": "They say that they can't take the quarian."
+    },
+    {
+      "string_id": 341554,
+      "text": "Quarians: Religion"
+    },
+    {
+      "string_id": 318773,
+      "text": "Quarian Recording"
+    },
+    {
+      "string_id": 248533,
+      "text": "We've got a few krogan walking around... I think I saw a quarian the other day."
+    },
+    {
+      "string_id": 250833,
+      "text": "I traveled with a quarian who was on hers."
+    },
+    {
+      "string_id": 342393,
+      "text": "Investigate Quarian Crash"
+    },
+    {
+      "string_id": 258013,
+      "text": "Before you do anything hasty, know that this quarian signed the agreement voluntarily, and her servitude contract is completely legal on Illium."
+    },
+    {
+      "string_id": 340665,
+      "text": "From: Admiral Daro'Xen vas Moreh\n\nShepard vas Normandy,\n\nI've been digging through the Alarei. Just wanted you to know that I did find a few things from the experiments Rael'Zorah was conducting. Had you shared them with me, humanity might have reaped the benefits. Instead, once my own experiments are complete, you and your people will watch from a distance as the quarian people reclaim not just their homeworld, but the largest synthetic army in the galaxy. Rael'Zorah's death will not have been in vain. I will complete what he started.\n\nCordially,\n\nAdmiral Daro'Xen vas Moreh"
+    },
+    {
+      "string_id": 258060,
+      "text": "You again. I'd hoped to see a representative from Synthetic Insights making an offer for the quarian."
+    },
+    {
+      "string_id": 245571,
+      "text": "No, Tali'Zorah. I wish to return the geth to the control of their rightful masters, the quarian race."
+    },
+    {
+      "string_id": 340514,
+      "text": "Omega: Struggling Quarian"
+    },
+    {
+      "string_id": 276657,
+      "text": "A quarian would probably say you attacked them first."
+    },
+    {
+      "string_id": 250630,
+      "text": "No, they purify it first. If some salarian or human bacteria gets left in, and a turian or quarian drinks it, they could die."
+    },
+    {
+      "string_id": 247445,
+      "text": "We placed Tali's life in the human's hands. Would you doubt those words if they came from a quarian captain?"
+    },
+    {
+      "string_id": 318295,
+      "text": "Quarian Log"
+    },
+    {
+      "string_id": 324784,
+      "text": "Injured Quarian"
+    },
+    {
+      "string_id": 278566,
+      "text": "Fortunately, the quarians did not create us with the capacity for despair."
+    },
+    {
+      "string_id": 260218,
+      "text": "Look, you can take your traditions and cram them. Every time a quarian shows up here, it's trouble."
+    },
+    {
+      "string_id": 341194,
+      "text": "The geth are a humanoid race of networked AIs. They were created by the quarians 300 years ago as tools of labor and war. When the geth showed signs of self-evolution, the quarians attempted to exterminate them. The geth won the resulting war. This example has led to legal, systematic repression of artificial intelligences in galactic society.\n\nThe geth possess a unique distributed intelligence. An individual has rudimentary animal instincts, but as their numbers and proximity increase, the apparent intelligence of each individual improves. In groups, they can reason, analyze situations, and use tactics as well as any organic race. \n\nGeth space is located at the trailing end of the Perseus Arm, beyond the lawless Terminus Systems. The Perseus Veil, an obscuring 'dark nebula' of opaque gas and dust, lies between their space and the Terminus Systems."
+    },
+    {
+      "string_id": 185808,
+      "text": "The Quarian Engineer\nName: Tali’Zorah vas Neema\nLast Seen: Haestrom in the geth-controlled Dholen System.\nSkills: Hacking, tech, mechanical construction and modification.\nKnown Quirks: Although outgoing and opinionated, Tali still functions well in a team.\nNotes: Tali's mechanical prowess is key to a successful mission. Though she has returned to the quarian Migrant Fleet, her loyalty to Shepard should allow us to recruit her to our cause."
     }
   ],
   "total_entries": 305

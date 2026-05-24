@@ -12,7 +12,7 @@ type semanticResult struct {
 	speakers []Speaker
 }
 
-func findReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty) []int {
+func findReplyChoicesFromEntry(data []byte, names []string, item map[string]pcc.ParsedProperty, entryID int) []ReplyChoice {
 	prop, ok := item["ReplyListNew"]
 	if !ok {
 		return nil
@@ -28,15 +28,35 @@ func findReplyIndicesFromEntry(data []byte, names []string, item map[string]pcc.
 		return nil
 	}
 	structItems := pcc.ParseStructArrayItemsAsPropertyCollections(data, names, ps, psz, count)
-	var ids []int
-	for _, si := range structItems {
+	var choices []ReplyChoice
+	for order, si := range structItems {
+		choice := ReplyChoice{
+			FromEntryID: entryID,
+			Order:       order,
+		}
 		if nidx, ok := si["nIndex"]; ok {
 			if v, ok := nidx.Value.(int); ok && v >= 0 {
-				ids = append(ids, v)
+				choice.ToReplyID = v
 			}
 		}
+		if srPar, ok := si["srParaphrase"]; ok {
+			if v, ok := srPar.Value.(int); ok && v != 0 {
+				choice.ParaphraseStrRef = &v
+			}
+		}
+		if sPar, ok := si["sParaphrase"]; ok {
+			if v, ok := sPar.Value.(string); ok {
+				choice.Paraphrase = v
+			}
+		}
+		if cat, ok := si["Category"]; ok {
+			if v, ok := cat.Value.(string); ok {
+				choice.Category = v
+			}
+		}
+		choices = append(choices, choice)
 	}
-	return ids
+	return choices
 }
 
 func findEntryIndicesFromReply(data []byte, names []string, itemStart, itemEnd int) []int {
@@ -190,13 +210,18 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				guiStyle = s
 			}
 		}
-		replyLinks := findReplyIndicesFromEntry(data, names, item)
+		replyChoices := findReplyChoicesFromEntry(data, names, item, idx)
+		var replyLinks []int
+		for _, rc := range replyChoices {
+			replyLinks = append(replyLinks, rc.ToReplyID)
+		}
 		entries[idx] = EntryNode{
 			ID:                   idx,
 			SpeakerID:            speakerID,
 			ListenerIndex:        listenerIndex,
 			LineStrRef:           lineStrRef,
 			ReplyLinks:           replyLinks,
+			ReplyChoices:         replyChoices,
 			ConditionalFunc:      conditionalFunc,
 			ConditionalParam:     conditionalParam,
 			StateTransition:      stateTransition,

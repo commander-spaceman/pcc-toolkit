@@ -1,11 +1,11 @@
 {
-  "file": "C:\\Program Files\\EA Games\\Mass Effect 2\\BioGame\\CookedPC\\BioD_BchLmL_201BeachPath_LOC_INT.pcc",
+  "file": "C:\\Users\\juan\\Documents\\dev\\pcc-toolkit\\dropzone\\BioD_BchLmL_201BeachPath_LOC_INT.pcc",
   "game_profile": "me2_ot",
   "conversations": [
     {
       "id": "bchlml_ambientmaster_a_dlg",
       "export_index": 34,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [],
       "replies": [
@@ -1306,205 +1306,575 @@
           "id": 431
         }
       ],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": []
     },
     {
       "id": "bchlml_clickobjects_a_dlg",
       "export_index": 35,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
           "speaker_id": 0,
+          "speaker_tag": "bchlml_surivor2",
           "line_strref": 262640,
           "reply_links": [
             0
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 0,
+              "order": 0,
+              "paraphrase_strref": 282909
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240034,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
           "speaker_id": 0,
+          "speaker_tag": "bchlml_surivor2",
           "line_strref": 282900,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 305422,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 2,
           "speaker_id": 1,
+          "speaker_tag": "bchlml_doctor",
           "line_strref": 262641,
           "reply_links": [
             1
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 2,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 282910
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 2,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240035,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 3,
           "speaker_id": 1,
+          "speaker_tag": "bchlml_doctor",
           "line_strref": 282901,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 305423,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 4,
           "speaker_id": 2,
+          "speaker_tag": "bchlml_pre_feral_male",
           "line_strref": 262660,
           "reply_links": [
             2
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 282911
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 3,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240036,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 5,
           "speaker_id": 2,
+          "speaker_tag": "bchlml_pre_feral_male",
           "line_strref": 282902,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 305424,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 6,
           "speaker_id": 3,
+          "speaker_tag": "hench_leading",
           "line_strref": 262662,
           "reply_links": [
             3
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 3,
+              "order": 0,
+              "paraphrase_strref": 262724
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 4,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240038,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 7,
           "speaker_id": 3,
+          "speaker_tag": "hench_leading",
           "line_strref": 262675,
           "reply_links": [
             4
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 4,
+              "order": 0,
+              "paraphrase_strref": 262737
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 5,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240051,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 8,
           "speaker_id": 3,
+          "speaker_tag": "hench_leading",
           "line_strref": 262645,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 48,
+          "conditional_param": 6,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240063,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 9,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262646,
           "reply_links": [
             5
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 262749
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 7,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240064,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 10,
           "speaker_id": 4,
+          "speaker_tag": "hench_vixen",
           "line_strref": 262647,
           "reply_links": [
             6
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 10,
+              "to_reply_id": 6,
+              "order": 0,
+              "paraphrase_strref": 262750
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240065,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 11,
           "speaker_id": 5,
+          "speaker_tag": "hench_mystic",
           "line_strref": 262648,
           "reply_links": [
             7
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 11,
+              "to_reply_id": 7,
+              "order": 0,
+              "paraphrase_strref": 262751
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240066,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 12,
           "speaker_id": 6,
+          "speaker_tag": "hench_grunt",
           "line_strref": 262649,
           "reply_links": [
             8
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 8,
+              "order": 0,
+              "paraphrase_strref": 262752
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240067,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 13,
           "speaker_id": 7,
+          "speaker_tag": "hench_garrus",
           "line_strref": 262650,
           "reply_links": [
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 13,
+              "to_reply_id": 9,
+              "order": 0,
+              "paraphrase_strref": 262753
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240068,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 14,
           "speaker_id": 8,
+          "speaker_tag": "hench_tali",
           "line_strref": 262651,
           "reply_links": [
             10
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 14,
+              "to_reply_id": 10,
+              "order": 0,
+              "paraphrase_strref": 262754
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240069,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 15,
           "speaker_id": 9,
+          "speaker_tag": "hench_geth",
           "line_strref": 262652,
           "reply_links": [
             11
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 11,
+              "order": 0,
+              "paraphrase_strref": 262755
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240070,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 16,
           "speaker_id": 10,
+          "speaker_tag": "hench_convict",
           "line_strref": 262653,
           "reply_links": [
             12
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 16,
+              "to_reply_id": 12,
+              "order": 0,
+              "paraphrase_strref": 262756
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240071,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 17,
           "speaker_id": 11,
+          "speaker_tag": "hench_veteran",
           "line_strref": 262654,
           "reply_links": [
             13
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 17,
+              "to_reply_id": 13,
+              "order": 0,
+              "paraphrase_strref": 262757
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240072,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 18,
           "speaker_id": 12,
+          "speaker_tag": "hench_professor",
           "line_strref": 262655,
           "reply_links": [
             14
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 18,
+              "to_reply_id": 14,
+              "order": 0,
+              "paraphrase_strref": 262758
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240073,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 19,
           "speaker_id": 13,
+          "speaker_tag": "hench_thief",
           "line_strref": 262656,
           "reply_links": [
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 19,
+              "to_reply_id": 15,
+              "order": 0,
+              "paraphrase_strref": 262759
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240074,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 20,
           "speaker_id": 14,
+          "speaker_tag": "hench_assassin",
           "line_strref": 262657,
           "reply_links": [
             16
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 20,
+              "to_reply_id": 16,
+              "order": 0,
+              "paraphrase_strref": 262760
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240075,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 21,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262658,
           "reply_links": [
             17
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 17,
+              "order": 0,
+              "paraphrase_strref": 262761
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240076,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 22,
           "speaker_id": 3,
+          "speaker_tag": "hench_leading",
           "line_strref": 262659,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240077,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 23,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 282903,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 305425,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 24,
           "speaker_id": 15,
+          "speaker_tag": "bchlml_officer",
           "line_strref": 288466,
           "reply_links": [
             18
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 18,
+              "order": 0,
+              "paraphrase_strref": 288469
+            }
+          ],
+          "conditional_func": 48,
+          "conditional_param": 8,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 314196,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 25,
           "speaker_id": 15,
+          "speaker_tag": "bchlml_officer",
           "line_strref": 288467,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 314197,
+          "skippable": true,
+          "ambient": false
         }
       ],
       "replies": [
@@ -1625,6 +1995,18 @@
       ],
       "speakers": [
         {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        },
+        {
           "id": 0,
           "tag": "bchlml_surivor2"
         },
@@ -1743,27 +2125,64 @@
     {
       "id": "bchlml_docile1_a_dlg",
       "export_index": 36,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262762,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240119,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262763,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240120,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 290722,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 318284,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1788,27 +2207,64 @@
     {
       "id": "bchlml_docile2_a_dlg",
       "export_index": 37,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262764,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240133,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262765,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240134,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 290721,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 318287,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1833,22 +2289,51 @@
     {
       "id": "bchlml_docile3_a_dlg",
       "export_index": 38,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262766,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240129,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262767,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240130,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1867,27 +2352,64 @@
     {
       "id": "bchlml_docile4_a_dlg",
       "export_index": 39,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262768,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240127,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262769,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240128,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 2,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 290720,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 318286,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1912,22 +2434,51 @@
     {
       "id": "bchlml_docile5_a_dlg",
       "export_index": 40,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262770,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240125,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262771,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240126,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1946,22 +2497,51 @@
     {
       "id": "bchlml_docile6_a_dlg",
       "export_index": 41,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262772,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_func": 3370,
+          "state_transition_param": -1,
+          "fires_conditional": false,
+          "export_id": 240121,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 262773,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 240122,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [],
-      "speakers": [],
+      "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        }
+      ],
       "starts": [
         {
           "id": 0,
@@ -1980,370 +2560,1151 @@
     {
       "id": "bchlml_villagefirst_d_dlg",
       "export_index": 42,
-      "game_profile": "unknown",
+      "game_profile": "me2_ot",
       "parse_mode": "struct_property_semantic",
       "entries": [
         {
           "id": 0,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 261403,
           "reply_links": [
             0
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 0,
+              "to_reply_id": 0,
+              "order": 0,
+              "paraphrase_strref": 261473
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233502,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 1,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 261404,
           "reply_links": [
             1
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 1,
+              "to_reply_id": 1,
+              "order": 0,
+              "paraphrase_strref": 261474
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233503,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 2,
           "speaker_id": 2,
+          "speaker_tag": "hench_vixen",
           "line_strref": 261416,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 2,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 2,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233504,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 3,
           "speaker_id": 3,
+          "speaker_tag": "hench_mystic",
           "line_strref": 261417,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 3,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233505,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 4,
           "speaker_id": 4,
+          "speaker_tag": "hench_grunt",
           "line_strref": 261418,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 4,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233506,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 5,
           "speaker_id": 5,
+          "speaker_tag": "hench_garrus",
           "line_strref": 261419,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 5,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 5,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233507,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 6,
           "speaker_id": 6,
+          "speaker_tag": "hench_tali",
           "line_strref": 261420,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 6,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233508,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 7,
           "speaker_id": 7,
+          "speaker_tag": "hench_geth",
           "line_strref": 261421,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 7,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233509,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 8,
           "speaker_id": 8,
+          "speaker_tag": "hench_convict",
           "line_strref": 261422,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 8,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 8,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233510,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 9,
           "speaker_id": 9,
+          "speaker_tag": "hench_veteran",
           "line_strref": 261423,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 9,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233511,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 10,
           "speaker_id": 10,
+          "speaker_tag": "hench_professor",
           "line_strref": 261424,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 10,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 10,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233512,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 11,
           "speaker_id": 11,
+          "speaker_tag": "hench_thief",
           "line_strref": 261425,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 11,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 11,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233513,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 12,
           "speaker_id": 12,
+          "speaker_tag": "hench_assassin",
           "line_strref": 261426,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 12,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233514,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 13,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 261427,
           "reply_links": [
             2,
             15
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 13,
+              "to_reply_id": 2,
+              "order": 0,
+              "paraphrase_strref": 261483
+            },
+            {
+              "from_entry_id": 13,
+              "to_reply_id": 15,
+              "order": 1,
+              "paraphrase_strref": 261484
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233515,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 14,
           "speaker_id": 2,
+          "speaker_tag": "hench_vixen",
           "line_strref": 261429,
           "reply_links": [
             3
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 14,
+              "to_reply_id": 3,
+              "order": 0,
+              "paraphrase_strref": 261485
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233517,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 15,
           "speaker_id": 3,
+          "speaker_tag": "hench_mystic",
           "line_strref": 261430,
           "reply_links": [
             4
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 15,
+              "to_reply_id": 4,
+              "order": 0,
+              "paraphrase_strref": 261486
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233518,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 16,
           "speaker_id": 4,
+          "speaker_tag": "hench_grunt",
           "line_strref": 261431,
           "reply_links": [
             5
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 16,
+              "to_reply_id": 5,
+              "order": 0,
+              "paraphrase_strref": 261487
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233519,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 17,
           "speaker_id": 5,
+          "speaker_tag": "hench_garrus",
           "line_strref": 261432,
           "reply_links": [
             6
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 17,
+              "to_reply_id": 6,
+              "order": 0,
+              "paraphrase_strref": 261488
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233520,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 18,
           "speaker_id": 6,
+          "speaker_tag": "hench_tali",
           "line_strref": 261433,
           "reply_links": [
             7
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 18,
+              "to_reply_id": 7,
+              "order": 0,
+              "paraphrase_strref": 261489
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233521,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 19,
           "speaker_id": 7,
+          "speaker_tag": "hench_geth",
           "line_strref": 261434,
           "reply_links": [
             8
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 19,
+              "to_reply_id": 8,
+              "order": 0,
+              "paraphrase_strref": 261490
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233522,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 20,
           "speaker_id": 8,
+          "speaker_tag": "hench_convict",
           "line_strref": 261435,
           "reply_links": [
             9
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 20,
+              "to_reply_id": 9,
+              "order": 0,
+              "paraphrase_strref": 261491
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233523,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 21,
           "speaker_id": 9,
+          "speaker_tag": "hench_veteran",
           "line_strref": 261436,
           "reply_links": [
             10
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 21,
+              "to_reply_id": 10,
+              "order": 0,
+              "paraphrase_strref": 261492
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233524,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 22,
           "speaker_id": 10,
+          "speaker_tag": "hench_professor",
           "line_strref": 261437,
           "reply_links": [
             11
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 22,
+              "to_reply_id": 11,
+              "order": 0,
+              "paraphrase_strref": 261493
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233525,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 23,
           "speaker_id": 11,
+          "speaker_tag": "hench_thief",
           "line_strref": 261438,
           "reply_links": [
             12
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 23,
+              "to_reply_id": 12,
+              "order": 0,
+              "paraphrase_strref": 261494
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233526,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 24,
           "speaker_id": 12,
+          "speaker_tag": "hench_assassin",
           "line_strref": 261439,
           "reply_links": [
             13
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 24,
+              "to_reply_id": 13,
+              "order": 0,
+              "paraphrase_strref": 261495
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233527,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 25,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 261405,
           "reply_links": [
             14
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 25,
+              "to_reply_id": 14,
+              "order": 0,
+              "paraphrase_strref": 261496
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233528,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 26,
           "speaker_id": 2,
+          "speaker_tag": "hench_vixen",
           "line_strref": 289861,
           "reply_links": [
             16
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 26,
+              "to_reply_id": 16,
+              "order": 0,
+              "paraphrase_strref": 289885
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316329,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 27,
           "speaker_id": 3,
+          "speaker_tag": "hench_mystic",
           "line_strref": 289862,
           "reply_links": [
             17
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 27,
+              "to_reply_id": 17,
+              "order": 0,
+              "paraphrase_strref": 289886
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316330,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 28,
           "speaker_id": 4,
+          "speaker_tag": "hench_grunt",
           "line_strref": 289863,
           "reply_links": [
             18
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 28,
+              "to_reply_id": 18,
+              "order": 0,
+              "paraphrase_strref": 289887
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316331,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 29,
           "speaker_id": 5,
+          "speaker_tag": "hench_garrus",
           "line_strref": 289864,
           "reply_links": [
             19
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 29,
+              "to_reply_id": 19,
+              "order": 0,
+              "paraphrase_strref": 289888
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316332,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 30,
           "speaker_id": 6,
+          "speaker_tag": "hench_tali",
           "line_strref": 289865,
           "reply_links": [
             20
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 30,
+              "to_reply_id": 20,
+              "order": 0,
+              "paraphrase_strref": 289889
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316333,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 31,
           "speaker_id": 7,
+          "speaker_tag": "hench_geth",
           "line_strref": 289866,
           "reply_links": [
             21
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 31,
+              "to_reply_id": 21,
+              "order": 0,
+              "paraphrase_strref": 289890
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316334,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 32,
           "speaker_id": 8,
+          "speaker_tag": "hench_convict",
           "line_strref": 289867,
           "reply_links": [
             22
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 32,
+              "to_reply_id": 22,
+              "order": 0,
+              "paraphrase_strref": 289891
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316335,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 33,
           "speaker_id": 9,
+          "speaker_tag": "hench_veteran",
           "line_strref": 289868,
           "reply_links": [
             23
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 33,
+              "to_reply_id": 23,
+              "order": 0,
+              "paraphrase_strref": 289892
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316336,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 34,
           "speaker_id": 10,
+          "speaker_tag": "hench_professor",
           "line_strref": 289869,
           "reply_links": [
             24
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 34,
+              "to_reply_id": 24,
+              "order": 0,
+              "paraphrase_strref": 289893
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316337,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 35,
           "speaker_id": 11,
+          "speaker_tag": "hench_thief",
           "line_strref": 289870,
           "reply_links": [
             25
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 35,
+              "to_reply_id": 25,
+              "order": 0,
+              "paraphrase_strref": 289894
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316338,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 36,
           "speaker_id": 12,
+          "speaker_tag": "hench_assassin",
           "line_strref": 289871,
           "reply_links": [
             26
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 36,
+              "to_reply_id": 26,
+              "order": 0,
+              "paraphrase_strref": 289895
+            }
+          ],
+          "conditional_func": 60,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316339,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 37,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 289872,
           "reply_links": [
             27
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 37,
+              "to_reply_id": 27,
+              "order": 0,
+              "paraphrase_strref": 289896
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 316340,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 38,
           "speaker_id": 1,
+          "speaker_tag": "hench_leading",
           "line_strref": 261406,
           "reply_links": [
             28
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 38,
+              "to_reply_id": 28,
+              "order": 0,
+              "paraphrase_strref": 261497
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233529,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 39,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 261410,
           "reply_links": [
             29
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 39,
+              "to_reply_id": 29,
+              "order": 0,
+              "paraphrase_strref": 261501
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233533,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 40,
           "speaker_id": 0,
+          "speaker_tag": "bchlml_male_villager1",
+          "listener_index": 1,
+          "listener_tag": "hench_leading",
           "line_strref": 261411,
           "reply_links": [
             30
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 40,
+              "to_reply_id": 30,
+              "order": 0,
+              "paraphrase_strref": 261502
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233534,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 41,
+          "speaker_id": -1,
+          "speaker_tag": "owner",
           "line_strref": 288470,
           "reply_links": [
             31
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 41,
+              "to_reply_id": 31,
+              "order": 0,
+              "paraphrase_strref": 288472
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 313623,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 42,
           "speaker_id": 13,
+          "speaker_tag": "bchlml_female_villager1",
+          "listener_index": 1,
+          "listener_tag": "hench_leading",
           "line_strref": 261412,
           "reply_links": [
             32,
             33
-          ]
+          ],
+          "reply_choices": [
+            {
+              "from_entry_id": 42,
+              "to_reply_id": 32,
+              "order": 0,
+              "paraphrase_strref": 261504
+            },
+            {
+              "from_entry_id": 42,
+              "to_reply_id": 33,
+              "order": 1,
+              "paraphrase_strref": 261505
+            }
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233535,
+          "skippable": true,
+          "ambient": false
         },
         {
           "id": 43,
           "speaker_id": 1,
+          "speaker_tag": "hench_leading",
           "line_strref": 261414,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233537,
+          "skippable": true,
+          "ambient": true
         },
         {
           "id": 44,
           "speaker_id": 1,
+          "speaker_tag": "hench_leading",
           "line_strref": 261415,
-          "reply_links": null
+          "reply_links": null,
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233538,
+          "skippable": true,
+          "ambient": true
         }
       ],
       "replies": [
@@ -2467,7 +3828,12 @@
           ],
           "condition_refs": [
             "cond_param:-1"
-          ]
+          ],
+          "conditional_param": -1,
+          "state_transition_param": -1,
+          "fires_conditional": true,
+          "export_id": 233563,
+          "ambient": false
         },
         {
           "id": 16,
@@ -2579,6 +3945,18 @@
         }
       ],
       "speakers": [
+        {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        },
         {
           "id": 0,
           "tag": "bchlml_male_villager1"
