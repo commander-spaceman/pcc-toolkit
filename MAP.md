@@ -1,108 +1,132 @@
-# Project Map (MAP.md)
+# Project Map
 
-**Purpose:** This document provides a high-level overview of the code architecture and navigation, designed for both human developers and AI agents.
+**Purpose:** High-level overview of the architecture, main modules, and code navigation points.
 
-## 🤖 Notes for AI Agents
-- **Entry point:** `core/cmd/pcc-core/main.go` for the main engine logic; `cli/src/cli_main.py` for the public CLI; `gui/src/app.py` for the graphical interface.
-- **Main patterns:** Go core containing all domain logic, thin Python CLI/GUI layers, subprocess communication through a JSON contract, parser/serializer behavior guarded by golden-file regression tests.
-- **General rules:** Prioritize reading this file to understand the context before proposing code modifications.
+## Notes for AI Agents
 
-## 1. Core Engine
-The Go core is the authoritative domain layer. It owns PCC/TLK parsing, dialogue AST construction, graph layout, evidence scanning, validation, and JSON serialization.
+- **Entry points:** `core/cmd/pcc-core/main.go` for the Go engine, `cli/src/cli_main.py` for the Typer CLI, `gui/src/app.py` for the Dear ImGui application, and `pyproject.toml` for Python packaging and CLI registration.
+- **Main patterns:** Go core owns all domain logic; Python CLI and GUI are thin adapters; communication happens through subprocess calls and JSON stdout/stderr contracts; behavior is guarded by golden-file regression tests.
+- **General rule:** Read this file before proposing structural changes or modifying multiple modules.
+
+---
+
+## 1. Go Core Engine
+
+The Go core is the authoritative domain layer for ME2 OT package parsing, dialogue extraction, TLK resolution, graph layout, validation, evidence scanning, and JSON serialization.
 
 ```text
 core/
 ├── go.mod
-├── go.sum
 ├── cmd/
 │   └── pcc-core/
 │       └── main.go
 └── internal/
-    ├── dialogue/
-    ├── evidence/
-    ├── graph/
     ├── pcc/
+    ├── dialogue/
+    ├── tlk/
+    ├── graph/
+    ├── evidence/
     ├── scan/
-    ├── serialize/
-    └── tlk/
+    └── serialize/
 ```
 
-| Archivo / Directorio | Responsabilidad |
-| --- | --- |
-| `core/` | Go engine containing all domain logic and the JSON-producing binary. |
-| `core/go.mod` | Go module definition and engine dependency declarations. |
-| `core/go.sum` | Go dependency checksums. |
-| `core/cmd/pcc-core/main.go` | Main `pcc-core` binary and subcommand dispatcher. |
-| `core/internal/pcc/` | ME2 OT PCC package parsing, export/import/name tables, Unreal strings, properties, and LZO decompression. |
-| `core/internal/dialogue/` | `BioConversation` parsing, AST types, ME2 OT schema handling, and structural validation. |
-| `core/internal/tlk/` | TLK binary parsing, Huffman decoding, text search, StringRef resolution, and DLC override priority. |
-| `core/internal/graph/` | Conversation graph layout computation, including Sugiyama-style positioning. |
-| `core/internal/evidence/` | Narrative evidence assembly and contextual profile generation from scan results. |
-| `core/internal/scan/` | Game-file scanning, candidate indexes, StringRef parsing, and offset search. |
-| `core/internal/serialize/` | Stable JSON output contract combining PCC metadata, conversations, TLK text, and validation. |
+**Main responsibilities:**
+- Parse ME2 OT `.pcc` packages, including LZO-compressed packages and Unreal property data.
+- Build and validate `BioConversation` ASTs, resolve TLK text, compute graph layouts, and emit structured JSON.
 
-## 2. Command-Line Interface
-The Python CLI is a thin Typer-based wrapper. It parses user arguments, invokes `pcc-core` as a subprocess, and formats results for terminal use.
+**Key files:**
+- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, and batch operations.
+- `core/internal/pcc/reader.go`: Reads PCC headers, names, imports, exports, and package metadata.
+- `core/internal/pcc/decompress.go`: Handles ME2 OT LZO decompression.
+- `core/internal/dialogue/parser.go`: Coordinates extraction of conversations from PCC exports and raw serialized data.
+- `core/internal/dialogue/validate.go`: Produces validation reports for parsed conversations.
+- `core/internal/tlk/reader.go`: Parses TLK files and decodes text entries.
+- `core/internal/tlk/resolver.go`: Resolves StringRefs with base TLK and DLC override priority.
+- `core/internal/serialize/writer.go`: Builds the stable JSON output contract consumed by CLI, GUI, and tests.
+
+**Relationships:**
+- Exposes a single `pcc-core` executable consumed by both `cli/` and `gui/`.
+- Produces JSON contracts validated by `tests/` and golden files.
+- Should remain the only place where parsing, AST, layout, evidence, and validation logic live.
+
+---
+
+## 2. Python CLI
+
+The CLI is a thin Typer-based command layer. It translates user commands into `pcc-core` subprocess calls and formats results for terminal workflows.
 
 ```text
 cli/
 └── src/
-    ├── __init__.py
     ├── __main__.py
     ├── cli_main.py
     ├── engine.py
     └── format.py
 ```
 
-| Archivo / Directorio | Responsabilidad |
-| --- | --- |
-| `cli/` | Python command-line layer with no domain parsing logic. |
-| `cli/src/__init__.py` | Package marker and version-related module surface. |
-| `cli/src/__main__.py` | Allows running the CLI package as a Python module. |
-| `cli/src/cli_main.py` | Public `pcc-toolkit` Typer app; defines package, TLK, dialogue, evidence, batch, and GUI-launch commands. |
-| `cli/src/engine.py` | Subprocess adapter that resolves `pcc-core`, builds flags, runs commands, and parses stdout JSON. |
-| `cli/src/format.py` | Rich-based formatting helpers for tables, summaries, validation output, and evidence reports. |
+**Main responsibilities:**
+- Define user-facing commands for package inspection, TLK operations, dialogue extraction, evidence search, batch tasks, and GUI launch.
+- Convert CLI options into Go engine flags and present returned JSON as tables, summaries, or raw JSON.
 
-## 3. Graphical Interface
-The Python GUI is a Dear ImGui renderer. It manages user interaction and view state while delegating all data extraction and analysis to the Go core.
+**Key files:**
+- `cli/src/cli_main.py`: Typer app and public command definitions.
+- `cli/src/engine.py`: Subprocess adapter that locates `pcc-core`, builds command arguments, and parses JSON output.
+- `cli/src/format.py`: Rich formatting helpers for exports, conversations, validation, evidence, and batch summaries.
+- `cli/src/__main__.py`: Module execution hook for the CLI package.
+
+**Relationships:**
+- Depends on the Go core executable and its JSON contract.
+- Shares the same conceptual engine-adapter pattern as `gui/src/engine.py`.
+- Is registered through `pyproject.toml` as the `pcc-toolkit` script.
+
+---
+
+## 3. Python GUI
+
+The GUI is a Dear ImGui renderer for interactive inspection. It manages UI state and visualization while delegating domain work to the Go core.
 
 ```text
 gui/
 └── src/
-    ├── __init__.py
     ├── app.py
     ├── engine.py
     ├── state.py
     └── views/
-        ├── __init__.py
-        ├── dialogue.py
-        ├── evidence.py
         ├── package.py
-        └── tlk.py
+        ├── tlk.py
+        ├── dialogue.py
+        └── evidence.py
 ```
 
-| Archivo / Directorio | Responsabilidad |
-| --- | --- |
-| `gui/` | Python GUI layer for interactive inspection and exploration. |
-| `gui/src/app.py` | HelloImGui application entry point, window setup, menus, tabs, status bar, and render loop. |
-| `gui/src/state.py` | UI state for loaded paths, selections, graph view, filters, loading state, and errors. |
-| `gui/src/engine.py` | GUI subprocess adapter for `pcc-core`, including cancellable asynchronous execution support. |
-| `gui/src/views/` | ImGui view modules grouped by feature domain. |
-| `gui/src/views/package.py` | PCC package/export inspection tab. |
-| `gui/src/views/tlk.py` | TLK lookup, search, and display tab. |
-| `gui/src/views/dialogue.py` | Dialogue explorer tab with graph rendering and node details. |
-| `gui/src/views/evidence.py` | Evidence-search tab with async process handling. |
+**Main responsibilities:**
+- Provide interactive tabs for PCC packages, TLK lookup, dialogue graph exploration, and evidence search.
+- Maintain UI-only state such as selected nodes, loaded paths, filters, graph zoom/pan, status messages, and async search state.
 
-## 4. Tests and Regression Data
-Tests validate the Go core contract and compare outputs against known-good golden files. Real game samples are expected locally and are not part of source control.
+**Key files:**
+- `gui/src/app.py`: HelloImGui application bootstrap, menu/status callbacks, tab layout, and render loop.
+- `gui/src/state.py`: `AppState` dataclass for UI state and selected data.
+- `gui/src/engine.py`: GUI subprocess adapter for synchronous and asynchronous `pcc-core` calls.
+- `gui/src/views/package.py`: PCC package/export viewer tab.
+- `gui/src/views/tlk.py`: TLK search and text display tab.
+- `gui/src/views/dialogue.py`: Conversation graph and node-detail explorer tab.
+- `gui/src/views/evidence.py`: Evidence-search tab with cancellable process handling.
+
+**Relationships:**
+- Depends on `pcc-core` for all parsed data and analysis results.
+- Shares no domain logic with `core/`; it only renders JSON data and records UI interaction state.
+- Can be launched through the CLI command defined in `cli/src/cli_main.py`.
+
+---
+
+## 4. Tests and Regression Assets
+
+Tests focus on the Go core contract and known-good outputs. Golden files encode stable expectations for parser, TLK, graph, and serialization behavior.
 
 ```text
 tests/
-├── __init__.py
 ├── conftest.py
 ├── test_golden.py
 ├── fixtures/
-│   └── __init__.py
 ├── golden/
 │   ├── conversation/
 │   ├── graph/
@@ -112,17 +136,26 @@ tests/
     └── run_probes.py
 ```
 
-| Archivo / Directorio | Responsabilidad |
-| --- | --- |
-| `tests/` | Python regression and contract tests for the toolkit. |
-| `tests/test_golden.py` | Runs `pcc-core` and compares stable structure/values against committed golden files. |
-| `tests/conftest.py` | Shared pytest configuration and fixtures. |
-| `tests/fixtures/` | Synthetic fixture area for tests that do not require real game files. |
-| `tests/golden/` | Versioned known-good outputs for conversations, graph layouts, PCC parsing, and TLK behavior. |
-| `tests/regression/run_probes.py` | Probe runner for real sample files; validates output shape and can regenerate golden files. |
+**Main responsibilities:**
+- Validate `pcc-core` output shape and stable values against committed golden files.
+- Provide regression probes for real ME2 OT samples when local game files are available.
 
-## 5. Project Configuration and Local Runtime Areas
-Root-level configuration defines packaging, dependencies, operational guidance, and local runtime locations. Generated artifacts and real game files should stay outside the source contract.
+**Key files:**
+- `tests/test_golden.py`: Pytest regression checks that execute `pcc-core` and compare against golden files.
+- `tests/regression/run_probes.py`: Probe runner for sample files, including golden regeneration support.
+- `tests/golden/`: Versioned known-good JSON outputs for conversations, TLK, graphs, and PCC exports.
+- `tests/fixtures/`: Synthetic fixture area for tests that do not require real game files.
+
+**Relationships:**
+- Depends on a built `pcc-core` binary in `build/` or on PATH.
+- Uses `samples/` for optional real game inputs; these files are local artifacts and not source code.
+- Golden files should be updated only when parser/output behavior intentionally changes.
+
+---
+
+## 5. Project Configuration and Documentation
+
+Root-level files define package metadata, dependency setup, operating rules, and architecture guidance. These files are the first stop for understanding scope and constraints.
 
 ```text
 pcc-toolkit/
@@ -132,19 +165,48 @@ pcc-toolkit/
 ├── README.md
 ├── pyproject.toml
 ├── pytest.ini
-├── requirements.txt
+└── requirements.txt
+```
+
+**Main responsibilities:**
+- Document architecture, repository conventions, setup metadata, and test configuration.
+- Keep agents and developers aligned on ME2 OT scope, JSON contracts, and the Go-core/Python-wrapper separation.
+
+**Key files:**
+- `AGENTS.md`: Operational rules for AI agents, including scope, verification, and repository conventions.
+- `PRD.md`: Primary architecture and product design document for PCC Toolkit v2.
+- `MAP.md`: Concise navigation map for the repository.
+- `pyproject.toml`: Python project metadata, dependencies, and script entry point.
+- `pytest.ini`: Pytest configuration.
+- `requirements.txt`: Local Python dependency list.
+- `README.md`: Minimal project overview.
+
+**Relationships:**
+- Guides changes across `core/`, `cli/`, `gui/`, and `tests/`.
+- `pyproject.toml` connects the Python CLI package to user-facing command execution.
+- `AGENTS.md` and `PRD.md` should be consulted before architecture or behavior changes.
+
+---
+
+## 6. Local Runtime Areas
+
+These folders hold local inputs and generated outputs. They are useful during development but are not part of the source architecture.
+
+```text
+pcc-toolkit/
 ├── samples/
 └── output/
 ```
 
-| Archivo / Directorio | Responsabilidad |
-| --- | --- |
-| `AGENTS.md` | Operational rules for AI agents working in this repository. |
-| `MAP.md` | Modular navigation map for humans and AI agents. |
-| `PRD.md` | Primary architecture, scope, contract, and migration specification. |
-| `README.md` | Minimal repository overview. |
-| `pyproject.toml` | Python package metadata, optional dependencies, and CLI entry point. |
-| `pytest.ini` | Pytest configuration. |
-| `requirements.txt` | Local Python dependency list. |
-| `samples/` | Local location for real ME2 OT PCC/TLK files, normally gitignored. |
-| `output/` | Generated outputs and runtime files, not source code. |
+**Main responsibilities:**
+- Store local ME2 OT sample files used by regression probes and manual testing.
+- Store generated output, GUI runtime files, or other local artifacts.
+
+**Key files:**
+- `samples/`: Expected location for real `.pcc` and `.tlk` files used by tests and manual runs.
+- `output/`: Generated output directory; contains runtime artifacts rather than source code.
+
+**Relationships:**
+- `tests/` and regression probes read from `samples/` when available.
+- CLI and GUI workflows may write generated data to `output/`.
+- Neither folder should be treated as a source-of-truth module.
