@@ -12,7 +12,7 @@
 
 ## 1. Go Core Engine
 
-The Go core is the authoritative domain layer for ME2 OT package parsing, dialogue extraction, TLK resolution, graph layout, validation, evidence scanning, and JSON serialization.
+The Go core is the authoritative domain layer for ME2 OT package parsing, dialogue extraction, TLK resolution, graph layout, validation, evidence scanning, line dumping, owner scanning, and JSON serialization.
 
 ```text
 core/
@@ -26,20 +26,31 @@ core/
     ├── tlk/
     ├── graph/
     ├── evidence/
+    ├── dumper/
+    ├── owners/
     ├── scan/
     └── serialize/
 ```
 
 **Main responsibilities:**
 - Parse ME2 OT `.pcc` packages, including LZO-compressed packages and Unreal property data.
-- Build and validate `BioConversation` ASTs, resolve TLK text, compute graph layouts, and emit structured JSON.
+- Build and validate `BioConversation` ASTs, resolve TLK text, compute graph layouts, scan evidence and owners, dump dialogue lines, and emit structured JSON.
 
 **Key files:**
-- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, and batch operations.
+- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `dump-lines`, `scan-owners`, and batch operations.
 - `core/internal/pcc/reader.go`: Reads PCC headers, names, imports, exports, and package metadata.
 - `core/internal/pcc/decompress.go`: Handles ME2 OT LZO decompression.
+- `core/internal/pcc/properties.go`: Parses Unreal property tags and semantic property collections.
+- `core/internal/pcc/unreal_props.go`: Decodes low-level Unreal property payloads.
 - `core/internal/dialogue/parser.go`: Coordinates extraction of conversations from PCC exports and raw serialized data.
+- `core/internal/dialogue/parser_semantic.go`: Builds conversation nodes from schema-guided semantic property parsing.
+- `core/internal/dialogue/structdb.go`: Contains ME2 dialogue struct metadata used by semantic parsing.
+- `core/internal/dialogue/schema.go`: Defines schema helpers for dialogue struct parsing.
 - `core/internal/dialogue/validate.go`: Produces validation reports for parsed conversations.
+- `core/internal/graph/layout.go`: Computes deterministic dialogue graph layouts.
+- `core/internal/evidence/builder.go`: Builds evidence reports and enriches hits with conversation AST data.
+- `core/internal/dumper/lines.go`: Builds normalized dialogue line dump output.
+- `core/internal/owners/scanner.go`: Scans Kismet conversation-start exports for conversation owner tags.
 - `core/internal/tlk/reader.go`: Parses TLK files and decodes text entries.
 - `core/internal/tlk/resolver.go`: Resolves StringRefs with base TLK and DLC override priority.
 - `core/internal/serialize/writer.go`: Builds the stable JSON output contract consumed by CLI, GUI, and tests.
@@ -47,7 +58,7 @@ core/
 **Relationships:**
 - Exposes a single `pcc-core` executable consumed by both `cli/` and `gui/`.
 - Produces JSON contracts validated by `tests/` and golden files.
-- Should remain the only place where parsing, AST, layout, evidence, and validation logic live.
+- Should remain the only place where parsing, AST, layout, evidence, line dumping, owner scanning, and validation logic live.
 
 ---
 
