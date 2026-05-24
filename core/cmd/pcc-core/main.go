@@ -736,7 +736,7 @@ func cmdValidate(args []string) {
 	}
 
 	result := dialogue.ParseConversations(summary, rawData, "resilient")
-	report := dialogue.BuildValidationReport(result)
+	report := dialogue.BuildValidationReportStrict(result, *strict)
 
 	var enc *json.Encoder
 	if *pretty {
@@ -861,7 +861,7 @@ func cmdBatchValidate(args []string) {
 		}
 
 		result := dialogue.ParseConversations(summary, rawData, "resilient")
-		valReport := dialogue.BuildValidationReport(result)
+		valReport := dialogue.BuildValidationReportStrict(result, *strict)
 
 		report.FilesOK++
 		report.Total += valReport.Summary.Total

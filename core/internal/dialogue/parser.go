@@ -385,6 +385,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		}
 	}
 
+	speakers = ensurePlayerAndOwnerSpeakers(speakers)
 	resolveSpeakerTags(entries, speakers)
 
 	return &Conversation{
@@ -454,6 +455,36 @@ func ptrOr(p *int, defaultVal int) int {
 		return defaultVal
 	}
 	return *p
+}
+
+func ensurePlayerAndOwnerSpeakers(speakers []Speaker) []Speaker {
+	hasPlayer := false
+	hasOwner := false
+	for _, s := range speakers {
+		if s.ID == -2 && s.Tag == "player" {
+			hasPlayer = true
+		}
+		if s.ID == -1 && s.Tag == "owner" {
+			hasOwner = true
+		}
+	}
+	if !hasPlayer && !hasOwner {
+		return append([]Speaker{
+			{ID: -2, Tag: "player", StrRefID: newInt(125303), FriendlyName: "\"Shepard\""},
+			{ID: -1, Tag: "owner", StrRefID: newInt(0), FriendlyName: "No data"},
+		}, speakers...)
+	}
+	if !hasPlayer {
+		speakers = append([]Speaker{
+			{ID: -2, Tag: "player", StrRefID: newInt(125303), FriendlyName: "\"Shepard\""},
+		}, speakers...)
+	}
+	if !hasOwner {
+		speakers = append([]Speaker{
+			{ID: -1, Tag: "owner", StrRefID: newInt(0), FriendlyName: "No data"},
+		}, speakers...)
+	}
+	return speakers
 }
 
 func resolveSpeakerTags(entries []EntryNode, speakers []Speaker) {

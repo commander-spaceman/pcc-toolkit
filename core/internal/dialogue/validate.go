@@ -41,6 +41,14 @@ type ValidationReport struct {
 }
 
 func ValidateConversation(conv *Conversation) *ValidationResult {
+	return validateConversation(conv, false)
+}
+
+func ValidateConversationStrict(conv *Conversation) *ValidationResult {
+	return validateConversation(conv, true)
+}
+
+func validateConversation(conv *Conversation, strict bool) *ValidationResult {
 	result := &ValidationResult{
 		ConversationID: conv.ID,
 		ExportIndex:    conv.ExportIndex,
@@ -51,12 +59,8 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	result.Summary.StartCount = len(conv.Starts)
 
 	entryIDs := make(map[int]bool)
-	entryMaxID := -1
 	for _, e := range conv.Entries {
 		entryIDs[e.ID] = true
-		if e.ID > entryMaxID {
-			entryMaxID = e.ID
-		}
 	}
 
 	replyIDs := make(map[int]bool)
@@ -65,8 +69,39 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	}
 
 	speakerIDs := make(map[int]bool)
+	hasPlayer := false
+	hasOwner := false
 	for _, s := range conv.Speakers {
 		speakerIDs[s.ID] = true
+		if s.ID == -2 && s.Tag == "player" {
+			hasPlayer = true
+		}
+		if s.ID == -1 && s.Tag == "owner" {
+			hasOwner = true
+		}
+	}
+
+	if !hasPlayer && len(conv.Speakers) > 0 {
+		severity := "warning"
+		if strict {
+			severity = "error"
+		}
+		result.addIssue(ValidationIssue{
+			Severity: severity,
+			Message:  "missing player speaker: no speaker with id=-2 and tag=\"player\" (ME2 convention)",
+			Cause:    "the conversation speaker list is missing the standard player entry — this is required by ME2 OT convention and may cause downstream issues",
+		})
+	}
+	if !hasOwner && len(conv.Speakers) > 0 {
+		severity := "warning"
+		if strict {
+			severity = "error"
+		}
+		result.addIssue(ValidationIssue{
+			Severity: severity,
+			Message:  "missing owner speaker: no speaker with id=-1 and tag=\"owner\" (ME2 convention)",
+			Cause:    "the conversation speaker list is missing the standard owner entry — this is required by ME2 OT convention and may cause downstream issues",
+		})
 	}
 
 	for _, e := range conv.Entries {
@@ -141,6 +176,12 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 		}
 	}
 
+	if conv.ParseMode == "struct_property_semantic" || conv.ParseMode == "row_payload" || conv.ParseMode == "row_payload_struct_matrix" || conv.ParseMode == "row_payload_struct_head" {
+		validateReplyEntryLinks(conv, result, entryIDs, replyIDs, strict)
+	}
+
+	validateReplyChoices(conv, result, replyIDs, entryIDs, strict)
+
 	for _, s := range conv.Starts {
 		if len(s.TargetEntryIDs) == 0 {
 			result.addIssue(ValidationIssue{
@@ -171,8 +212,12 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 			if len(e.ReplyLinks) == 0 {
 				cause = "leaf node — entry has no outgoing reply links (ReplyListNew is empty or absent); this is a terminal line with no player choice"
 			}
+			severity := "warning"
+			if strict {
+				severity = "error"
+			}
 			result.addIssue(ValidationIssue{
-				Severity: "warning",
+				Severity: severity,
 				NodeType: "entry",
 				NodeID:   e.ID,
 				Message:  "orphaned entry: entry " + itoa(e.ID) + " is not reachable from any start node",
@@ -199,7 +244,6 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	}
 
 	if len(conv.Entries) == 0 && len(conv.Replies) == 0 {
-		// Empty stub — speakers in fallback mode are garbage, ignore them
 		result.addIssue(ValidationIssue{
 			Severity: "info",
 			Message: "empty stub: no entries or replies" + func() string {
@@ -219,6 +263,9 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 			severity = "info"
 			cause = "empty conversation stub — fallback mode is expected when there is no data to parse"
 		}
+		if strict && severity == "warning" {
+			severity = "error"
+		}
 		result.addIssue(ValidationIssue{
 			Severity: severity,
 			Message:  "low-confidence parse: " + conv.ParseMode,
@@ -232,6 +279,9 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 			severity := "warning"
 			if isEmptyStub {
 				severity = "info"
+			}
+			if strict && severity == "warning" {
+				severity = "error"
 			}
 			result.addIssue(ValidationIssue{
 				Severity: severity,
@@ -270,6 +320,60 @@ func ValidateConversation(conv *Conversation) *ValidationResult {
 	return result
 }
 
+func validateReplyEntryLinks(conv *Conversation, result *ValidationResult, entryIDs, replyIDs map[int]bool, strict bool) {
+	replyUsed := make(map[int]bool)
+	for _, e := range conv.Entries {
+		for _, rid := range e.ReplyLinks {
+			if replyIDs[rid] {
+				replyUsed[rid] = true
+			}
+		}
+	}
+
+	for _, r := range conv.Replies {
+		if len(r.TargetEntryIDs) == 0 {
+			continue
+		}
+		if !replyUsed[r.ID] && len(conv.Entries) > 0 && len(conv.Starts) > 0 {
+			severity := "warning"
+			if strict {
+				severity = "error"
+			}
+			result.addIssue(ValidationIssue{
+				Severity: severity,
+				NodeType: "reply",
+				NodeID:   r.ID,
+				Message:  "unreachable reply: reply " + itoa(r.ID) + " is not referenced by any entry's ReplyLinks",
+				Cause:    "this reply has valid entry targets but no entry links to it — the reply exists in ReplyList but is never offered as a player choice",
+			})
+		}
+
+		for _, tid := range r.TargetEntryIDs {
+			if entryIDs[tid] {
+				entry := findEntry(conv.Entries, tid)
+				if entry != nil {
+					found := false
+					for _, erid := range entry.ReplyLinks {
+						if erid == r.ID {
+							found = true
+							break
+						}
+					}
+					if !found && tid >= 0 {
+						result.addIssue(ValidationIssue{
+							Severity: "info",
+							NodeType: "reply",
+							NodeID:   r.ID,
+							Message:  "non-reciprocal link: reply " + itoa(r.ID) + " → entry " + itoa(tid) + ", entry does not link back (may be intentional dialogue chain)",
+							Cause:    "the reply targets this entry but the entry's ReplyListNew does not reference this reply — this is normal in a forward dialogue chain where entry A → reply B → entry C (different entries)",
+						})
+					}
+				}
+			}
+		}
+	}
+}
+
 func findReachableEntries(conv *Conversation) map[int]bool {
 	reached := make(map[int]bool)
 
@@ -288,27 +392,19 @@ func findReachableEntries(conv *Conversation) map[int]bool {
 
 	for changed := true; changed; {
 		changed = false
-		for _, r := range conv.Replies {
-			for _, tid := range r.TargetEntryIDs {
-				if !entryIDs[tid] {
-					continue
-				}
-				if !reached[tid] {
-					continue
-				}
-				entry := findEntry(conv.Entries, tid)
-				if entry == nil {
-					continue
-				}
-				for _, rid := range entry.ReplyLinks {
-					for _, r2 := range conv.Replies {
-						if r2.ID == rid {
-							for _, t2 := range r2.TargetEntryIDs {
-								if entryIDs[t2] && !reached[t2] {
-									reached[t2] = true
-									changed = true
-								}
-							}
+		for _, e := range conv.Entries {
+			if !reached[e.ID] {
+				continue
+			}
+			for _, rid := range e.ReplyLinks {
+				for _, r := range conv.Replies {
+					if r.ID != rid {
+						continue
+					}
+					for _, tid := range r.TargetEntryIDs {
+						if entryIDs[tid] && !reached[tid] {
+							reached[tid] = true
+							changed = true
 						}
 					}
 				}
@@ -353,13 +449,52 @@ func (r *ValidationResult) addIssue(issue ValidationIssue) {
 	r.Issues = append(r.Issues, issue)
 }
 
+func validateReplyChoices(conv *Conversation, result *ValidationResult, replyIDs, entryIDs map[int]bool, strict bool) {
+	for _, e := range conv.Entries {
+		for _, rc := range e.ReplyChoices {
+			if rc.ToReplyID >= 0 && !replyIDs[rc.ToReplyID] && len(replyIDs) > 0 {
+				result.addIssue(ValidationIssue{
+					Severity: "error",
+					NodeType: "entry",
+					NodeID:   e.ID,
+					Message:  "dangling reply choice: entry " + itoa(e.ID) + " ReplyChoice → reply " + itoa(rc.ToReplyID) + " not found",
+					Cause:    "ReplyListNew entry references a reply index that does not exist in ReplyList — the ReplyChoice link is structurally broken",
+				})
+				result.Summary.DanglingLinks++
+			}
+			if rc.ParaphraseStrRef != nil && *rc.ParaphraseStrRef <= 0 {
+				severity := "warning"
+				if strict {
+					severity = "error"
+				}
+				result.addIssue(ValidationIssue{
+					Severity: severity,
+					NodeType: "entry",
+					NodeID:   e.ID,
+					Message:  "invalid paraphrase strref: entry " + itoa(e.ID) + " ReplyChoice order=" + itoa(rc.Order) + " has srParaphrase=" + itoa(*rc.ParaphraseStrRef),
+					Cause:    "the ReplyListNew paraphrase string reference is zero or negative — the paraphrase text will not resolve in TLK",
+				})
+			}
+		}
+	}
+}
+
 func BuildValidationReport(result *ParseResult) *ValidationReport {
+	return BuildValidationReportStrict(result, false)
+}
+
+func BuildValidationReportStrict(result *ParseResult, strict bool) *ValidationReport {
 	report := &ValidationReport{
 		File: result.File,
 	}
 
 	for _, conv := range result.Conversations {
-		vr := ValidateConversation(&conv)
+		var vr *ValidationResult
+		if strict {
+			vr = ValidateConversationStrict(&conv)
+		} else {
+			vr = ValidateConversation(&conv)
+		}
 		report.Results = append(report.Results, *vr)
 		report.Summary.Total++
 		switch vr.Status {
