@@ -11,6 +11,18 @@
       "replies": [],
       "speakers": [
         {
+          "id": -2,
+          "tag": "player",
+          "strref_id": 125303,
+          "friendly_name": "\"Shepard\""
+        },
+        {
+          "id": -1,
+          "tag": "owner",
+          "strref_id": 0,
+          "friendly_name": "No data"
+        },
+        {
           "id": 0
         },
         {
@@ -1134,6 +1146,13 @@
             0
           ]
         }
+      ],
+      "script_list": [
+        {
+          "id": 0,
+          "tag": "None",
+          "name": "None"
+        }
       ]
     },
     {
@@ -1161,7 +1180,14 @@
           "friendly_name": "No data"
         }
       ],
-      "starts": []
+      "starts": [],
+      "script_list": [
+        {
+          "id": 0,
+          "tag": "None",
+          "name": "None"
+        }
+      ]
     },
     {
       "id": "nor_globalnews_a_dlg",
@@ -1188,7 +1214,14 @@
           "friendly_name": "No data"
         }
       ],
-      "starts": []
+      "starts": [],
+      "script_list": [
+        {
+          "id": 0,
+          "tag": "None",
+          "name": "None"
+        }
+      ]
     }
   ]
 }

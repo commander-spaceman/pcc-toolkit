@@ -1,6 +1,8 @@
 """CLI entry point — Typer dispatch layer."""
 
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 import typer
@@ -27,6 +29,12 @@ from format import (
     pcc_export_table,
     validation_summary,
 )
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+BUILD_DIR = REPO_ROOT / "build"
+CORE_MAIN = REPO_ROOT / "core" / "cmd" / "pcc-core"
+CORE_MODULE = REPO_ROOT / "core"
+_EXE_SUFFIX = ".exe" if sys.platform == "win32" else ""
 
 app = typer.Typer(
     name="pcc-toolkit",
@@ -60,6 +68,35 @@ app.add_typer(tlk_app, name="tlk")
 app.add_typer(dialogue_app, name="dialogue")
 app.add_typer(evidence_app, name="evidence")
 app.add_typer(batch_app, name="batch")
+
+dev_app = typer.Typer(help="Build, test, and maintenance commands")
+app.add_typer(dev_app, name="dev")
+
+
+@dev_app.command("build-core")
+def dev_build_core() -> None:
+    """Build the Go core binary into build/."""
+    BUILD_DIR.mkdir(parents=True, exist_ok=True)
+    target = BUILD_DIR / f"pcc-core{_EXE_SUFFIX}"
+    cmd = ["go", "build", "-o", str(target)]
+    typer.echo(f"Building pcc-core -> {target}")
+    try:
+        subprocess.run(cmd, cwd=str(CORE_MAIN), check=True)
+    except subprocess.CalledProcessError as e:
+        typer.echo(f"Build failed: {e}", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(f"Built: {target} ({target.stat().st_size} bytes)")
+
+
+@dev_app.command("test-core")
+def dev_test_core() -> None:
+    """Run Go core tests."""
+    typer.echo("Running go test ./...")
+    try:
+        subprocess.run(["go", "test", "./..."], cwd=str(CORE_MODULE), check=True)
+    except subprocess.CalledProcessError as e:
+        typer.echo(f"Tests failed: {e}", err=True)
+        raise typer.Exit(code=1)
 
 
 @app.callback(invoke_without_command=True)
