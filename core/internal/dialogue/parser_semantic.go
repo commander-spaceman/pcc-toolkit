@@ -44,17 +44,26 @@ func findEntryIndicesFromReply(data []byte, names []string, itemStart, itemEnd i
 }
 
 func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.PropertyTag) *semanticResult {
+	lookupTag := func(keys ...string) (pcc.PropertyTag, bool) {
+		for _, key := range keys {
+			if t, ok := tagMap[key]; ok {
+				return t, true
+			}
+		}
+		return pcc.PropertyTag{}, false
+	}
+
 	entryCount := 0
 	entryPayload := 0
 	entryPayloadSize := 0
-	if tag, ok := tagMap["EntryList"]; ok {
+	if tag, ok := lookupTag("m_EntryList", "EntryList"); ok {
 		entryCount, entryPayload, entryPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, tag)
 	}
 
 	replyCount := 0
 	replyPayload := 0
 	replyPayloadSize := 0
-	if tag, ok := tagMap["ReplyList"]; ok {
+	if tag, ok := lookupTag("m_ReplyList", "ReplyList"); ok {
 		replyCount, replyPayload, replyPayloadSize = pcc.ReadArrayPropertyPayloadInfo(data, tag)
 	}
 
@@ -103,12 +112,103 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				lineStrRef = &v
 			}
 		}
+		var listenerIndex *int
+		if li, ok := item["nListenerIndex"]; ok {
+			if v, ok := li.Value.(int); ok && v >= 0 {
+				listenerIndex = &v
+			}
+		}
+		var conditionalFunc *int
+		if cf, ok := item["nConditionalFunc"]; ok {
+			if v, ok := cf.Value.(int); ok && v >= 0 {
+				conditionalFunc = &v
+			}
+		}
+		var conditionalParam *int
+		if cp, ok := item["nConditionalParam"]; ok {
+			if v, ok := cp.Value.(int); ok && v != 0 {
+				conditionalParam = &v
+			}
+		}
+		var stateTransition *int
+		if st, ok := item["nStateTransition"]; ok {
+			if v, ok := st.Value.(int); ok && v >= 0 {
+				stateTransition = &v
+			}
+		}
+		var stateTransitionParam *int
+		if stp, ok := item["nStateTransitionParam"]; ok {
+			if v, ok := stp.Value.(int); ok && v != 0 {
+				stateTransitionParam = &v
+			}
+		}
+		var scriptIndex *int
+		if si, ok := item["nScriptIndex"]; ok {
+			if v, ok := si.Value.(int); ok && v >= 0 {
+				scriptIndex = &v
+			}
+		}
+		var firesConditional *bool
+		if fc, ok := item["bFireConditional"]; ok {
+			if v, ok := fc.Value.(bool); ok {
+				firesConditional = &v
+			}
+		}
+		var exportID *int
+		if eid, ok := item["nExportID"]; ok {
+			if v, ok := eid.Value.(int); ok && v != 0 {
+				exportID = &v
+			}
+		}
+		var skippable *bool
+		if s, ok := item["bSkippable"]; ok {
+			if v, ok := s.Value.(bool); ok {
+				skippable = &v
+			}
+		}
+		var nonTextLine *bool
+		if ntl, ok := item["bIsNonTextLine"]; ok {
+			if v, ok := ntl.Value.(bool); ok {
+				nonTextLine = &v
+			}
+		}
+		var ambient *bool
+		if a, ok := item["bAmbient"]; ok {
+			if v, ok := a.Value.(bool); ok {
+				ambient = &v
+			}
+		}
+		var cameraIntimacy *int
+		if ci, ok := item["nCameraIntimacy"]; ok {
+			if v, ok := ci.Value.(int); ok && v >= 0 {
+				cameraIntimacy = &v
+			}
+		}
+		var guiStyle string
+		if gs, ok := item["eConvGUIStyle"]; ok {
+			if s, ok := gs.Value.(string); ok {
+				guiStyle = s
+			}
+		}
 		replyLinks := findReplyIndicesFromEntry(data, names, item)
 		entries[idx] = EntryNode{
-			ID:         idx,
-			SpeakerID:  speakerID,
-			LineStrRef: lineStrRef,
-			ReplyLinks: replyLinks,
+			ID:                   idx,
+			SpeakerID:            speakerID,
+			ListenerIndex:        listenerIndex,
+			LineStrRef:           lineStrRef,
+			ReplyLinks:           replyLinks,
+			ConditionalFunc:      conditionalFunc,
+			ConditionalParam:     conditionalParam,
+			StateTransition:      stateTransition,
+			StateTransitionParam: stateTransitionParam,
+			ScriptIndex:          scriptIndex,
+			FiresConditional:     firesConditional,
+			ExportID:             exportID,
+			Skippable:            skippable,
+			NonTextLine:          nonTextLine,
+			Ambient:              ambient,
+			CameraIntimacy:       cameraIntimacy,
+			GUIStyle:             guiStyle,
 		}
 	}
 
@@ -156,35 +256,137 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				category = s
 			}
 		}
+		var replyType string
+		if rt, ok := item["ReplyType"]; ok {
+			if s, ok := rt.Value.(string); ok {
+				replyType = s
+			}
+		}
+		var conditionalFunc *int
+		if cf2, ok := item["nConditionalFunc"]; ok {
+			if v, ok := cf2.Value.(int); ok && v >= 0 {
+				conditionalFunc = &v
+			}
+		}
+		var conditionalParam *int
+		if cp2, ok := item["nConditionalParam"]; ok {
+			if v, ok := cp2.Value.(int); ok && v != 0 {
+				conditionalParam = &v
+			}
+		}
+		var stateTransition *int
+		if st, ok := item["nStateTransition"]; ok {
+			if v, ok := st.Value.(int); ok && v >= 0 {
+				stateTransition = &v
+			}
+		}
+		var stateTransitionParam *int
+		if stp, ok := item["nStateTransitionParam"]; ok {
+			if v, ok := stp.Value.(int); ok && v != 0 {
+				stateTransitionParam = &v
+			}
+		}
+		var scriptIndex *int
+		if si, ok := item["nScriptIndex"]; ok {
+			if v, ok := si.Value.(int); ok && v >= 0 {
+				scriptIndex = &v
+			}
+		}
+		var firesConditional *bool
+		if fc, ok := item["bFireConditional"]; ok {
+			if v, ok := fc.Value.(bool); ok {
+				firesConditional = &v
+			}
+		}
+		var exportID *int
+		if eid, ok := item["nExportID"]; ok {
+			if v, ok := eid.Value.(int); ok && v != 0 {
+				exportID = &v
+			}
+		}
+		var unskippable *bool
+		if u, ok := item["bUnskippable"]; ok {
+			if v, ok := u.Value.(bool); ok {
+				unskippable = &v
+			}
+		}
+		var nonTextLine *bool
+		if ntl, ok := item["bIsNonTextLine"]; ok {
+			if v, ok := ntl.Value.(bool); ok {
+				nonTextLine = &v
+			}
+		}
+		var ambient *bool
+		if a, ok := item["bAmbient"]; ok {
+			if v, ok := a.Value.(bool); ok {
+				ambient = &v
+			}
+		}
+		var cameraIntimacy *int
+		if ci, ok := item["nCameraIntimacy"]; ok {
+			if v, ok := ci.Value.(int); ok && v >= 0 {
+				cameraIntimacy = &v
+			}
+		}
+		var guiStyle string
+		if gs, ok := item["eConvGUIStyle"]; ok {
+			if s, ok := gs.Value.(string); ok {
+				guiStyle = s
+			}
+		}
 		replies[idx] = ReplyNode{
-			ID:             idx,
-			LineStrRef:     lineStrRef,
-			TargetEntryIDs: targetEntryIDs,
-			ConditionRefs:  condRefs,
-			Category:       category,
+			ID:                   idx,
+			LineStrRef:           lineStrRef,
+			TargetEntryIDs:       targetEntryIDs,
+			ConditionRefs:        condRefs,
+			Category:             category,
+			ReplyType:            replyType,
+			ConditionalFunc:      conditionalFunc,
+			ConditionalParam:     conditionalParam,
+			StateTransition:      stateTransition,
+			StateTransitionParam: stateTransitionParam,
+			ScriptIndex:          scriptIndex,
+			FiresConditional:     firesConditional,
+			ExportID:             exportID,
+			Unskippable:          unskippable,
+			NonTextLine:          nonTextLine,
+			Ambient:              ambient,
+			CameraIntimacy:       cameraIntimacy,
+			GUIStyle:             guiStyle,
 		}
 	}
 
 	var speakers []Speaker
-	if spkTag, ok := tagMap["SpeakerList"]; ok {
-		spkCount, spkPayload, spkPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, spkTag)
+	speakers = append(speakers,
+		Speaker{ID: -2, Tag: "player", StrRefID: newInt(125303), FriendlyName: "\"Shepard\""},
+		Speaker{ID: -1, Tag: "owner", StrRefID: newInt(0), FriendlyName: "No data"},
+	)
+	if tag, ok := lookupTag("m_SpeakerList", "SpeakerList"); ok {
+		spkCount, spkPayload, spkPayloadSize := pcc.ReadArrayPropertyPayloadInfo(data, tag)
 		if spkCount > 0 && spkPayloadSize > 0 {
 			speakerItems := parseStructArraySchemaGuided(data, names, "BioDialogSpeaker", spkPayload, spkPayloadSize, spkCount)
 			if len(speakerItems) == 0 {
 				speakerItems = pcc.ParseStructArrayItemsAsPropertyCollections(data, names, spkPayload, spkPayloadSize, spkCount)
 			}
 			if len(speakerItems) > 0 {
-				speakers = make([]Speaker, len(speakerItems))
 				for idx, item := range speakerItems {
+					var tag string
 					if tp, ok := item["sSpeakerTag"]; ok {
 						if s, ok := tp.Value.(string); ok {
-							speakers[idx] = Speaker{ID: idx, Tag: s}
+							tag = s
 						}
 					}
+					var strRefID *int
+					if sr, ok := item["nDisplayNameStrRef"]; ok {
+						if v, ok := sr.Value.(int); ok && v != 0 {
+							strRefID = &v
+						}
+					}
+					speakers = append(speakers, Speaker{ID: idx, Tag: tag, StrRefID: strRefID})
 				}
 			} else {
-				// Fallback: scan raw bytes for NameProperty values
-				speakers = parseSpeakersDirect(data, names, spkPayload, spkPayloadSize, spkCount)
+				directSpeakers := parseSpeakersDirect(data, names, spkPayload, spkPayloadSize, spkCount)
+				speakers = append(speakers, directSpeakers...)
 			}
 		}
 	}
@@ -324,3 +526,5 @@ func parseStructArraySchemaGuided(data []byte, names []string, structType string
 
 	return nil
 }
+
+func newInt(i int) *int { v := i; return &v }

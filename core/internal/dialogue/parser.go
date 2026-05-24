@@ -87,25 +87,34 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		tagMap[tag.Name] = tag
 	}
 
+	lookupTag := func(keys ...string) (pcc.PropertyTag, bool) {
+		for _, key := range keys {
+			if t, ok := tagMap[key]; ok {
+				return t, true
+			}
+		}
+		return pcc.PropertyTag{}, false
+	}
+
 	entryCount, replyCount, speakerCount := 0, 0, 0
-	if t, ok := tagMap["EntryList"]; ok {
+	if t, ok := lookupTag("m_EntryList", "EntryList"); ok {
 		entryCount = max(0, pcc.ReadArrayPropertyCount(data, t))
 	}
-	if t, ok := tagMap["ReplyList"]; ok {
+	if t, ok := lookupTag("m_ReplyList", "ReplyList"); ok {
 		replyCount = max(0, pcc.ReadArrayPropertyCount(data, t))
 	}
-	if t, ok := tagMap["SpeakerList"]; ok {
+	if t, ok := lookupTag("m_SpeakerList", "SpeakerList"); ok {
 		speakerCount = max(0, pcc.ReadArrayPropertyCount(data, t))
 	}
 
 	var entryValues, replyValues, speakerValues []int
-	if t, ok := tagMap["EntryList"]; ok {
+	if t, ok := lookupTag("m_EntryList", "EntryList"); ok {
 		entryValues = pcc.ReadArrayPropertyI32Values(data, t)
 	}
-	if t, ok := tagMap["ReplyList"]; ok {
+	if t, ok := lookupTag("m_ReplyList", "ReplyList"); ok {
 		replyValues = pcc.ReadArrayPropertyI32Values(data, t)
 	}
-	if t, ok := tagMap["SpeakerList"]; ok {
+	if t, ok := lookupTag("m_SpeakerList", "SpeakerList"); ok {
 		speakerValues = pcc.ReadArrayPropertyI32Values(data, t)
 	}
 
@@ -113,7 +122,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	var usedStructHead, usedStructMatrix bool
 
 	// Direct row reads (replaces buggy readRowArrays closure)
-	if t, ok := tagMap["EntryList"]; ok {
+	if t, ok := lookupTag("m_EntryList", "EntryList"); ok {
 		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.EntryHeadI32 {
 			usedStructMatrix = true
 			entryRows = make([][]int, len(m))
@@ -125,7 +134,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 			entryRows = s
 		}
 	}
-	if t, ok := tagMap["ReplyList"]; ok {
+	if t, ok := lookupTag("m_ReplyList", "ReplyList"); ok {
 		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.ReplyHeadI32 {
 			usedStructMatrix = true
 			replyRows = make([][]int, len(m))
@@ -137,7 +146,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 			replyRows = s
 		}
 	}
-	if t, ok := tagMap["SpeakerList"]; ok {
+	if t, ok := lookupTag("m_SpeakerList", "SpeakerList"); ok {
 		if m := pcc.ReadArrayPropertyStructI32Matrix(data, t); len(m) > 0 && len(m[0]) >= schema.SpeakerHeadI32 {
 			usedStructMatrix = true
 			speakerRows = make([][]int, len(m))
@@ -171,9 +180,10 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	}
 
 	missingKeys := []string{}
-	for _, key := range []string{"EntryList", "ReplyList", "SpeakerList"} {
-		if _, ok := tagMap[key]; !ok {
-			missingKeys = append(missingKeys, key)
+	for _, key := range []string{"m_EntryList", "EntryList", "m_ReplyList", "ReplyList", "m_SpeakerList", "SpeakerList"} {
+		if _, ok := tagMap[key]; ok {
+			missingKeys = nil
+			break
 		}
 	}
 	if len(missingKeys) > 0 && !semanticMode {
@@ -181,17 +191,17 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	}
 
 	var entryMatrix, replyMatrix, speakerMatrix [][]int
-	if t, ok := tagMap["EntryList"]; ok {
+	if t, ok := lookupTag("m_EntryList", "EntryList"); ok {
 		entryMatrix = pcc.ReadArrayPropertyStructI32Matrix(data, t)
 	}
-	if t, ok := tagMap["ReplyList"]; ok {
+	if t, ok := lookupTag("m_ReplyList", "ReplyList"); ok {
 		replyMatrix = pcc.ReadArrayPropertyStructI32Matrix(data, t)
 	}
-	if t, ok := tagMap["SpeakerList"]; ok {
+	if t, ok := lookupTag("m_SpeakerList", "SpeakerList"); ok {
 		speakerMatrix = pcc.ReadArrayPropertyStructI32Matrix(data, t)
 	}
 
-	for _, key := range []string{"EntryList", "ReplyList", "SpeakerList"} {
+	for _, key := range []string{"m_EntryList", "EntryList", "m_ReplyList", "ReplyList", "m_SpeakerList", "SpeakerList"} {
 		tag, ok := tagMap[key]
 		if !ok {
 			continue
@@ -348,7 +358,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	}
 
 	var startValues []int
-	if t, ok := tagMap["StartingList"]; ok {
+	if t, ok := lookupTag("m_StartingList", "StartingList"); ok {
 		startValues = pcc.ReadArrayPropertyI32Values(data, t)
 	}
 	starts := make([]StartNode, len(startValues))
