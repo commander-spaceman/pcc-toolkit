@@ -101,6 +101,13 @@ func ParsePropertyCollection(data []byte, names []string, startOffset, maxSize i
 					value = raw
 				}
 			}
+		case "StrProperty":
+			if propSize >= 4 && valueOffset+4 <= len(data) {
+				str, _, err := readUnrealString(data, valueOffset)
+				if err == nil {
+					value = str
+				}
+			}
 		case "BoolProperty":
 			if metaSize >= 4 {
 				value = readI32(data, valueOffset-metaSize) != 0

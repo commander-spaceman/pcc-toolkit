@@ -24,7 +24,6 @@ func (r *Resolver) Resolve(stringID int32) (string, bool) {
 	return "", false
 }
 
-
 func (r *Resolver) ResolveWithSource(stringID int32) *ResolveResult {
 	for _, tlk := range r.Files {
 		text, ok := ResolveString(tlk, stringID, true)

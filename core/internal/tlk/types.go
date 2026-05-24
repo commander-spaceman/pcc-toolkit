@@ -44,4 +44,3 @@ type ResolveResult struct {
 	SourceTLK string `json:"source_tlk,omitempty"`
 	Found     bool   `json:"found"`
 }
-

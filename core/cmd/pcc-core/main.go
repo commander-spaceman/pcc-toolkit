@@ -11,8 +11,10 @@ import (
 	"strings"
 
 	"pcc-toolkit/core/internal/dialogue"
+	"pcc-toolkit/core/internal/dumper"
 	"pcc-toolkit/core/internal/evidence"
 	"pcc-toolkit/core/internal/graph"
+	"pcc-toolkit/core/internal/owners"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
 	"pcc-toolkit/core/internal/serialize"
@@ -34,6 +36,8 @@ var capabilities = []string{
 	"validate_v1",
 	"serialize_v1",
 	"batch_validate_v1",
+	"dump_lines_v1",
+	"scan_owners_v1",
 }
 
 type versionOutput struct {
@@ -74,6 +78,10 @@ func main() {
 		cmdBatchValidate(args[1:])
 	case "batch-extract":
 		cmdBatchExtract(args[1:])
+	case "dump-lines":
+		cmdDumpLines(args[1:])
+	case "scan-owners":
+		cmdScanOwners(args[1:])
 	default:
 		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
 		os.Exit(2)
@@ -976,6 +984,129 @@ func cmdBatchExtract(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(report); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func cmdDumpLines(args []string) {
+	fs := flag.NewFlagSet("dump-lines", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK for text resolution")
+	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	language := fs.String("language", "INT", "TLK language code")
+	format := fs.String("format", "json", "Output format: json or csv")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := summary.RequireME2(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	var resolver *tlk.Resolver
+	if *resolveTlk != "" {
+		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	result := dialogue.ParseConversations(summary, rawData, "resilient")
+
+	if resolver != nil {
+		for i := range result.Conversations {
+			conv := &result.Conversations[i]
+			for j := range conv.Entries {
+				if conv.Entries[j].LineStrRef != nil {
+					text, ok := resolver.Resolve(int32(*conv.Entries[j].LineStrRef))
+					if ok {
+						conv.Entries[j].LineText = text
+					}
+				}
+			}
+			for j := range conv.Replies {
+				if conv.Replies[j].LineStrRef != nil {
+					text, ok := resolver.Resolve(int32(*conv.Replies[j].LineStrRef))
+					if ok {
+						conv.Replies[j].LineText = text
+					}
+				}
+			}
+		}
+	}
+
+	output := dumper.BuildDumpLines(result)
+
+	switch *format {
+	case "csv":
+		fmt.Println("conversation_id,export_index,node_type,node_id,speaker_tag,strref,line_text,file")
+		for _, line := range output.Lines {
+			fmt.Printf("%s,%d,%s,%d,%s,%d,\"%s\",%s\n",
+				line.ConversationID, line.ExportIndex, line.NodeType, line.NodeID,
+				line.SpeakerTag, line.StrRef, line.LineText, line.File)
+		}
+	default:
+		var enc *json.Encoder
+		if *pretty {
+			enc = json.NewEncoder(os.Stdout)
+			enc.SetIndent("", "  ")
+		} else {
+			enc = json.NewEncoder(os.Stdout)
+		}
+		if err := enc.Encode(output); err != nil {
+			fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
+			os.Exit(1)
+		}
+	}
+}
+
+func cmdScanOwners(args []string) {
+	fs := flag.NewFlagSet("scan-owners", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		fmt.Fprintln(os.Stderr, "--file is required")
+		os.Exit(2)
+	}
+
+	rawData, summary, err := pcc.ReadFileRaw(*file)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := summary.RequireME2(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+	output := owners.ScanOwners(rawData, summary, *file)
+
+	var enc *json.Encoder
+	if *pretty {
+		enc = json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+	} else {
+		enc = json.NewEncoder(os.Stdout)
+	}
+	if err := enc.Encode(output); err != nil {
 		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
 		os.Exit(1)
 	}
