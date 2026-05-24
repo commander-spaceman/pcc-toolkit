@@ -211,3 +211,6 @@ build/
 tests/__pycache__/
 tests/.pytest_cache/
 tests/**/__pycache__/
+
+# Local test assets (game files, not committed)
+dropzone/
