@@ -46,7 +46,12 @@ def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
     args = _build_args(subcommand, **kwargs)
     proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
-        raise EngineError(proc.stderr.strip() or proc.stdout.strip())
+        try:
+            error_data = json.loads(proc.stderr)
+            msg = error_data.get("error", proc.stderr.strip())
+        except (json.JSONDecodeError, ValueError):
+            msg = proc.stderr.strip() or proc.stdout.strip()
+        raise EngineError(msg)
     return json.loads(proc.stdout)
 
 

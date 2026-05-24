@@ -39,7 +39,13 @@ def run_core(subcommand: str, **kwargs) -> dict:
             args.extend([flag, str(value)])
     proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if proc.returncode != 0:
-        raise RuntimeError(f"pcc-core error: {(proc.stderr or '').strip()}")
+        stderr_text = (proc.stderr or "").strip()
+        try:
+            error_data = json.loads(stderr_text)
+            msg = error_data.get("error", stderr_text)
+        except (json.JSONDecodeError, ValueError):
+            msg = stderr_text
+        raise RuntimeError(f"pcc-core error: {msg}")
     stdout = proc.stdout or ""
     if not stdout.strip():
         raise RuntimeError(f"pcc-core produced empty output")

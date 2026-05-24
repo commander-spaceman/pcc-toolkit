@@ -46,13 +46,19 @@ type versionOutput struct {
 	Capabilities []string `json:"capabilities"`
 }
 
+func writeError(msg string, exitCode int) {
+	errPayload := map[string]string{"error": msg}
+	enc := json.NewEncoder(os.Stderr)
+	_ = enc.Encode(errPayload)
+	os.Exit(exitCode)
+}
+
 func main() {
 	flag.Parse()
 
 	args := flag.Args()
 	if len(args) == 0 {
-		fmt.Fprintln(os.Stderr, "subcommand required")
-		os.Exit(2)
+		writeError("subcommand required", 2)
 	}
 
 	switch args[0] {
@@ -83,8 +89,7 @@ func main() {
 	case "scan-owners":
 		cmdScanOwners(args[1:])
 	default:
-		fmt.Fprintf(os.Stderr, "unknown subcommand: %s\n", args[0])
-		os.Exit(2)
+		writeError(fmt.Sprintf("unknown subcommand: %s", args[0]), 2)
 	}
 }
 
@@ -97,8 +102,7 @@ func cmdVersion() {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
 	if err := enc.Encode(out); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode version: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode version: %v", err), 1)
 	}
 }
 
@@ -114,8 +118,7 @@ func cmdParsePcc(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	needsProperties := *propertyTags || *semanticProps
@@ -132,13 +135,11 @@ func cmdParsePcc(args []string) {
 
 	summary, err := pcc.ReadFile(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if *exportsOnly {
@@ -154,20 +155,17 @@ func cmdParsePcc(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(summary); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
 func cmdParsePccWithProperties(file string, exportsOnly, includeTags, includeSemantic, pretty bool) {
 	rawData, summary, err := pcc.ReadFileRaw(file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	propMap := pcc.ComputeExportProperties(rawData, summary, includeTags, includeSemantic)
@@ -234,26 +232,22 @@ func cmdParsePccWithProperties(file string, exportsOnly, includeTags, includeSem
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(out); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
 func cmdExportDetail(path string, index int, pretty, includeTags, includeSemantic bool) {
 	rawData, summary, err := pcc.ReadFileRaw(path)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if index < 0 || index >= len(summary.Exports) {
-		fmt.Fprintf(os.Stderr, "export index %d out of range [0, %d)\n", index, len(summary.Exports))
-		os.Exit(2)
+		writeError(fmt.Sprintf("export index %d out of range [0, %d)", index, len(summary.Exports)), 2)
 	}
 
 	exp := summary.Exports[index]
@@ -294,8 +288,7 @@ func cmdExportDetail(path string, index int, pretty, includeTags, includeSemanti
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(detailOut); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -310,14 +303,12 @@ func cmdParseTlk(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	tlkFile, err := tlk.ReadFile(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	type parseTlkOutput struct {
@@ -363,8 +354,7 @@ func cmdParseTlk(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(out); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -380,18 +370,15 @@ func cmdResolveTlk(args []string) {
 	fs.Parse(args)
 
 	if *base == "" {
-		fmt.Fprintln(os.Stderr, "--base is required")
-		os.Exit(2)
+		writeError("--base is required", 2)
 	}
 	if len(*strrefFlags) == 0 {
-		fmt.Fprintln(os.Stderr, "at least one --strref is required")
-		os.Exit(2)
+		writeError("at least one --strref is required", 2)
 	}
 
 	resolver, err := tlk.BuildResolver(*base, *dlcDir, *language, false)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	type resolveTlkOutput struct {
@@ -424,8 +411,7 @@ func cmdResolveTlk(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(out); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -442,27 +428,23 @@ func cmdParseConversations(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	var resolver *tlk.Resolver
 	if *resolveTlk != "" {
 		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 		}
 	}
 
@@ -470,8 +452,7 @@ func cmdParseConversations(args []string) {
 	if *convIndex >= 0 {
 		conv, err := dialogue.ParseConversation(summary, rawData, *convIndex)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("error: %v", err), 1)
 		}
 		if resolver != nil {
 			resolveConversationTLK(conv, resolver)
@@ -498,8 +479,7 @@ func cmdParseConversations(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(result); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -557,36 +537,30 @@ func cmdLayoutGraph(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 	if *convIndex < 0 {
-		fmt.Fprintln(os.Stderr, "--conv-index is required")
-		os.Exit(2)
+		writeError("--conv-index is required", 2)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	conv, err := dialogue.ParseConversation(summary, rawData, *convIndex)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	switch *algorithm {
 	case "sugiyama":
 	default:
-		fmt.Fprintf(os.Stderr, "unsupported algorithm: %q (only sugiyama is currently implemented)\n", *algorithm)
-		os.Exit(2)
+		writeError(fmt.Sprintf("unsupported algorithm: %q (only sugiyama is currently implemented)", *algorithm), 2)
 	}
 	layout := graph.LayoutConversation(conv, *nodeWidth, *nodeHeight, *xSpacing, *ySpacing)
 
@@ -598,8 +572,7 @@ func cmdLayoutGraph(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(layout); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -617,18 +590,15 @@ func cmdScanEvidence(args []string) {
 	fs.Parse(args)
 
 	if *query == "" {
-		fmt.Fprintln(os.Stderr, "--query is required")
-		os.Exit(2)
+		writeError("--query is required", 2)
 	}
 	if *tlkPath == "" {
-		fmt.Fprintln(os.Stderr, "--tlk is required")
-		os.Exit(2)
+		writeError("--tlk is required", 2)
 	}
 
 	resolver, err := tlk.BuildResolver(*tlkPath, *dlcDir, *language, false)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 	}
 
 	candidateResults := resolver.Search(*query)
@@ -664,8 +634,7 @@ func cmdScanEvidence(args []string) {
 	if *bioGameRoot != "" {
 		files, err := scan.CollectPccFiles(*bioGameRoot)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "file collection error: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("file collection error: %v", err), 1)
 		}
 		if *workers <= 0 {
 			*workers = runtime.NumCPU()
@@ -706,8 +675,7 @@ func cmdScanEvidence(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(report); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -720,19 +688,16 @@ func cmdValidate(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	result := dialogue.ParseConversations(summary, rawData, "resilient")
@@ -746,8 +711,7 @@ func cmdValidate(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(report); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 	if validationFailed(report.Summary.Invalid, report.Summary.Warning, *strict) {
 		os.Exit(1)
@@ -766,16 +730,14 @@ func cmdSerialize(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	_ = game
 
 	output, err := serialize.Run(*file, *resolveTlk, *dlcDir, *language, "resilient")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	var enc *json.Encoder
@@ -786,8 +748,7 @@ func cmdSerialize(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(output); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -802,15 +763,13 @@ func cmdBatchValidate(args []string) {
 	fs.Parse(args)
 
 	if *dir == "" {
-		fmt.Fprintln(os.Stderr, "--dir is required")
-		os.Exit(2)
+		writeError("--dir is required", 2)
 	}
 
 	pattern := filepath.Join(*dir, *globFlag)
 	matches, err := filepath.Glob(pattern)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "glob error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("glob error: %v", err), 1)
 	}
 
 	type BatchResult struct {
@@ -883,8 +842,7 @@ func cmdBatchValidate(args []string) {
 	if *output != "" {
 		wr, err = os.Create(*output)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "create output: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("create output: %v", err), 1)
 		}
 		defer wr.Close()
 		if *pretty {
@@ -902,8 +860,7 @@ func cmdBatchValidate(args []string) {
 		}
 	}
 	if err := enc.Encode(report); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 	if validationFailed(report.Invalid, report.Warning, *strict) {
 		os.Exit(1)
@@ -930,21 +887,18 @@ func cmdBatchExtract(args []string) {
 	fs.Parse(args)
 
 	if *dir == "" {
-		fmt.Fprintln(os.Stderr, "--dir is required")
-		os.Exit(2)
+		writeError("--dir is required", 2)
 	}
 
 	pattern := filepath.Join(*dir, *globFlag)
 	matches, err := filepath.Glob(pattern)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "glob error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("glob error: %v", err), 1)
 	}
 
 	if *outputDir != "" {
 		if err := os.MkdirAll(*outputDir, 0755); err != nil {
-			fmt.Fprintf(os.Stderr, "create output dir: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("create output dir: %v", err), 1)
 		}
 	}
 
@@ -1010,8 +964,7 @@ func cmdBatchExtract(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(report); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
@@ -1027,27 +980,23 @@ func cmdDumpLines(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	var resolver *tlk.Resolver
 	if *resolveTlk != "" {
 		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 		}
 	}
 
@@ -1094,8 +1043,7 @@ func cmdDumpLines(args []string) {
 			enc = json.NewEncoder(os.Stdout)
 		}
 		if err := enc.Encode(output); err != nil {
-			fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-			os.Exit(1)
+			writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 		}
 	}
 }
@@ -1108,19 +1056,16 @@ func cmdScanOwners(args []string) {
 	fs.Parse(args)
 
 	if *file == "" {
-		fmt.Fprintln(os.Stderr, "--file is required")
-		os.Exit(2)
+		writeError("--file is required", 2)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(*file)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	output := owners.ScanOwners(rawData, summary, *file)
@@ -1133,8 +1078,7 @@ func cmdScanOwners(args []string) {
 		enc = json.NewEncoder(os.Stdout)
 	}
 	if err := enc.Encode(output); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to encode output: %v\n", err)
-		os.Exit(1)
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
 
