@@ -8,6 +8,7 @@ const CompressionLZO = 0x2
 const ChunkHeaderMagic = 0x9E2A83C1
 const ChunkHeaderSize = 16
 const ChunkBlockHeaderSize = 8
+const MaxBlockSizeOT = 0x20000
 
 type Header struct {
 	UnrealVersion   int    `json:"unreal_version"`
