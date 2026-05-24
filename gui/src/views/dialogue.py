@@ -160,21 +160,21 @@ def _render_graph(state: AppState) -> None:
     center_x = canvas_pos.x + canvas_size.x / 2 + offset_x
     center_y = canvas_pos.y + canvas_size.y / 2 + offset_y
 
-    _render_edges(draw_list, edges, positions, zoom, center_x, center_y, canvas_pos, canvas_max)
-    _render_nodes(draw_list, position_to_node_type(layout), positions, zoom, center_x, center_y, canvas_pos, canvas_max)
+    nodes_meta = layout.get("nodes", {})
+
+    _render_edges(draw_list, edges, nodes_meta, positions, zoom, center_x, center_y, canvas_pos, canvas_max)
+    _render_nodes(draw_list, nodes_meta, positions, zoom, center_x, center_y, canvas_pos, canvas_max)
     _render_legend(draw_list, canvas_pos)
 
 
-def position_to_node_type(layout: dict) -> dict[str, str]:
-    result: dict[str, str] = {}
-    for key in layout.get("positions", {}):
-        parts = key.split(":")
-        if len(parts) >= 2:
-            result[key] = parts[0]
-    return result
+def _node_type_from_key(key: str) -> str:
+    parts = key.split(":")
+    if len(parts) >= 2:
+        return parts[0]
+    return "entry"
 
 
-def _render_nodes(draw_list, node_types, positions, zoom, cx, cy, clip_min, clip_max):
+def _render_nodes(draw_list, nodes_meta, positions, zoom, cx, cy, clip_min, clip_max):
     for key, pos in positions.items():
         x = cx + pos[0] * zoom
         y = cy + pos[1] * zoom
@@ -184,7 +184,12 @@ def _render_nodes(draw_list, node_types, positions, zoom, cx, cy, clip_min, clip
         if x + w < clip_min.x or x > clip_max.x or y + h < clip_min.y or y > clip_max.y:
             continue
 
-        ntype = node_types.get(key, "entry")
+        meta = nodes_meta.get(key) if nodes_meta else None
+        if meta:
+            ntype = meta.get("type", "entry")
+        else:
+            ntype = _node_type_from_key(key)
+
         color = NODE_COLORS.get(ntype, NODE_COLORS["entry"])
 
         min_pos = ImVec2(x, y)
@@ -192,14 +197,54 @@ def _render_nodes(draw_list, node_types, positions, zoom, cx, cy, clip_min, clip
         draw_list.add_rect_filled(min_pos, max_pos, color, 4.0 * zoom)
         draw_list.add_rect(min_pos, max_pos, imgui.IM_COL32(255, 255, 255, 100), 4.0 * zoom)
 
-        label = key.replace(":", " #").upper()
-        text_size = imgui.calc_text_size(label)
-        tx = x + (w - text_size.x) / 2
-        ty = y + h * 0.2
-        draw_list.add_text(ImVec2(tx, ty), imgui.IM_COL32(255, 255, 255, 255), label)
+        line1, line2 = _build_node_labels(key, meta, ntype)
+
+        line1_size = imgui.calc_text_size(line1)
+        tx = x + (w - line1_size.x) / 2
+        ty = y + h * 0.12
+        draw_list.add_text(ImVec2(tx, ty), imgui.IM_COL32(255, 255, 255, 255), line1)
+
+        if line2:
+            line2_size = imgui.calc_text_size(line2)
+            tx2 = x + max((w - line2_size.x) / 2, 4 * zoom)
+            ty2 = y + h * 0.52
+            draw_list.add_text(ImVec2(tx2, ty2), imgui.IM_COL32(220, 220, 220, 220), line2)
 
 
-def _render_edges(draw_list, edges, positions, zoom, cx, cy, clip_min, clip_max):
+def _build_node_labels(key: str, meta: dict | None, ntype: str) -> tuple[str, str]:
+    if meta:
+        speaker = meta.get("speaker_tag", "")
+        line_text = meta.get("line_text", "")
+        category = meta.get("category", "")
+
+        if ntype == "entry":
+            line1 = speaker if speaker else f"ENTRY #{meta.get('id', '?')}"
+            line2 = line_text or ""
+            return line1, line2
+        elif ntype == "reply":
+            suffix = f" [{category}]" if category else ""
+            line1 = f"REPLY #{meta.get('id', '?')}{suffix}"
+            line2 = line_text or ""
+            return line1, line2
+
+    parts = key.split(":")
+    label = f"{parts[0].upper()} #{parts[1]}" if len(parts) >= 2 else key.upper()
+    return label, ""
+
+
+CATEGORY_COLORS = {
+    "Paragon": imgui.IM_COL32(68, 138, 255, 220),
+    "Paragon Interrupt": imgui.IM_COL32(68, 138, 255, 220),
+    "Renegade": imgui.IM_COL32(244, 67, 54, 220),
+    "Renegade Interrupt": imgui.IM_COL32(244, 67, 54, 220),
+    "Agree": imgui.IM_COL32(30, 144, 255, 220),
+    "Disagree": imgui.IM_COL32(255, 99, 71, 220),
+    "Friendly": imgui.IM_COL32(21, 101, 192, 220),
+    "Hostile": imgui.IM_COL32(198, 40, 40, 220),
+}
+
+
+def _render_edges(draw_list, edges, nodes_meta, positions, zoom, cx, cy, clip_min, clip_max):
     for edge in edges:
         from_key = f"{edge['from']['type']}:{edge['from']['id']}"
         to_key = f"{edge['to']['type']}:{edge['to']['id']}"
@@ -223,7 +268,7 @@ def _render_edges(draw_list, edges, positions, zoom, cx, cy, clip_min, clip_max)
             cp1 = ImVec2(fx - offset, fy)
             cp2 = ImVec2(tx + offset, ty)
 
-        color = imgui.IM_COL32(150, 150, 150, 200)
+        color = _edge_color(from_key, to_key, nodes_meta)
         draw_list.add_bezier_cubic(cp1, cp2, cp1, cp2, color, 2.0 * zoom)
 
         mid_x = (fx + tx) / 2
@@ -237,6 +282,21 @@ def _render_edges(draw_list, edges, positions, zoom, cx, cy, clip_min, clip_max)
             ImVec2(ax + math.sin(angle) * arrow_size * 0.5, ay - math.cos(angle) * arrow_size * 0.5),
             imgui.IM_COL32(200, 200, 200, 255),
         )
+
+
+def _edge_color(from_key: str, to_key: str, nodes_meta: dict) -> int:
+    if nodes_meta:
+        from_meta = nodes_meta.get(from_key)
+        if from_meta and from_meta.get("type") == "reply":
+            category = from_meta.get("category", "")
+            if category in CATEGORY_COLORS:
+                return CATEGORY_COLORS[category]
+        to_meta = nodes_meta.get(to_key)
+        if to_meta and to_meta.get("type") == "reply":
+            category = to_meta.get("category", "")
+            if category in CATEGORY_COLORS:
+                return CATEGORY_COLORS[category]
+    return imgui.IM_COL32(150, 150, 150, 200)
 
 
 def _render_legend(draw_list, canvas_pos):

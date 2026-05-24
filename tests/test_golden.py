@@ -175,3 +175,38 @@ class TestGoldenFiles:
         assert actual["game_profile"] == golden["game_profile"]
         assert actual["compressed"] == golden["compressed"]
         assert len(actual["exports"]) == len(golden["exports"])
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="samples/ directory empty.",
+    )
+    def test_graph_layout_sugiyama(self):
+        """Verify layout-graph output matches golden and includes node metadata."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+
+        conv_index = 0
+        actual = run_core("layout-graph", file=str(pcc_file), conv_index=conv_index)
+        golden = _load_golden("graph/cithub_first_amb_sugiyama.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        assert "nodes" in actual, "layout-graph output must include nodes metadata"
+        assert actual["conversation_id"] == golden["conversation_id"]
+        assert actual["node_count"] == golden["node_count"]
+        assert len(actual["positions"]) == len(golden["positions"])
+        assert len(actual["edges"]) == len(golden["edges"])
+
+        for node_key, meta in actual["nodes"].items():
+            assert "type" in meta, f"node {node_key} missing type"
+            assert meta["type"] in ("start", "entry", "reply"), (
+                f"node {node_key} has unknown type: {meta['type']}"
+            )
+            assert meta["id"] == int(node_key.split(":")[1]), (
+                f"node {node_key} id mismatch: meta has {meta['id']}"
+            )

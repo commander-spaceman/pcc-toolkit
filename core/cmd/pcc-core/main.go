@@ -537,7 +537,7 @@ func cmdLayoutGraph(args []string) {
 	fs := flag.NewFlagSet("layout-graph", flag.ExitOnError)
 	file := fs.String("file", "", "Path to PCC file")
 	convIndex := fs.Int("conv-index", -1, "Conversation export index")
-	algorithm := fs.String("algorithm", "sugiyama", "Layout algorithm (sugiyama, tree, force)")
+	algorithm := fs.String("algorithm", "sugiyama", "Layout algorithm (sugiyama)")
 	nodeWidth := fs.Float64("node-width", 240, "Node width in pixels")
 	nodeHeight := fs.Float64("node-height", 64, "Node height in pixels")
 	xSpacing := fs.Float64("x-spacing", 80, "Horizontal spacing")
@@ -572,7 +572,12 @@ func cmdLayoutGraph(args []string) {
 		os.Exit(1)
 	}
 
-	_ = algorithm
+	switch *algorithm {
+	case "sugiyama":
+	default:
+		fmt.Fprintf(os.Stderr, "unsupported algorithm: %q (only sugiyama is currently implemented)\n", *algorithm)
+		os.Exit(2)
+	}
 	layout := graph.LayoutConversation(conv, *nodeWidth, *nodeHeight, *xSpacing, *ySpacing)
 
 	var enc *json.Encoder

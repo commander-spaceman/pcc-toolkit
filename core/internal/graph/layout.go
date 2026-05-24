@@ -85,19 +85,41 @@ func LayoutConversation(
 		NodeCount:      total,
 		Positions:      map[string][]float64{},
 		Edges:          allEdges,
+		Nodes:          map[string]NodeMeta{},
 	}
 
 	for i := 0; i < nStart; i++ {
 		key := fmt.Sprintf("start:%d", starts[i].ID)
 		result.Positions[key] = positions[i]
+		result.Nodes[key] = NodeMeta{
+			Type: "start",
+			ID:   starts[i].ID,
+		}
 	}
 	for i, e := range entries {
 		key := fmt.Sprintf("entry:%d", e.ID)
 		result.Positions[key] = positions[nStart+i]
+		meta := NodeMeta{
+			Type:       "entry",
+			ID:         e.ID,
+			SpeakerTag: e.SpeakerTag,
+			LineText:   truncateText(e.LineText, 120),
+			LineStrRef: e.LineStrRef,
+		}
+		result.Nodes[key] = meta
 	}
 	for i, r := range replies {
 		key := fmt.Sprintf("reply:%d", r.ID)
 		result.Positions[key] = positions[nStart+nEntry+i]
+		meta := NodeMeta{
+			Type:          "reply",
+			ID:            r.ID,
+			LineText:      truncateText(r.LineText, 120),
+			LineStrRef:    r.LineStrRef,
+			ConditionRefs: r.ConditionRefs,
+			Category:      r.Category,
+		}
+		result.Nodes[key] = meta
 	}
 
 	return result
@@ -151,10 +173,14 @@ func assignLayers(adj [][]int, total, nStart int) [][]int {
 		queue = nextQueue
 	}
 
+	remaining := []int{}
 	for u := 0; u < total; u++ {
 		if !visited[u] {
-			layers = append(layers, []int{u})
+			remaining = append(remaining, u)
 		}
+	}
+	if len(remaining) > 0 {
+		layers = append(layers, remaining)
 	}
 
 	return layers
@@ -190,6 +216,13 @@ func computePositions(
 	}
 
 	return positions
+}
+
+func truncateText(s string, maxLen int) string {
+	if len(s) <= maxLen {
+		return s
+	}
+	return s[:maxLen-1] + "…"
 }
 
 func barycenterOrdering(layers [][]int, adj [][]int) {
