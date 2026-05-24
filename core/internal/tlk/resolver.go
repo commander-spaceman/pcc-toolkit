@@ -85,6 +85,7 @@ func (r *Resolver) Search(query string) []ResolveResult {
 func ReadMountPriority(dlcRoot string) int {
 	paths := []string{
 		filepath.Join(dlcRoot, "CookedPC", "Mount.dlc"),
+		filepath.Join(dlcRoot, "CookedPCConsole", "Mount.dlc"),
 		filepath.Join(dlcRoot, "Mount.dlc"),
 	}
 	for _, p := range paths {
@@ -118,6 +119,67 @@ type tlkCandidate struct {
 	Priority int
 }
 
+func ParseBioEngineModules(iniPath string) (map[string]int, error) {
+	data, err := os.ReadFile(iniPath)
+	if err != nil {
+		return nil, err
+	}
+
+	modules := make(map[string]int)
+	lines := strings.Split(string(data), "\n")
+	inSection := false
+
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" || strings.HasPrefix(trimmed, ";") || strings.HasPrefix(trimmed, "#") {
+			continue
+		}
+		upperTrimmed := strings.ToUpper(trimmed)
+		if strings.HasPrefix(upperTrimmed, "[") && strings.HasSuffix(upperTrimmed, "]") {
+			inSection = upperTrimmed == "[ENGINE.DLCMODULES]"
+			continue
+		}
+		if inSection && strings.Contains(trimmed, "=") {
+			parts := strings.SplitN(trimmed, "=", 2)
+			key := strings.TrimSpace(parts[0])
+			valueStr := strings.TrimSpace(parts[1])
+			var num int
+			if _, err := fmt.Sscanf(valueStr, "%d", &num); err == nil {
+				modules[key] = num
+			}
+		}
+	}
+	return modules, nil
+}
+
+func findDlcTlkByModule(dlcRoot string, moduleNum int, language string) string {
+	candidate := filepath.Join(dlcRoot, fmt.Sprintf("DLC_%d_%s.tlk", moduleNum, language))
+	if _, err := os.Stat(candidate); err == nil {
+		return candidate
+	}
+	for _, cookedDir := range []string{"CookedPC", "CookedPCConsole"} {
+		candidate = filepath.Join(dlcRoot, cookedDir, fmt.Sprintf("DLC_%d_%s.tlk", moduleNum, language))
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate
+		}
+	}
+	return ""
+}
+
+func findDlcTlkByGlob(dlcRoot string, language string, includeTestTlks bool) []string {
+	var results []string
+	for _, cookedDir := range []string{"CookedPC", "CookedPCConsole"} {
+		matches, _ := filepath.Glob(filepath.Join(dlcRoot, cookedDir, fmt.Sprintf("*_%s.tlk", language)))
+		for _, match := range matches {
+			if !includeTestTlks && strings.Contains(strings.ToLower(filepath.Base(match)), "_test_") {
+				continue
+			}
+			results = append(results, match)
+		}
+	}
+	return results
+}
+
 func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]string, error) {
 	if language == "" {
 		language = "INT"
@@ -144,12 +206,25 @@ func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]st
 		dlcRoot := filepath.Join(dlcDir, name)
 		priority := ReadMountPriority(dlcRoot)
 
-		cookedMatches, _ := filepath.Glob(filepath.Join(dlcRoot, "CookedPC*", fmt.Sprintf("*_%s.tlk", language)))
-		for _, match := range cookedMatches {
-			if !includeTestTlks && strings.Contains(strings.ToLower(filepath.Base(match)), "_test_") {
-				continue
+		moduleTLKPath := ""
+		for _, cookedDir := range []string{"CookedPC", "CookedPCConsole"} {
+			bioEnginePath := filepath.Join(dlcRoot, cookedDir, "BIOEngine.ini")
+			modules, iniErr := ParseBioEngineModules(bioEnginePath)
+			if iniErr == nil {
+				if modNum, ok := modules[name]; ok {
+					moduleTLKPath = findDlcTlkByModule(dlcRoot, modNum, language)
+					break
+				}
 			}
-			candidates = append(candidates, tlkCandidate{Path: match, Priority: priority})
+		}
+
+		if moduleTLKPath != "" {
+			candidates = append(candidates, tlkCandidate{Path: moduleTLKPath, Priority: priority})
+		} else {
+			globs := findDlcTlkByGlob(dlcRoot, language, includeTestTlks)
+			for _, match := range globs {
+				candidates = append(candidates, tlkCandidate{Path: match, Priority: priority})
+			}
 		}
 	}
 
