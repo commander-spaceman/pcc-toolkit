@@ -62,7 +62,7 @@ func LayoutConversation(
 						From:           NodeKey{Type: "entry", ID: e.ID},
 						To:             NodeKey{Type: "reply", ID: rid},
 						Category:       rc.Category,
-						ParaphraseText: rc.Paraphrase,
+						ParaphraseText: rc.ParaphraseText,
 						InputIndex:     &order,
 					})
 				}

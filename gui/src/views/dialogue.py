@@ -268,7 +268,7 @@ def _render_edges(draw_list, edges, nodes_meta, positions, zoom, cx, cy, clip_mi
             cp1 = ImVec2(fx - offset, fy)
             cp2 = ImVec2(tx + offset, ty)
 
-        color = _edge_color(from_key, to_key, nodes_meta)
+        color = _edge_color(edge, from_key, to_key, nodes_meta)
         draw_list.add_bezier_cubic(cp1, cp2, cp1, cp2, color, 2.0 * zoom)
 
         mid_x = (fx + tx) / 2
@@ -284,7 +284,10 @@ def _render_edges(draw_list, edges, nodes_meta, positions, zoom, cx, cy, clip_mi
         )
 
 
-def _edge_color(from_key: str, to_key: str, nodes_meta: dict) -> int:
+def _edge_color(edge: dict, from_key: str, to_key: str, nodes_meta: dict) -> int:
+    category = edge.get("category", "")
+    if category in CATEGORY_COLORS:
+        return CATEGORY_COLORS[category]
     if nodes_meta:
         from_meta = nodes_meta.get(from_key)
         if from_meta and from_meta.get("type") == "reply":

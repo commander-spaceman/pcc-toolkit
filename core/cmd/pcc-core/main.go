@@ -520,6 +520,16 @@ func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver)
 			}
 		}
 	}
+	for i := range conv.Entries {
+		for j := range conv.Entries[i].ReplyChoices {
+			if conv.Entries[i].ReplyChoices[j].ParaphraseStrRef != nil {
+				text, ok := resolver.Resolve(int32(*conv.Entries[i].ReplyChoices[j].ParaphraseStrRef))
+				if ok {
+					conv.Entries[i].ReplyChoices[j].ParaphraseText = text
+				}
+			}
+		}
+	}
 	for i := range conv.Speakers {
 		if conv.Speakers[i].DisplayName != "" && len(conv.Speakers[i].DisplayName) > 7 &&
 			conv.Speakers[i].DisplayName[:7] == "strref:" {
