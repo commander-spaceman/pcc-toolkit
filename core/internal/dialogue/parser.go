@@ -379,6 +379,8 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		}
 	}
 
+	resolveSpeakerTags(entries, speakers)
+
 	return &Conversation{
 		ID:          exportName(export),
 		ExportIndex: export.Index,
@@ -446,4 +448,23 @@ func ptrOr(p *int, defaultVal int) int {
 		return defaultVal
 	}
 	return *p
+}
+
+func resolveSpeakerTags(entries []EntryNode, speakers []Speaker) {
+	speakerByID := map[int]*Speaker{}
+	for i := range speakers {
+		speakerByID[speakers[i].ID] = &speakers[i]
+	}
+	for i := range entries {
+		if entries[i].SpeakerID != nil {
+			if spk, ok := speakerByID[*entries[i].SpeakerID]; ok && spk.Tag != "" {
+				entries[i].SpeakerTag = spk.Tag
+			}
+		}
+		if entries[i].ListenerIndex != nil {
+			if spk, ok := speakerByID[*entries[i].ListenerIndex]; ok && spk.Tag != "" {
+				entries[i].ListenerTag = spk.Tag
+			}
+		}
+	}
 }
