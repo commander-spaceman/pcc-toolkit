@@ -19,12 +19,14 @@ func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *
 		if export.ClassName != "BioConversation" {
 			continue
 		}
-		if export.SerialSize < 8 || export.SerialOffset <= 0 {
+		if export.SerialSize < 8 || export.SerialOffset < 0 ||
+			export.SerialOffset+export.SerialSize > len(rawData) {
 			continue
 		}
 
 		if mode == "resilient" {
-			conv, err := parseOneConversation(rawData, summary.Names, gameProfile, export, schema)
+			exportData := rawData[export.SerialOffset : export.SerialOffset+export.SerialSize]
+			conv, err := parseOneConversation(exportData, summary.Names, gameProfile, export, schema)
 			if err != nil {
 				result.Errors = append(result.Errors, ParseError{
 					ID:          exportName(export),
@@ -35,7 +37,8 @@ func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *
 			}
 			result.Conversations = append(result.Conversations, *conv)
 		} else {
-			conv, err := parseOneConversation(rawData, summary.Names, gameProfile, export, schema)
+			exportData := rawData[export.SerialOffset : export.SerialOffset+export.SerialSize]
+			conv, err := parseOneConversation(exportData, summary.Names, gameProfile, export, schema)
 			if err != nil {
 				result.Errors = append(result.Errors, ParseError{
 					ID:          exportName(export),
@@ -56,8 +59,13 @@ func ParseConversation(summary *pcc.FileSummary, rawData []byte, convIndex int) 
 		return nil, fmt.Errorf("export index %d out of range", convIndex)
 	}
 	export := summary.Exports[convIndex]
+	if export.SerialSize < 8 || export.SerialOffset < 0 ||
+		export.SerialOffset+export.SerialSize > len(rawData) {
+		return nil, fmt.Errorf("export %d has invalid serial bounds", export.Index)
+	}
 	schema := GetSchemaForProfile(string(summary.GameProfile))
-	return parseOneConversation(rawData, summary.Names, string(summary.GameProfile), export, schema)
+	exportData := rawData[export.SerialOffset : export.SerialOffset+export.SerialSize]
+	return parseOneConversation(exportData, summary.Names, string(summary.GameProfile), export, schema)
 }
 
 func exportName(export pcc.Export) string {
@@ -69,14 +77,11 @@ func exportName(export pcc.Export) string {
 
 func parseOneConversation(data []byte, names []string, gameProfile string, export pcc.Export, schema ConversationListSchema) (*Conversation, error) {
 
-	if export.SerialOffset < 0 || export.SerialSize < 8 {
+	if len(data) < 8 {
 		return nil, fmt.Errorf("export %d has invalid serial bounds", export.Index)
 	}
-	if export.SerialOffset+export.SerialSize > len(data) {
-		return nil, fmt.Errorf("export %d serial data out of range", export.Index)
-	}
 
-	tags := pcc.ExtractBioConversationKeyProperties(data, names, export.SerialOffset, export.SerialSize)
+	tags := pcc.ExtractBioConversationKeyProperties(data, names, 0, len(data))
 	tagMap := map[string]pcc.PropertyTag{}
 	for _, tag := range tags {
 		tagMap[tag.Name] = tag

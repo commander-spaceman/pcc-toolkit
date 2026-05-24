@@ -4,18 +4,35 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
+func readFileNormalize(path string) (string, error) {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return "", fmt.Errorf("resolve path: %w", err)
+	}
+	return filepath.Clean(abs), nil
+}
+
 func ReadFile(path string) (*FileSummary, error) {
-	data, err := os.ReadFile(path)
+	normPath, err := readFileNormalize(path)
+	if err != nil {
+		return nil, err
+	}
+	data, err := os.ReadFile(normPath)
 	if err != nil {
 		return nil, fmt.Errorf("read file: %w", err)
 	}
-	return ReadFileFromBytes(data, path)
+	return ReadFileFromBytes(data, normPath)
 }
 
 func ReadFileHeaderOnly(path string) (*FileSummary, error) {
-	data, err := os.ReadFile(path)
+	normPath, err := readFileNormalize(path)
+	if err != nil {
+		return nil, err
+	}
+	data, err := os.ReadFile(normPath)
 	if err != nil {
 		return nil, fmt.Errorf("read file: %w", err)
 	}
@@ -41,7 +58,7 @@ func ReadFileHeaderOnly(path string) (*FileSummary, error) {
 	}
 
 	return &FileSummary{
-		Path:        path,
+		Path:        normPath,
 		GameProfile: profile,
 		Compressed:  compressed,
 		Header:      header,
@@ -99,11 +116,15 @@ func ReadFileFromBytes(data []byte, path string) (*FileSummary, error) {
 }
 
 func ReadFileRaw(path string) ([]byte, *FileSummary, error) {
-	data, err := os.ReadFile(path)
+	normPath, err := readFileNormalize(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	data, err := os.ReadFile(normPath)
 	if err != nil {
 		return nil, nil, fmt.Errorf("read file: %w", err)
 	}
-	return ReadFileRawFromBytes(data, path)
+	return ReadFileRawFromBytes(data, normPath)
 }
 
 func ReadFileRawFromBytes(data []byte, path string) ([]byte, *FileSummary, error) {
@@ -312,4 +333,40 @@ func resolveExportNames(exports []Export, imports []Import, names []string) {
 			}
 		}
 	}
+}
+
+func ReadFileExports(path string, predicate func(Export) bool) (*FileSummary, map[int][]byte, error) {
+	normPath, err := readFileNormalize(path)
+	if err != nil {
+		return nil, nil, err
+	}
+	data, err := os.ReadFile(normPath)
+	if err != nil {
+		return nil, nil, fmt.Errorf("read file: %w", err)
+	}
+	return ReadFileFromBytesAndExports(data, normPath, predicate)
+}
+
+func ReadFileFromBytesAndExports(data []byte, path string, predicate func(Export) bool) (*FileSummary, map[int][]byte, error) {
+	rawData, summary, err := ReadFileRawFromBytes(data, path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	exportData := make(map[int][]byte)
+	for i := range summary.Exports {
+		exp := &summary.Exports[i]
+		if !predicate(*exp) {
+			continue
+		}
+		if exp.SerialSize < 0 || exp.SerialOffset < 0 ||
+			exp.SerialOffset+exp.SerialSize > len(rawData) {
+			continue
+		}
+		buf := make([]byte, exp.SerialSize)
+		copy(buf, rawData[exp.SerialOffset:exp.SerialOffset+exp.SerialSize])
+		exportData[exp.Index] = buf
+	}
+
+	return summary, exportData, nil
 }

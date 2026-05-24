@@ -44,7 +44,7 @@ func buildMinimalPCC(uv, lv int) []byte {
 	writeI32LE(exportEntry, 8, 0)
 	writeI32LE(exportEntry, 12, 3)
 	writeI32LE(exportEntry, 32, 0)
-	writeI32LE(exportEntry, 36, 256)
+	writeI32LE(exportEntry, 36, 0)
 	writeI32LE(exportEntry, 40, 0)
 	writeI32LE(exportEntry, 48, 0)
 
@@ -162,8 +162,8 @@ func TestParsePccExports(t *testing.T) {
 	if exports[0].ObjectNameIndex != 3 {
 		t.Errorf("ObjectNameIndex = %d, want 3", exports[0].ObjectNameIndex)
 	}
-	if exports[0].SerialOffset != 256 {
-		t.Errorf("SerialOffset = %d, want 256", exports[0].SerialOffset)
+	if exports[0].SerialOffset != 0 {
+		t.Errorf("SerialOffset = %d, want 0", exports[0].SerialOffset)
 	}
 }
 
@@ -368,5 +368,41 @@ func TestRequireME2(t *testing.T) {
 	fs.GameProfile = ProfileUnknown
 	if err := fs.RequireME2(); err == nil {
 		t.Error("RequireME2 should fail for unknown")
+	}
+}
+
+func TestReadFileExports(t *testing.T) {
+	data := buildMinimalPCC(512, 130)
+	summary, exportData, err := ReadFileFromBytesAndExports(data, "test.pcc", func(e Export) bool {
+		return e.ClassName == "BioConversation"
+	})
+	if err != nil {
+		t.Fatalf("ReadFileFromBytesAndExports: %v", err)
+	}
+	if summary.GameProfile != ProfileME2OT {
+		t.Errorf("GameProfile = %q, want %q", summary.GameProfile, ProfileME2OT)
+	}
+	if len(exportData) != 1 {
+		t.Fatalf("expected 1 export, got %d", len(exportData))
+	}
+	data0, ok := exportData[0]
+	if !ok {
+		t.Fatal("expected export data for index 0")
+	}
+	if len(data0) != 0 {
+		t.Errorf("expected empty serial data, got %d bytes", len(data0))
+	}
+}
+
+func TestReadFileExports_NoMatch(t *testing.T) {
+	data := buildMinimalPCC(512, 130)
+	_, exportData, err := ReadFileFromBytesAndExports(data, "test.pcc", func(e Export) bool {
+		return false
+	})
+	if err != nil {
+		t.Fatalf("ReadFileFromBytesAndExports: %v", err)
+	}
+	if len(exportData) != 0 {
+		t.Errorf("expected 0 exports, got %d", len(exportData))
 	}
 }
