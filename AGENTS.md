@@ -5,6 +5,7 @@
 Use this file as the operational entry point for AI agents working on this project.
 
 - Architecture and design live in `PRD.md`.
+- Fast repository navigation lives in `MAP.md`.
 - Persistent agent context should live in the `memory` MCP, not in session lifecycle files.
 - `.opencode/` is reserved for MCP runtime files, not project instructions.
 
@@ -23,13 +24,15 @@ There is no required session lifecycle file. Do not maintain `.opencode/current.
 ## Read First
 
 1. `PRD.md` - architecture, AST spec, migration plan, dependencies.
-2. `AGENTS.md` - operating model, conventions, verification, and repository map.
+2. `MAP.md` - current repository structure and module navigation.
+3. `AGENTS.md` - operating model, conventions, verification, and repository map.
 
 ## Repository Map
 
 | Path | What it contains | When to read |
 |------|------------------|--------------|
 | `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before architecture or feature work |
+| `MAP.md` | Current repository structure and navigation guide | Before structural changes or multi-module work |
 | `.opencode/start-github-mcp.ps1` | GitHub MCP wrapper that loads `.env` | MCP runtime only |
 | `.opencode/memory.jsonl` | Local memory MCP storage | MCP runtime only |
 | `build/` | Local compiled binaries, gitignored | Runtime artifacts only |
