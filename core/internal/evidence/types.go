@@ -24,8 +24,10 @@ type ConversationMatch struct {
 	ConversationID string `json:"conversation_id,omitempty"`
 	ExportIndex    int    `json:"export_index,omitempty"`
 	NodeType       string `json:"node_type,omitempty"`
+	NodeID         int    `json:"node_id,omitempty"`
 	SpeakerTag     string `json:"speaker_tag,omitempty"`
 	ListenerTag    string `json:"listener_tag,omitempty"`
+	OwnerTag       string `json:"owner_tag,omitempty"`
 }
 
 type StrRefEvidence struct {
@@ -66,6 +68,9 @@ func BuildFileHasBioCMap(report *scan.ScanReport) map[string]bool {
 		if r.HasBioConversation {
 			result[r.FilePath] = true
 		}
+	}
+	for _, f := range report.BioConversationFiles {
+		result[f] = true
 	}
 	return result
 }

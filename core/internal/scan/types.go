@@ -24,9 +24,10 @@ type ScanResult struct {
 }
 
 type ScanReport struct {
-	FilesScanned  int          `json:"files_scanned"`
-	FilesWithHits int          `json:"files_with_hits"`
-	TotalHits     int          `json:"total_hits"`
-	Results       []ScanResult `json:"results,omitempty"`
-	Errors        []string     `json:"errors,omitempty"`
+	FilesScanned         int          `json:"files_scanned"`
+	FilesWithHits        int          `json:"files_with_hits"`
+	TotalHits            int          `json:"total_hits"`
+	Results              []ScanResult `json:"results,omitempty"`
+	Errors               []string     `json:"errors,omitempty"`
+	BioConversationFiles []string     `json:"bio_conversation_files,omitempty"`
 }

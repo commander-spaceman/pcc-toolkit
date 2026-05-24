@@ -1,6 +1,8 @@
 package evidence
 
 import (
+	"pcc-toolkit/core/internal/dialogue"
+	"pcc-toolkit/core/internal/owners"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
 	"pcc-toolkit/core/internal/tlk"
@@ -113,22 +115,91 @@ func findSourceTLK(resolver *tlk.Resolver, strref int32) string {
 	return ""
 }
 
-func EnrichWithConversationData(
-	report *EvidenceReport,
-	fileData map[string]*pcc.FileSummary,
-) {
+type nodeInfo struct {
+	nodeType       string
+	nodeID         int
+	speakerTag     string
+	listenerTag    string
+	conversationID string
+}
+
+func EnrichConversationMatchesWithAST(report *EvidenceReport) {
+	filesToParse := make(map[string]bool)
+	for i := range report.Evidence {
+		ev := &report.Evidence[i]
+		for j := range ev.BioConversation {
+			filesToParse[ev.BioConversation[j].FilePath] = true
+		}
+	}
+
+	if len(filesToParse) == 0 {
+		return
+	}
+
+	fileNodeMaps := make(map[string]map[int]nodeInfo)
+	fileOwnerMaps := make(map[string]map[string]string)
+
+	for filePath := range filesToParse {
+		rawData, summary, err := pcc.ReadFileRaw(filePath)
+		if err != nil {
+			continue
+		}
+		result := dialogue.ParseConversations(summary, rawData, "resilient")
+		strRefMap := make(map[int]nodeInfo)
+		for _, conv := range result.Conversations {
+			for _, entry := range conv.Entries {
+				if entry.LineStrRef != nil && *entry.LineStrRef > 0 {
+					strRefMap[*entry.LineStrRef] = nodeInfo{
+						nodeType:       "entry",
+						nodeID:         entry.ID,
+						speakerTag:     entry.SpeakerTag,
+						listenerTag:    entry.ListenerTag,
+						conversationID: conv.ID,
+					}
+				}
+			}
+			for _, reply := range conv.Replies {
+				if reply.LineStrRef != nil && *reply.LineStrRef > 0 {
+					strRefMap[*reply.LineStrRef] = nodeInfo{
+						nodeType:       "reply",
+						nodeID:         reply.ID,
+						speakerTag:     "player",
+						listenerTag:    "",
+						conversationID: conv.ID,
+					}
+				}
+			}
+		}
+		fileNodeMaps[filePath] = strRefMap
+
+		ownerOutput := owners.ScanOwners(rawData, summary, filePath)
+		convOwnerMap := make(map[string]string)
+		for _, oe := range ownerOutput.Owners {
+			convOwnerMap[oe.ConversationName] = oe.OwnerTag
+		}
+		fileOwnerMaps[filePath] = convOwnerMap
+	}
+
 	for i := range report.Evidence {
 		ev := &report.Evidence[i]
 		for j := range ev.BioConversation {
 			cm := &ev.BioConversation[j]
-			summary, ok := fileData[cm.FilePath]
-			if !ok {
-				continue
+			if nodeMap, ok := fileNodeMaps[cm.FilePath]; ok {
+				if info, ok := nodeMap[cm.StrRef]; ok {
+					cm.NodeType = info.nodeType
+					cm.NodeID = info.nodeID
+					cm.SpeakerTag = info.speakerTag
+					cm.ListenerTag = info.listenerTag
+					if info.conversationID != "" {
+						cm.ConversationID = info.conversationID
+					}
+				}
 			}
-			for _, exp := range summary.Exports {
-				if exp.Index == cm.ExportIndex && exp.ClassName == "BioConversation" {
-					cm.ConversationID = exp.ObjectName
-					break
+			if ownerMap, ok := fileOwnerMaps[cm.FilePath]; ok {
+				if cm.ConversationID != "" {
+					if ownerTag, ok := ownerMap[cm.ConversationID]; ok {
+						cm.OwnerTag = ownerTag
+					}
 				}
 			}
 		}

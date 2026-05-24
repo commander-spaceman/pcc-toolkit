@@ -686,6 +686,8 @@ func cmdScanEvidence(args []string) {
 		resolver,
 	)
 
+	evidence.EnrichConversationMatchesWithAST(report)
+
 	var enc *json.Encoder
 	if *pretty {
 		enc = json.NewEncoder(os.Stdout)

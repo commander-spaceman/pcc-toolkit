@@ -52,6 +52,37 @@ func TestBuildFileHasBioCMap(t *testing.T) {
 	}
 }
 
+func TestBuildFileHasBioCMap_FromBioConversationFiles(t *testing.T) {
+	report := &scan.ScanReport{
+		BioConversationFiles: []string{"file_c.pcc", "file_d.pcc"},
+	}
+
+	m := BuildFileHasBioCMap(report)
+	if !m["file_c.pcc"] {
+		t.Error("file_c.pcc should have BioConversation from BioConversationFiles")
+	}
+	if !m["file_d.pcc"] {
+		t.Error("file_d.pcc should have BioConversation from BioConversationFiles")
+	}
+}
+
+func TestBuildFileHasBioCMap_BothSources(t *testing.T) {
+	report := &scan.ScanReport{
+		Results: []scan.ScanResult{
+			{FilePath: "file_a.pcc", HasBioConversation: true},
+		},
+		BioConversationFiles: []string{"file_b.pcc"},
+	}
+
+	m := BuildFileHasBioCMap(report)
+	if !m["file_a.pcc"] {
+		t.Error("file_a.pcc should have BioConversation from Results")
+	}
+	if !m["file_b.pcc"] {
+		t.Error("file_b.pcc should have BioConversation from BioConversationFiles")
+	}
+}
+
 func TestBuildReport(t *testing.T) {
 	scanReport := &scan.ScanReport{
 		FilesScanned:  2,

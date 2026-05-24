@@ -138,6 +138,9 @@ func RunWithCache(files []FileEntry, candidates []int32, workers int, cache *Fil
 	}
 
 	for _, r := range cachedResults {
+		if r.HasBioConversation {
+			report.BioConversationFiles = append(report.BioConversationFiles, r.FilePath)
+		}
 		if len(r.Hits) > 0 {
 			report.FilesWithHits++
 			report.TotalHits += len(r.Hits)
@@ -150,6 +153,7 @@ func RunWithCache(files []FileEntry, candidates []int32, workers int, cache *Fil
 	report.TotalHits += scanned.TotalHits
 	report.Results = append(report.Results, scanned.Results...)
 	report.Errors = append(report.Errors, scanned.Errors...)
+	report.BioConversationFiles = append(report.BioConversationFiles, scanned.BioConversationFiles...)
 
 	return report
 }
@@ -209,6 +213,9 @@ func runScan(files []FileEntry, candidates []int32, workers int, cache *FileCach
 		if r.Error != "" {
 			report.Errors = append(report.Errors, r.FilePath+": "+r.Error)
 			continue
+		}
+		if r.HasBioConversation {
+			report.BioConversationFiles = append(report.BioConversationFiles, r.FilePath)
 		}
 		if len(r.Hits) > 0 {
 			report.FilesWithHits++
