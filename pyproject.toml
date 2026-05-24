@@ -22,7 +22,3 @@ pcc-toolkit = "cli_main:app"
 [tool.setuptools]
 py-modules = ["cli_main", "engine", "format"]
 package-dir = {"" = "cli/src"}
-
-[tool.pytest.ini_options]
-pythonpath = ["cli/src"]
-testpaths = ["tests"]
