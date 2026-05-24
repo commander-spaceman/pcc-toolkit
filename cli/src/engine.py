@@ -88,6 +88,7 @@ def parse_conversations(
     conv_index: int | None = None,
     resolve_tlk: str | None = None,
     dlc_dir: str | None = None,
+    language: str = "INT",
     mode: str = "resilient",
 ) -> dict[str, Any]:
     return _run(
@@ -96,6 +97,7 @@ def parse_conversations(
         conv_index=conv_index,
         resolve_tlk=resolve_tlk,
         dlc_dir=dlc_dir,
+        language=language,
         mode=mode,
     )
 
@@ -142,12 +144,15 @@ def resolve_tlk(
     base: Path | str,
     dlc_dir: Path | str,
     strrefs: list[int],
+    *,
+    language: str = "INT",
 ) -> dict[str, Any]:
     return _run(
         "resolve-tlk",
         base=str(base),
         dlc_dir=str(dlc_dir),
         strref=strrefs,
+        language=language,
     )
 
 
@@ -156,6 +161,7 @@ def scan_evidence(
     *,
     tlk: Path | str,
     dlc_dir: str | None = None,
+    language: str = "INT",
     biogame_root: str | None = None,
     auto_index: bool = False,
     candidate_index: str | None = None,
@@ -166,6 +172,7 @@ def scan_evidence(
         query=query,
         tlk=str(tlk),
         dlc_dir=dlc_dir,
+        language=language,
         biogame_root=biogame_root,
         auto_index=auto_index,
         candidate_index=candidate_index,
@@ -183,6 +190,7 @@ def serialize(
     game: str | None = None,
     resolve_tlk: str | None = None,
     dlc_dir: str | None = None,
+    language: str = "INT",
     pretty: bool = False,
 ) -> dict[str, Any]:
     return _run(
@@ -191,6 +199,7 @@ def serialize(
         game=game,
         resolve_tlk=resolve_tlk,
         dlc_dir=dlc_dir,
+        language=language,
         pretty=pretty,
     )
 
@@ -218,6 +227,7 @@ def batch_extract(
     output_dir: str | None = None,
     resolve_tlk: str | None = None,
     dlc_dir: str | None = None,
+    language: str = "INT",
 ) -> dict[str, Any]:
     return _run(
         "batch-extract",
@@ -226,4 +236,5 @@ def batch_extract(
         output_dir=output_dir,
         resolve_tlk=resolve_tlk,
         dlc_dir=dlc_dir,
+        language=language,
     )

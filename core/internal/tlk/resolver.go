@@ -24,6 +24,7 @@ func (r *Resolver) Resolve(stringID int32) (string, bool) {
 	return "", false
 }
 
+
 func (r *Resolver) ResolveWithSource(stringID int32) *ResolveResult {
 	for _, tlk := range r.Files {
 		text, ok := ResolveString(tlk, stringID, true)
@@ -32,10 +33,11 @@ func (r *Resolver) ResolveWithSource(stringID int32) *ResolveResult {
 				StringID:  stringID,
 				Text:      text,
 				SourceTLK: tlk.Path,
+				Found:     true,
 			}
 		}
 	}
-	return nil
+	return &ResolveResult{StringID: stringID, Text: "", Found: false}
 }
 
 func (r *Resolver) IterAllEntries() func(func(int32, string, string) bool) {
@@ -149,7 +151,7 @@ func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]st
 
 	sort.Slice(candidates, func(i, j int) bool {
 		if candidates[i].Priority != candidates[j].Priority {
-			return candidates[i].Priority > candidates[j].Priority
+			return candidates[i].Priority < candidates[j].Priority
 		}
 		return strings.ToLower(candidates[i].Path) < strings.ToLower(candidates[j].Path)
 	})
@@ -164,28 +166,30 @@ func FindDlcTlkFiles(dlcDir string, language string, includeTestTlks bool) ([]st
 func BuildResolver(baseTlkPath string, dlcDir string, language string, includeTestTlks bool) (*Resolver, error) {
 	var files []*File
 
+	baseTLK, err := ReadFile(baseTlkPath)
+	if err == nil {
+		files = append(files, baseTLK)
+	}
+
 	if dlcDir != "" {
-		dlcPaths, err := FindDlcTlkFiles(dlcDir, language, includeTestTlks)
-		if err != nil {
-			return nil, fmt.Errorf("find dlc tlk files: %w", err)
-		}
-		for _, path := range dlcPaths {
-			tlkFile, err := ReadFile(path)
-			if err != nil {
-				continue
+		dlcPaths, dlcErr := FindDlcTlkFiles(dlcDir, language, includeTestTlks)
+		if dlcErr == nil {
+			for _, path := range dlcPaths {
+				tlkFile, readErr := ReadFile(path)
+				if readErr != nil {
+					continue
+				}
+				files = append(files, tlkFile)
 			}
-			files = append(files, tlkFile)
 		}
 	}
 
-	baseTLK, err := ReadFile(baseTlkPath)
-	if err != nil {
-		if len(files) == 0 {
+	if len(files) == 0 {
+		if err != nil {
 			return nil, fmt.Errorf("read base tlk: %w", err)
 		}
-		return &Resolver{Files: files}, nil
+		return nil, fmt.Errorf("no TLK files found")
 	}
-	files = append(files, baseTLK)
 
 	return &Resolver{Files: files}, nil
 }

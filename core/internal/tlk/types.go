@@ -42,4 +42,6 @@ type ResolveResult struct {
 	StringID  int32  `json:"string_id"`
 	Text      string `json:"text"`
 	SourceTLK string `json:"source_tlk,omitempty"`
+	Found     bool   `json:"found"`
 }
+

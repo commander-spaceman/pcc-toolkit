@@ -28,6 +28,7 @@ func Run(
 	path string,
 	resolveTlk string,
 	dlcDir string,
+	language string,
 	mode string,
 ) (*SerializedOutput, error) {
 	rawData, summary, err := pcc.ReadFileRaw(path)
@@ -41,7 +42,10 @@ func Run(
 
 	var resolver *tlk.Resolver
 	if resolveTlk != "" {
-		resolver, err = tlk.BuildResolver(resolveTlk, dlcDir, "INT", false)
+		if language == "" {
+			language = "INT"
+		}
+		resolver, err = tlk.BuildResolver(resolveTlk, dlcDir, language, false)
 		if err != nil {
 			return nil, err
 		}

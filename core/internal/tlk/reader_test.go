@@ -227,11 +227,34 @@ func TestResolveWithSource(t *testing.T) {
 	if result == nil {
 		t.Fatal("expected result for id 1")
 	}
+	if !result.Found {
+		t.Fatal("expected Found=true for id 1")
+	}
 	if result.SourceTLK != "test.tlk" {
 		t.Errorf("SourceTLK = %q, want test.tlk", result.SourceTLK)
 	}
 	if result.Text != "AB" {
 		t.Errorf("Text = %q, want AB", result.Text)
+	}
+}
+
+func TestResolveWithSourceNotFound(t *testing.T) {
+	data := buildMinimalTLK()
+	tlkFile, err := Parse(data, "test.tlk")
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+
+	resolver := &Resolver{Files: []*File{tlkFile}}
+	result := resolver.ResolveWithSource(999)
+	if result == nil {
+		t.Fatal("expected non-nil result for id 999")
+	}
+	if result.Found {
+		t.Fatal("expected Found=false for unknown id 999")
+	}
+	if result.StringID != 999 {
+		t.Errorf("StringID = %d, want 999", result.StringID)
 	}
 }
 

@@ -364,6 +364,7 @@ func cmdResolveTlk(args []string) {
 	fs := flag.NewFlagSet("resolve-tlk", flag.ExitOnError)
 	base := fs.String("base", "", "Path to base TLK file")
 	dlcDir := fs.String("dlc-dir", "", "Path to DLC directory")
+	language := fs.String("language", "INT", "TLK language code (INT, DEU, FRA, etc.)")
 	strrefFlags := &multiFlag{}
 	fs.Var(strrefFlags, "strref", "StringRef to resolve (repeatable)")
 	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
@@ -379,7 +380,7 @@ func cmdResolveTlk(args []string) {
 		os.Exit(2)
 	}
 
-	resolver, err := tlk.BuildResolver(*base, *dlcDir, "INT", false)
+	resolver, err := tlk.BuildResolver(*base, *dlcDir, *language, false)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -399,15 +400,12 @@ func cmdResolveTlk(args []string) {
 	for _, raw := range *strrefFlags {
 		var id int
 		if _, err := fmt.Sscanf(raw, "%d", &id); err != nil {
-			out.Results = append(out.Results, tlk.ResolveResult{StringID: 0, Text: ""})
+			out.Results = append(out.Results, tlk.ResolveResult{StringID: 0, Text: "", Found: false})
 			continue
 		}
-		result := resolver.ResolveWithSource(int32(id))
-		if result == nil {
-			out.Results = append(out.Results, tlk.ResolveResult{StringID: int32(id), Text: ""})
-		} else {
-			out.Results = append(out.Results, *result)
-		}
+		refID := int32(id)
+		result := resolver.ResolveWithSource(refID)
+		out.Results = append(out.Results, *result)
 	}
 
 	var enc *json.Encoder
@@ -429,6 +427,7 @@ func cmdParseConversations(args []string) {
 	convIndex := fs.Int("conv-index", -1, "Parse a single conversation by export index")
 	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK file for text resolution")
 	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	language := fs.String("language", "INT", "TLK language code (INT, DEU, FRA, etc.)")
 	mode := fs.String("mode", "resilient", "Parse mode: resilient or strict")
 	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
 
@@ -452,7 +451,7 @@ func cmdParseConversations(args []string) {
 
 	var resolver *tlk.Resolver
 	if *resolveTlk != "" {
-		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, "INT", false)
+		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
 			os.Exit(1)
@@ -586,6 +585,7 @@ func cmdScanEvidence(args []string) {
 	query := fs.String("query", "", "Search query text")
 	tlkPath := fs.String("tlk", "", "Path to base TLK file")
 	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	language := fs.String("language", "INT", "TLK language code (INT, DEU, FRA, etc.)")
 	bioGameRoot := fs.String("biogame-root", "", "BioGame root directory for PCC scanning")
 	cachePath := fs.String("cache", "", "Path to file cache JSON (default: none)")
 	workers := fs.Int("workers", 0, "Number of concurrent workers (default: CPU count)")
@@ -602,7 +602,7 @@ func cmdScanEvidence(args []string) {
 		os.Exit(2)
 	}
 
-	resolver, err := tlk.BuildResolver(*tlkPath, *dlcDir, "INT", false)
+	resolver, err := tlk.BuildResolver(*tlkPath, *dlcDir, *language, false)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "tlk resolver error: %v\n", err)
 		os.Exit(1)
@@ -734,6 +734,7 @@ func cmdSerialize(args []string) {
 	game := fs.String("game", "", "Game profile (me2_ot)")
 	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK for text resolution")
 	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	language := fs.String("language", "INT", "TLK language code")
 	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
 
 	fs.Parse(args)
@@ -745,7 +746,7 @@ func cmdSerialize(args []string) {
 
 	_ = game
 
-	output, err := serialize.Run(*file, *resolveTlk, *dlcDir, "resilient")
+	output, err := serialize.Run(*file, *resolveTlk, *dlcDir, *language, "resilient")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
@@ -889,6 +890,7 @@ func cmdBatchExtract(args []string) {
 	outputDir := fs.String("output-dir", "", "Output directory for extracted JSON files")
 	resolveTlk := fs.String("resolve-tlk", "", "Path to TLK for text resolution")
 	dlcDir := fs.String("dlc-dir", "", "DLC directory for TLK overrides")
+	language := fs.String("language", "INT", "TLK language code")
 	pretty := fs.Bool("pretty", false, "Pretty-print JSON output")
 
 	fs.Parse(args)
@@ -935,7 +937,7 @@ func cmdBatchExtract(args []string) {
 
 	for _, m := range matches {
 		report.FilesFound++
-		output, err := serialize.Run(m, *resolveTlk, *dlcDir, "resilient")
+		output, err := serialize.Run(m, *resolveTlk, *dlcDir, *language, "resilient")
 		if err != nil {
 			report.FilesError++
 			report.Results = append(report.Results, BatchExtractResult{

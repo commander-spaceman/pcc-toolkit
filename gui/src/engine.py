@@ -75,9 +75,10 @@ def parse_pcc(file: Path | str, *, exports_only: bool = False, export_index: int
 
 def parse_conversations(file: Path | str, *, conv_index: int | None = None,
                         resolve_tlk: str | None = None, dlc_dir: str | None = None,
+                        language: str = "INT",
                         mode: str = "resilient") -> dict[str, Any]:
     return _run("parse-conversations", file=str(file), conv_index=conv_index,
-                resolve_tlk=resolve_tlk, dlc_dir=dlc_dir, mode=mode)
+                resolve_tlk=resolve_tlk, dlc_dir=dlc_dir, language=language, mode=mode)
 
 
 def layout_graph(file: Path | str, *, conv_index: int | None = None,
@@ -95,6 +96,7 @@ def parse_tlk(file: Path | str, *, search: str | None = None,
 
 
 def scan_evidence(query: str, *, tlk: Path | str, dlc_dir: str | None = None,
+                  language: str = "INT",
                   biogame_root: str | None = None, workers: int = 0) -> dict[str, Any]:
     return _run("scan-evidence", query=query, tlk=str(tlk), dlc_dir=dlc_dir,
-                biogame_root=biogame_root, workers=workers)
+                language=language, biogame_root=biogame_root, workers=workers)

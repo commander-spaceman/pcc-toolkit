@@ -209,10 +209,11 @@ def tlk_resolve(
     strref: int = typer.Argument(..., help="StringRef ID to resolve"),
     file: Path = typer.Option(..., "--file", help="Path to TLK file"),
     dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for overrides"),
+    language: str = typer.Option("INT", "--language", help="TLK language code (INT, DEU, FRA, etc.)"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
     if dlc_dir:
-        result = engine_resolve_tlk(base=file, dlc_dir=dlc_dir, strrefs=[strref])
+        result = engine_resolve_tlk(base=file, dlc_dir=dlc_dir, strrefs=[strref], language=language)
     else:
         result = engine_parse_tlk(file, strref=strref)
 
@@ -284,6 +285,7 @@ def dialogue_export(
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
     dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    language: str = typer.Option("INT", "--language", help="TLK language code"),
     conv_index: int = typer.Option(None, "--conv-index", help="Export a single conversation"),
     pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
 ) -> None:
@@ -292,6 +294,7 @@ def dialogue_export(
         kwargs["resolve_tlk"] = str(tlk)
     if dlc_dir:
         kwargs["dlc_dir"] = str(dlc_dir)
+    kwargs["language"] = language
     if conv_index is not None:
         kwargs["conv_index"] = conv_index
 
@@ -367,6 +370,7 @@ def batch_extract(
     output_dir: Path = typer.Option(None, "--output-dir", help="Output directory"),
     tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
     dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    language: str = typer.Option("INT", "--language", help="TLK language code"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
     result = engine_batch_extract(
@@ -375,6 +379,7 @@ def batch_extract(
         output_dir=str(output_dir) if output_dir else None,
         resolve_tlk=str(tlk) if tlk else None,
         dlc_dir=str(dlc_dir) if dlc_dir else None,
+        language=language,
     )
     if json_output:
         typer.echo(json.dumps(result, indent=2))
@@ -397,6 +402,7 @@ def evidence_scan(
     query: str = typer.Argument(..., help="Text to search for in dialogue"),
     tlk: Path = typer.Option(..., "--tlk", help="Path to base TLK file"),
     dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    language: str = typer.Option("INT", "--language", help="TLK language code"),
     biogame_root: Path = typer.Option(None, "--biogame-root", help="BioGame root for PCC scanning"),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
@@ -405,6 +411,7 @@ def evidence_scan(
         query=query,
         tlk=str(tlk),
         dlc_dir=str(dlc_dir) if dlc_dir else None,
+        language=language,
         biogame_root=str(biogame_root) if biogame_root else None,
     )
 
