@@ -51,6 +51,7 @@ core/
 - `core/internal/evidence/builder.go`: Builds evidence reports and enriches hits with conversation AST data.
 - `core/internal/dumper/lines.go`: Builds normalized dialogue line dump output.
 - `core/internal/owners/scanner.go`: Scans Kismet conversation-start exports for conversation owner tags.
+- `core/internal/scan/scanner.go`: Runs parallel PCC scanning used by evidence and batch workflows.
 - `core/internal/tlk/reader.go`: Parses TLK files and decodes text entries.
 - `core/internal/tlk/resolver.go`: Resolves StringRefs with base TLK and DLC override priority.
 - `core/internal/serialize/writer.go`: Builds the stable JSON output contract consumed by CLI, GUI, and tests.
@@ -137,6 +138,7 @@ Tests focus on the Go core contract and known-good outputs. Golden files encode 
 tests/
 ├── conftest.py
 ├── test_golden.py
+├── test_smoke.py
 ├── fixtures/
 ├── golden/
 │   ├── conversation/
@@ -153,6 +155,7 @@ tests/
 
 **Key files:**
 - `tests/test_golden.py`: Pytest regression checks that execute `pcc-core` and compare against golden files.
+- `tests/test_smoke.py`: CLI entry-point smoke tests for help, version, and dev command visibility.
 - `tests/regression/run_probes.py`: Probe runner for sample files, including golden regeneration support.
 - `tests/golden/`: Versioned known-good JSON outputs for conversations, TLK, graphs, and PCC exports.
 - `tests/fixtures/`: Synthetic fixture area for tests that do not require real game files.
@@ -173,6 +176,7 @@ pcc-toolkit/
 ├── AGENTS.md
 ├── MAP.md
 ├── PRD.md
+├── PRD-v2.md
 ├── README.md
 ├── pyproject.toml
 ├── pytest.ini
@@ -186,6 +190,7 @@ pcc-toolkit/
 **Key files:**
 - `AGENTS.md`: Operational rules for AI agents, including scope, verification, and repository conventions.
 - `PRD.md`: Primary architecture and product design document for PCC Toolkit v2.
+- `PRD-v2.md`: Secondary target-state PRD/reference notes; defer to `PRD.md` when they differ.
 - `MAP.md`: Concise navigation map for the repository.
 - `pyproject.toml`: Python project metadata, dependencies, and script entry point.
 - `pytest.ini`: Pytest configuration.
@@ -226,15 +231,13 @@ pcc-toolkit/
 
 ## 7. Build and Release Tooling
 
-Scripts and directories used during the build and release process.
+Scripts used during the build and release process.
 
 ```text
 pcc-toolkit/
 ├── scripts/
 │   ├── build.ps1
 │   └── release.ps1
-├── build/
-└── release/
 ```
 
 **Main responsibilities:**
@@ -242,10 +245,10 @@ pcc-toolkit/
 - Package portable releases for distribution.
 
 **Key files:**
-- `scripts/build.ps1`: Standalone PowerShell script to build `pcc-core` with ldflags version injection. Supports cross-compilation via `-OS` and `-Arch`.
+- `scripts/build.ps1`: Standalone PowerShell script to build the Windows `pcc-core` binary with ldflags version injection. Defaults the version from `pyproject.toml`.
 - `scripts/release.ps1`: Release packaging script that builds the core binary and creates a portable release directory or zip archive.
 
 **Relationships:**
 - Both scripts operate on `core/cmd/pcc-core/` to produce the Go binary.
-- Output goes to `build/` (binary) and `release/` (release packages), both gitignored.
+- Generated binaries and release packages are local artifacts and are gitignored.
 - The Python CLI provides `pcc-toolkit dev build-core` as an alternative when the CLI is installed, but `scripts/build.ps1` works without Python.
