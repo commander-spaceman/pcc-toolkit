@@ -4,7 +4,7 @@
 
 Use this file as the operational entry point for AI agents working on this project.
 
-- Architecture and design live in `PRD.md`.
+- Architecture and design live in `PRD-MVP.md`.
 - Fast repository navigation lives in `MAP.md`.
 - Persistent agent context should live in the `memory` MCP, not in session lifecycle files.
 - `.opencode/` is reserved for MCP runtime files, not project instructions.
@@ -19,11 +19,9 @@ Agents should work task-by-task, using the smallest correct change.
 4. Keep changes isolated, incremental, and reversible where possible.
 5. Do not push, commit, or update external trackers unless explicitly asked.
 
-There is no required session lifecycle file. Do not maintain `.opencode/current.md`, `.opencode/history.md`, or `.opencode/checkpoints.md`.
-
 ## Read First
 
-1. `PRD.md` - architecture, AST spec, migration plan, dependencies.
+1. `PRD-MVP.md` - canonical MVP architecture, contracts, domain model, dependencies, and verification.
 2. `MAP.md` - current repository structure and module navigation.
 3. `AGENTS.md` - operating model, conventions, verification, and repository map.
 
@@ -31,21 +29,22 @@ There is no required session lifecycle file. Do not maintain `.opencode/current.
 
 | Path | What it contains | When to read |
 |------|------------------|--------------|
-| `PRD.md` | Full architecture, AST spec, dependencies, migration plan | Before architecture or feature work |
+| `PRD-MVP.md` | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work |
 | `MAP.md` | Current repository structure and navigation guide | Before structural changes or multi-module work |
-| `.opencode/start-github-mcp.ps1` | GitHub MCP wrapper that loads `.env` | MCP runtime only |
-| `.opencode/memory.jsonl` | Local memory MCP storage | MCP runtime only |
-| `build/` | Local compiled binaries, gitignored | Runtime artifacts only |
 | `core/` | Go engine; domain logic belongs here | Parsing, AST, layout, evidence, validation |
 | `cli/` | Python CLI; thin dispatch wrapper | CLI arg parsing and output formatting |
 | `gui/` | Python GUI; thin renderer | ImGui views and interaction |
+| `tests/test_golden.py` | Golden regression checks for `pcc-core` output | Contract and parser regression validation |
+| `tests/test_smoke.py` | CLI entry-point smoke tests | CLI packaging and command visibility checks |
 | `tests/golden/` | Known-good regression outputs | Port validation and parser regression checks |
 | `tests/regression/` | Probe/regression runners | Golden or probe validation workflows |
 | `tests/fixtures/synthetic/` | Synthetic test fixture builders/data | Unit tests that do not require game files |
+| `pyproject.toml` | Python packaging metadata, version, script entry point | Packaging, version, dependency, or CLI registration changes |
+| `pytest.ini` | Pytest configuration | Test discovery/configuration changes |
+| `requirements.txt` | Local Python dependency list | Environment setup or dependency changes |
 | `dropzone/` | Real ME2 OT PCC/TLK files copied locally, gitignored | Local input for golden tests and real-file probes |
 | `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
 | `scripts/` | Build and release automation scripts | Before building pcc-core or creating a release |
-| `release/` | Release packages, gitignored | Release artifacts only |
 
 ## LegendaryExplorer Reference
 
@@ -57,18 +56,21 @@ ME3Tweaks/LegendaryExplorer
 
 Always consult LegendaryExplorer when implementing or changing behavior for PCC parsing, TLK resolution, dialogue editing, conversation graph layout, package structures, or validation semantics.
 
-Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicitly says otherwise. The guiding question is:
+Treat LegendaryExplorer as the reference implementation unless `PRD-MVP.md` explicitly says otherwise. The guiding question is:
 
 > Does this match how LegendaryExplorer handles it?
+
+LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restrictions on low-value generative-AI contributions. Use it as a behavioral and semantic reference only: do not copy, paste, translate, or port its code into this repository unless the project intentionally accepts the resulting license obligations. Prefer documenting observed behavior, public file/class names consulted, and independently implemented logic.
 
 ## Operational Rules
 
 - Scope is Mass Effect 2 Original Trilogy only. Do not add LE1, LE2, LE3, ME1, or ME3 behavior unless the task explicitly changes project scope.
-- ME2 OT compressed package support is LZO-only per `PRD.md`.
+- ME2 OT compressed package support is LZO-only per `PRD-MVP.md`.
 - Go core contains all domain logic. Python CLI and GUI are thin layers only.
 - Go core writes success payloads as JSON to stdout and error payloads as JSON to stderr.
-- One feature at a time. Validate equivalence against old toolkit or golden files before moving on.
+- One feature at a time. Validate behavior against golden files, regression probes, and LegendaryExplorer semantics before moving on.
 - Golden files are the structural contract. Do not edit them manually unless the task is explicitly to regenerate and justify them.
+- `scan-evidence --biogame-root` expects a ME2-style `BioGame` root containing `CookedPC/` and optionally `DLC/`; a flat `dropzone/` directory is not a substitute for scan workflows.
 - Prefer additive, low-intrusion changes over broad rewrites.
 - Avoid touching unrelated systems.
 - Python commands must use this repository's virtual environment. On Windows, prefer `.venv\Scripts\python.exe -m pytest` and `.venv\Scripts\pcc-toolkit.exe`; do not run bare `pytest` or system Python unless the venv is unavailable and the user approves.
@@ -88,7 +90,7 @@ Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicit
 - Avoid orphaned TODOs. Every TODO must reference a concrete follow-up.
 - Go: run `go fmt ./...`; return `error` as the last value for fallible functions; do not panic in library code.
 - Go: use `CamelCase` for exported names and `camelCase` for unexported names.
-- Python: target Python 3.11+ style, PEP 8, max 100 columns, type hints with `| None`, built-in generics, and double-quoted strings.
+- Python: target Python 3.14+ style, PEP 8, max 100 columns, type hints with `| None`, built-in generics, and double-quoted strings.
 - Tests: prefer concrete expected outputs over tests that only assert no crash.
 
 ## Build, Test, and Lint
@@ -110,7 +112,7 @@ No single top-level build command is guaranteed. If one is added, document it he
 ```
 
 Builds a single static binary to `build/pcc-core.exe` with ldflags version injection.
-Supports cross-compilation via `-OS` and `-Arch` (e.g., `-OS linux -Arch amd64`).
+The default build target is Windows.
 
 **Via Python CLI (requires installed CLI):**
 ```
@@ -147,11 +149,9 @@ The following binaries are produced for distribution (never committed to the rep
 | Binary | Platform | Built from |
 |--------|----------|------------|
 | `pcc-core.exe` | Windows (amd64) | `core/cmd/pcc-core/` via `go build` |
-| `pcc-core` | Linux (amd64) | `core/cmd/pcc-core/` via `GOOS=linux go build` |
-| `pcc-core` | macOS (amd64) | `core/cmd/pcc-core/` via `GOOS=darwin go build` |
 
 These are excluded from version control via `.gitignore` rules (`*.exe`, `build/`).
-For public distribution they are attached to GitHub Releases as platform-specific archives.
+For public distribution they are attached to GitHub Releases as Windows archives.
 
 ### Reproducibility
 
