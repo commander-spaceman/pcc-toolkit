@@ -221,3 +221,31 @@ pcc-toolkit/
 - `tests/` and regression probes read from `dropzone/` when available.
 - CLI and GUI workflows may write generated data to `output/`.
 - Neither folder should be treated as a source-of-truth module.
+
+---
+
+## 7. Build and Release Tooling
+
+Scripts and directories used during the build and release process.
+
+```text
+pcc-toolkit/
+├── scripts/
+│   ├── build.ps1
+│   └── release.ps1
+├── build/
+└── release/
+```
+
+**Main responsibilities:**
+- Build the Go core binary with version injection.
+- Package portable releases for distribution.
+
+**Key files:**
+- `scripts/build.ps1`: Standalone PowerShell script to build `pcc-core` with ldflags version injection. Supports cross-compilation via `-OS` and `-Arch`.
+- `scripts/release.ps1`: Release packaging script that builds the core binary and creates a portable release directory or zip archive.
+
+**Relationships:**
+- Both scripts operate on `core/cmd/pcc-core/` to produce the Go binary.
+- Output goes to `build/` (binary) and `release/` (release packages), both gitignored.
+- The Python CLI provides `pcc-toolkit dev build-core` as an alternative when the CLI is installed, but `scripts/build.ps1` works without Python.
