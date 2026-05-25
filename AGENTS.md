@@ -44,6 +44,8 @@ There is no required session lifecycle file. Do not maintain `.opencode/current.
 | `tests/fixtures/synthetic/` | Synthetic test fixture builders/data | Unit tests that do not require game files |
 | `dropzone/` | Real ME2 OT PCC/TLK files copied locally, gitignored | Local input for golden tests and real-file probes |
 | `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
+| `scripts/` | Build and release automation scripts | Before building pcc-core or creating a release |
+| `release/` | Release packages, gitignored | Release artifacts only |
 
 ## LegendaryExplorer Reference
 
@@ -97,6 +99,66 @@ Treat LegendaryExplorer as the reference implementation unless `PRD.md` explicit
 - Real-file regression probes: copy only the needed ME2 OT `.pcc`/`.tlk` files from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/`, then run `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone`.
 
 No single top-level build command is guaranteed. If one is added, document it here.
+
+## Distribution and Release
+
+### Build pcc-core (Go core binary)
+
+**Standalone (no Python required):**
+```powershell
+.\scripts\build.ps1 -Version "0.2.0"
+```
+
+Builds a single static binary to `build/pcc-core.exe` with ldflags version injection.
+Supports cross-compilation via `-OS` and `-Arch` (e.g., `-OS linux -Arch amd64`).
+
+**Via Python CLI (requires installed CLI):**
+```
+pcc-toolkit dev build-core
+```
+
+### Install CLI/GUI
+
+From the repository root, inside the project virtual environment:
+
+```
+.venv\Scripts\python.exe -m pip install -e .[cli]    # CLI only
+.venv\Scripts\python.exe -m pip install -e .[gui]    # CLI + GUI
+```
+
+After installation, the `pcc-toolkit` command is available.
+
+### Create a local release
+
+```powershell
+.\scripts\release.ps1 -Version "0.2.0" -Archive
+```
+
+This builds the Go core binary and creates:
+- `release/pcc-toolkit-v0.2.0-windows-amd64/` directory with:
+  - `pcc-core.exe` — the Go engine binary
+  - `INSTALL.txt` — install instructions
+- `release/pcc-toolkit-v0.2.0-windows-amd64.zip` (if `-Archive`)
+
+### Published binaries
+
+The following binaries are produced for distribution (never committed to the repository):
+
+| Binary | Platform | Built from |
+|--------|----------|------------|
+| `pcc-core.exe` | Windows (amd64) | `core/cmd/pcc-core/` via `go build` |
+| `pcc-core` | Linux (amd64) | `core/cmd/pcc-core/` via `GOOS=linux go build` |
+| `pcc-core` | macOS (amd64) | `core/cmd/pcc-core/` via `GOOS=darwin go build` |
+
+These are excluded from version control via `.gitignore` rules (`*.exe`, `build/`).
+For public distribution they are attached to GitHub Releases as platform-specific archives.
+
+### Reproducibility
+
+- Go dependencies are locked in `core/go.sum`.
+- Version is injected via `-ldflags "-X main.version=x.y.z"` at build time.
+- Python dependencies are declared in `pyproject.toml` with minimum versions.
+- The build is deterministic for a given Go toolchain version and platform target.
 
 ## Verification Checklist
 
