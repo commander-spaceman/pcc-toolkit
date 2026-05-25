@@ -13,7 +13,7 @@
           INSTALL.txt
 
 .PARAMETER Version
-    Version string for the release (default: "0.0.0-dev").
+    Version string for the release (default: reads from pyproject.toml).
 
 .PARAMETER OutputDir
     Output directory for the release (default: release/ relative to repo root).
@@ -33,7 +33,7 @@
 #>
 
 param(
-    [string]$Version = "0.0.0-dev",
+    [string]$Version,
     [string]$OutputDir,
     [switch]$Archive,
     [string]$OS,
@@ -46,6 +46,15 @@ $repoRoot = Resolve-Path "$PSScriptRoot\.."
 
 if (-not $OutputDir) {
     $OutputDir = Join-Path $repoRoot "release"
+}
+
+if (-not $Version) {
+    $pyprojectPath = Join-Path $repoRoot "pyproject.toml"
+    $versionLine = Get-Content -LiteralPath $pyprojectPath | Where-Object { $_ -match '^version\s*=\s*"(.+)"' } | Select-Object -First 1
+    if (-not $versionLine) {
+        throw "Could not read project version from $pyprojectPath"
+    }
+    $Version = $Matches[1]
 }
 
 if (-not $OS) {

@@ -7,21 +7,20 @@
     Produces a single binary in build/ with ldflags version injection.
 
 .PARAMETER Version
-    Version string to inject (default: reads from core go.mod or falls back to "0.0.0-dev").
+    Version string to inject (default: reads from pyproject.toml).
 
 .PARAMETER OutputDir
     Output directory for the binary (default: build/ relative to repo root).
 
 .PARAMETER OS
-    Target GOOS (default: current OS). Use "windows", "linux", "darwin".
+    Target GOOS (default: windows).
 
 .PARAMETER Arch
     Target GOARCH (default: current arch). Use "amd64", "arm64".
 
 .EXAMPLE
     .\scripts\build.ps1
-    .\scripts\build.ps1 -Version "0.3.0"
-    .\scripts\build.ps1 -OS linux -Arch amd64
+    .\scripts\build.ps1 -Version "0.2.0"
 #>
 
 param(
@@ -41,12 +40,17 @@ if (-not $OutputDir) {
 }
 
 if (-not $Version) {
-    $Version = "0.0.0-dev"
+    $pyprojectPath = Join-Path $repoRoot "pyproject.toml"
+    $versionLine = Get-Content -LiteralPath $pyprojectPath | Where-Object { $_ -match '^version\s*=\s*"(.+)"' } | Select-Object -First 1
+    if (-not $versionLine) {
+        throw "Could not read project version from $pyprojectPath"
+    }
+    $Version = $Matches[1]
 }
 
 # Platform defaults
 if (-not $OS) {
-    $OS = if ($IsWindows -or $env:OS -eq "Windows_NT") { "windows" } elseif ($IsLinux) { "linux" } else { "darwin" }
+    $OS = "windows"
 }
 if (-not $Arch) {
     $Arch = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
