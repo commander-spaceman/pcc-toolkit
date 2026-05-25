@@ -286,6 +286,7 @@ func validateConversation(conv *Conversation, strict bool) *ValidationResult {
 			result.addIssue(ValidationIssue{
 				Severity: severity,
 				Message:  w,
+				Cause:    "parser warning from conversation data",
 			})
 		}
 	}

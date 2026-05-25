@@ -260,7 +260,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 			}
 		}
 		itemStart := replyPayload + (idx * replyStride)
-		itemEnd := replyPayload + ((idx + 2) * replyStride) // expand into next item range
+		itemEnd := replyPayload + ((idx + 1) * replyStride)
 		if itemEnd > replyPayload+replyPayloadSize {
 			itemEnd = replyPayload + replyPayloadSize
 		}
