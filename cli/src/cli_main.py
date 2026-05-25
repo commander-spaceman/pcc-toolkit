@@ -47,9 +47,27 @@ app = typer.Typer(
 def gui() -> None:
     """Launch the interactive GUI."""
     import sys
-    gui_src = str(Path(__file__).resolve().parents[2] / "gui" / "src")
+    import importlib.util
+
+    gui_src_path = Path(__file__).resolve().parents[2] / "gui" / "src"
+    gui_src = str(gui_src_path)
     if gui_src not in sys.path:
         sys.path.insert(0, gui_src)
+
+    # The CLI package ships a top-level `engine.py`, and the GUI source tree also
+    # has an `engine.py`. When launching the GUI from the installed CLI entry
+    # point, `engine` is already imported (CLI engine) and cached in
+    # `sys.modules`, so GUI imports like `from engine import run_async` would
+    # incorrectly resolve to the CLI engine.
+    #
+    # Force-load the GUI engine module into `sys.modules["engine"]` before
+    # importing the GUI app.
+    gui_engine_path = gui_src_path / "engine.py"
+    spec = importlib.util.spec_from_file_location("engine", gui_engine_path)
+    if spec and spec.loader:
+        gui_engine = importlib.util.module_from_spec(spec)
+        sys.modules["engine"] = gui_engine
+        spec.loader.exec_module(gui_engine)
     try:
         from app import main as gui_main
     except ImportError as e:
