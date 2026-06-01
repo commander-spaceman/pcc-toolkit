@@ -347,10 +347,20 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 
 	replies := make([]ReplyNode, len(replyItems))
 	for idx, item := range replyItems {
+		var itemStart, itemEnd int
+		if idx < len(replyItemBounds) {
+			itemStart = replyItemBounds[idx][0]
+			itemEnd = replyItemBounds[idx][1]
+		}
 		var lineStrRef *int
 		if sr, ok := item["srText"]; ok {
 			if v, ok := sr.Value.(int); ok {
 				lineStrRef = &v
+			}
+		}
+		if itemEnd > itemStart {
+			if directStrRef, ok := pcc.FindIntPropertyByName(data, names, itemStart, itemEnd, "srText"); ok && directStrRef != 0 {
+				lineStrRef = newInt(directStrRef)
 			}
 		}
 		var targetEntryIDs []int
@@ -363,9 +373,7 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				targetEntryIDs = append(targetEntryIDs, v)
 			}
 		}
-		if idx < len(replyItemBounds) {
-			itemStart := replyItemBounds[idx][0]
-			itemEnd := replyItemBounds[idx][1]
+		if itemEnd > itemStart {
 			targetEntryIDs = append(targetEntryIDs, findEntryIndicesFromReply(data, names, itemStart, itemEnd)...)
 		}
 		var condRefs []string

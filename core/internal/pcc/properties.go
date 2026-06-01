@@ -745,47 +745,42 @@ func ReadArrayPropertyStructI32Matrix(data []byte, tag PropertyTag) [][]int {
 // FindInt32ArrayByName scans raw bytes in range [start, end) for an ArrayProperty<IntProperty>
 // with the given property name. Returns the int32 element values.
 func FindInt32ArrayByName(data []byte, names []string, start, end int, propName string) []int {
-	nameIdx := -1
-	arrayIdx := -1
-	for i, n := range names {
-		if n == propName {
-			nameIdx = i
+	for pos := start; pos < end-24; pos += 4 {
+		name, propType, propSize, arrayIndex, valueOffset, _ := parsePropertyHeader(data, names, pos, end)
+		if name != propName || propType != "ArrayProperty" || arrayIndex != 0 {
+			continue
 		}
-		if n == "ArrayProperty" {
-			arrayIdx = i
+		tag := PropertyTag{
+			Name:        name,
+			PropType:    propType,
+			Size:        propSize,
+			ArrayIndex:  arrayIndex,
+			ValueOffset: valueOffset,
 		}
-	}
-	if nameIdx < 0 || arrayIdx < 0 {
-		return nil
-	}
-
-	for pos := start; pos < end-32; pos += 4 {
-		nA := readI32(data, pos)
-		nB := readI32(data, pos+4)
-		tA := readI32(data, pos+8)
-		tB := readI32(data, pos+12)
-
-		isName := (nA == nameIdx && nB == 0) || (nA == 0 && nB == nameIdx)
-		isType := (tA == arrayIdx && tB == 0) || (tA == 0 && tB == arrayIdx)
-
-		if isName && isType {
-			propSize := readI32(data, pos+16)
-			countPos := pos + 16 + 8 + 8
-			if countPos+4 > end {
-				continue
-			}
-			count := readI32(data, countPos)
-			if count >= 0 && count <= 200000 && count*4 <= propSize {
-				ids := make([]int, count)
-				elemStart := countPos + 4
-				for k := 0; k < count; k++ {
-					ids[k] = readI32(data, elemStart+k*4)
-				}
-				return ids
-			}
+		values := ReadArrayPropertyI32Values(data, tag)
+		if len(values) > 0 || (tag.ValueOffset+4 <= len(data) && readI32(data, tag.ValueOffset) == 0) {
+			return values
 		}
 	}
 	return nil
+}
+
+// FindIntPropertyByName scans raw bytes in range [start, end) for a scalar int-like
+// property with the given name and returns its value.
+func FindIntPropertyByName(data []byte, names []string, start, end int, propName string) (int, bool) {
+	for pos := start; pos < end-24; pos += 4 {
+		name, propType, propSize, _, valueOffset, _ := parsePropertyHeader(data, names, pos, end)
+		if name != propName {
+			continue
+		}
+		switch propType {
+		case "IntProperty", "ObjectProperty", "StringRefProperty":
+			if propSize >= 4 && valueOffset+4 <= end {
+				return readI32(data, valueOffset), true
+			}
+		}
+	}
+	return 0, false
 }
 
 // FindStructArrayItemStarts scans raw bytes for an ArrayProperty<StructProperty>
