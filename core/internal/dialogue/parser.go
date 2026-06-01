@@ -269,6 +269,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		if len(semanticNodes.speakers) > 0 {
 			speakers = semanticNodes.speakers
 		}
+		fillMissingSemanticReplyTargetsFromRows(replies, replyRows, len(entries))
 	} else if rowMode {
 		entries = buildEntriesRowMode(entryRows, entryMatrix, schema, names, usedStructMatrix)
 	} else if len(entryRows) > 0 {
@@ -318,30 +319,10 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 	}
 
 	if semanticMode {
-		// Validate entry → reply links from ReplyListNew
-		validLinks := true
-		for _, entry := range entries {
-			for _, rid := range entry.ReplyLinks {
-				if rid < 0 || rid >= len(replies) {
-					validLinks = false
-					break
-				}
-			}
-			if !validLinks {
-				break
-			}
-		}
+		// Semantic parsing already resolves Reply -> Entry targets from reply nodes.
+		// Only validate that Entry -> Reply choice links point at real replies.
+		validLinks := semanticEntryReplyLinksAreValid(entries, replies)
 		if validLinks {
-			// Derive Reply → Entry from inverse mapping
-			replyTargets := map[int][]int{}
-			for _, entry := range entries {
-				for _, rid := range entry.ReplyLinks {
-					replyTargets[rid] = append(replyTargets[rid], entry.ID)
-				}
-			}
-			for i := range replies {
-				replies[i].TargetEntryIDs = replyTargets[replies[i].ID]
-			}
 		} else if len(replies) > 0 {
 			// Links invalid but replies exist — fallback
 			warnings = append(warnings, "invalid_ReplyListNew_links_fallback")
@@ -509,6 +490,31 @@ func ptrOr(p *int, defaultVal int) int {
 		return defaultVal
 	}
 	return *p
+}
+
+func fillMissingSemanticReplyTargetsFromRows(replies []ReplyNode, replyRows [][]int, entryCount int) {
+	if len(replies) == 0 || len(replyRows) == 0 {
+		return
+	}
+	for i := range replies {
+		if len(replies[i].TargetEntryIDs) > 0 || i >= len(replyRows) || len(replyRows[i]) < 2 {
+			continue
+		}
+		if replyRows[i][1] >= 0 && replyRows[i][1] < entryCount {
+			replies[i].TargetEntryIDs = []int{replyRows[i][1]}
+		}
+	}
+}
+
+func semanticEntryReplyLinksAreValid(entries []EntryNode, replies []ReplyNode) bool {
+	for _, entry := range entries {
+		for _, rid := range entry.ReplyLinks {
+			if rid < 0 || rid >= len(replies) {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func ensurePlayerAndOwnerSpeakers(speakers []Speaker) []Speaker {

@@ -1,6 +1,7 @@
 package dialogue
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	"pcc-toolkit/core/internal/pcc"
@@ -67,6 +68,109 @@ func findEntryIndicesFromReply(data []byte, names []string, itemStart, itemEnd i
 	return pcc.FindInt32ArrayByName(data, names, itemStart, itemEnd, "EntryList")
 }
 
+func readI32LE(data []byte, offset int) int {
+	return int(int32(binary.LittleEndian.Uint32(data[offset : offset+4])))
+}
+
+func resolveNameLocal(index int, names []string) string {
+	if index < 0 || index >= len(names) {
+		return ""
+	}
+	return names[index]
+}
+
+func isPlausibleTagStartLocal(data []byte, offset, end int, names []string) bool {
+	if offset+8 > end {
+		return false
+	}
+	nameA := resolveNameLocal(readI32LE(data, offset), names)
+	nameB := resolveNameLocal(readI32LE(data, offset+4), names)
+	if nameA == "None" || nameB == "None" {
+		return true
+	}
+	if offset+16 > end {
+		return false
+	}
+	typeA := resolveNameLocal(readI32LE(data, offset+8), names)
+	typeB := resolveNameLocal(readI32LE(data, offset+12), names)
+	return pcc.PropertyTypeNames[typeA] || pcc.PropertyTypeNames[typeB]
+}
+
+func findStructItemBoundsByRepeatedStarts(
+	data []byte,
+	names []string,
+	payloadOffset, payloadSize, count int,
+) [][2]int {
+	if count <= 1 || payloadSize <= 0 {
+		return nil
+	}
+	end := payloadOffset + payloadSize
+	if end > len(data) {
+		end = len(data)
+	}
+	if payloadOffset+16 > end || !isPlausibleTagStartLocal(data, payloadOffset, end, names) {
+		return nil
+	}
+	firstA := readI32LE(data, payloadOffset)
+	firstB := readI32LE(data, payloadOffset+4)
+	starts := make([]int, 0, count)
+	for pos := payloadOffset; pos < end-16; pos += 4 {
+		if readI32LE(data, pos) != firstA || readI32LE(data, pos+4) != firstB {
+			continue
+		}
+		if !isPlausibleTagStartLocal(data, pos, end, names) {
+			continue
+		}
+		starts = append(starts, pos)
+		if len(starts) == count {
+			break
+		}
+	}
+	if len(starts) != count {
+		return nil
+	}
+	bounds := make([][2]int, 0, count)
+	for i, start := range starts {
+		itemEnd := end
+		if i+1 < len(starts) {
+			itemEnd = starts[i+1]
+		}
+		bounds = append(bounds, [2]int{start, itemEnd})
+	}
+	return bounds
+}
+
+func findStructItemBoundsSequentially(
+	data []byte,
+	names []string,
+	payloadOffset, payloadSize, count int,
+) [][2]int {
+	if count <= 0 || payloadSize <= 0 {
+		return nil
+	}
+	end := payloadOffset + payloadSize
+	if end > len(data) {
+		end = len(data)
+	}
+	bounds := make([][2]int, 0, count)
+	cursor := payloadOffset
+	for i := 0; i < count; i++ {
+		if cursor+8 > end {
+			break
+		}
+		item, nextCursor := pcc.ParsePropertyCollection(data, names, cursor, end-cursor)
+		if item == nil || nextCursor <= cursor {
+			break
+		}
+		bounds = append(bounds, [2]int{cursor, nextCursor})
+		cursor = nextCursor
+	}
+	if len(bounds) != count {
+		return nil
+	}
+	return bounds
+}
+
 func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.PropertyTag) *semanticResult {
 	lookupTag := func(keys ...string) (pcc.PropertyTag, bool) {
 		for _, key := range keys {
@@ -117,9 +221,9 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 		return nil
 	}
 
-	replyStride := 0
-	if len(replyItems) > 0 {
-		replyStride = replyPayloadSize / len(replyItems)
+	replyItemBounds := findStructItemBoundsByRepeatedStarts(data, names, replyPayload, replyPayloadSize, len(replyItems))
+	if len(replyItemBounds) == 0 {
+		replyItemBounds = findStructItemBoundsSequentially(data, names, replyPayload, replyPayloadSize, len(replyItems))
 	}
 
 	entries := make([]EntryNode, len(entryItems))
@@ -259,15 +363,11 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				targetEntryIDs = append(targetEntryIDs, v)
 			}
 		}
-		itemStart := replyPayload + (idx * replyStride)
-		itemEnd := replyPayload + ((idx + 1) * replyStride)
-		if itemEnd > replyPayload+replyPayloadSize {
-			itemEnd = replyPayload + replyPayloadSize
+		if idx < len(replyItemBounds) {
+			itemStart := replyItemBounds[idx][0]
+			itemEnd := replyItemBounds[idx][1]
+			targetEntryIDs = append(targetEntryIDs, findEntryIndicesFromReply(data, names, itemStart, itemEnd)...)
 		}
-		if idx >= replyCount-1 {
-			itemEnd = replyPayload + replyPayloadSize
-		}
-		targetEntryIDs = append(targetEntryIDs, findEntryIndicesFromReply(data, names, itemStart, itemEnd)...)
 		var condRefs []string
 		if cf, ok := item["nConditionalFunc"]; ok {
 			if v, ok := cf.Value.(int); ok && v >= 0 {
