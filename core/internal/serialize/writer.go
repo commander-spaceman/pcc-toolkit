@@ -100,6 +100,7 @@ func resolveText(conv *dialogue.Conversation, resolver *tlk.Resolver) {
 			text, ok := resolver.Resolve(int32(*conv.Entries[i].LineStrRef))
 			if ok {
 				conv.Entries[i].LineText = text
+				conv.Entries[i].LineStatus = "resolved"
 			}
 		}
 	}
@@ -108,6 +109,7 @@ func resolveText(conv *dialogue.Conversation, resolver *tlk.Resolver) {
 			text, ok := resolver.Resolve(int32(*conv.Replies[i].LineStrRef))
 			if ok {
 				conv.Replies[i].LineText = text
+				conv.Replies[i].LineStatus = "resolved"
 			}
 		}
 	}

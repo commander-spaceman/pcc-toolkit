@@ -489,6 +489,7 @@ func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver)
 			text, ok := resolver.Resolve(int32(*conv.Entries[i].LineStrRef))
 			if ok {
 				conv.Entries[i].LineText = text
+				conv.Entries[i].LineStatus = "resolved"
 			}
 		}
 	}
@@ -497,6 +498,7 @@ func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver)
 			text, ok := resolver.Resolve(int32(*conv.Replies[i].LineStrRef))
 			if ok {
 				conv.Replies[i].LineText = text
+				conv.Replies[i].LineStatus = "resolved"
 			}
 		}
 	}
@@ -1010,6 +1012,7 @@ func cmdDumpLines(args []string) {
 					text, ok := resolver.Resolve(int32(*conv.Entries[j].LineStrRef))
 					if ok {
 						conv.Entries[j].LineText = text
+						conv.Entries[j].LineStatus = "resolved"
 					}
 				}
 			}
@@ -1018,6 +1021,7 @@ func cmdDumpLines(args []string) {
 					text, ok := resolver.Resolve(int32(*conv.Replies[j].LineStrRef))
 					if ok {
 						conv.Replies[j].LineText = text
+						conv.Replies[j].LineStatus = "resolved"
 					}
 				}
 			}
@@ -1028,11 +1032,11 @@ func cmdDumpLines(args []string) {
 
 	switch *format {
 	case "csv":
-		fmt.Println("conversation_id,export_index,node_type,node_id,speaker_tag,strref,line_text,file")
+		fmt.Println("conversation_id,export_index,node_type,node_id,speaker_tag,strref,line_text,line_status,file")
 		for _, line := range output.Lines {
-			fmt.Printf("%s,%d,%s,%d,%s,%d,\"%s\",%s\n",
+			fmt.Printf("%s,%d,%s,%d,%s,%d,\"%s\",%s,%s\n",
 				line.ConversationID, line.ExportIndex, line.NodeType, line.NodeID,
-				line.SpeakerTag, line.StrRef, line.LineText, line.File)
+				line.SpeakerTag, line.StrRef, line.LineText, line.LineStatus, line.File)
 		}
 	default:
 		var enc *json.Encoder

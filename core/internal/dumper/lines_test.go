@@ -19,13 +19,13 @@ func TestBuildDumpLines_Basic(t *testing.T) {
 				GameProfile: "me2_ot",
 				ParseMode:   "struct_property_semantic",
 				Entries: []dialogue.EntryNode{
-					{ID: 0, SpeakerTag: "garrus", LineStrRef: intPtr(100), LineText: "Calibrating."},
-					{ID: 1, SpeakerTag: "garrus", LineStrRef: intPtr(101), LineText: "Done."},
-					{ID: 2, SpeakerTag: "", LineStrRef: intPtr(0), LineText: ""}, // no strref, should be skipped
+					{ID: 0, SpeakerTag: "garrus", LineStrRef: intPtr(100), LineText: "Calibrating.", LineStatus: "resolved"},
+					{ID: 1, SpeakerTag: "garrus", LineStrRef: intPtr(101), LineText: "Done.", LineStatus: "resolved"},
+					{ID: 2, SpeakerTag: "", LineStrRef: intPtr(0), LineText: "", LineStatus: "no_line_text"}, // no strref, should be skipped
 				},
 				Replies: []dialogue.ReplyNode{
-					{ID: 0, LineStrRef: intPtr(200), LineText: "Keep at it."},
-					{ID: 1, LineStrRef: intPtr(0)}, // no strref, should be skipped
+					{ID: 0, LineStrRef: intPtr(200), LineText: "Keep at it.", LineStatus: "resolved"},
+					{ID: 1, LineStrRef: intPtr(0), LineStatus: "no_line_text"}, // no strref, should be skipped
 				},
 				Speakers: []dialogue.Speaker{
 					{ID: 0, Tag: "garrus", FriendlyName: "Garrus"},
@@ -54,6 +54,9 @@ func TestBuildDumpLines_Basic(t *testing.T) {
 	}
 	if output.Lines[0].StrRef != 100 {
 		t.Errorf("lines[0].StrRef = %d, want 100", output.Lines[0].StrRef)
+	}
+	if output.Lines[0].LineStatus != "resolved" {
+		t.Errorf("lines[0].LineStatus = %q, want resolved", output.Lines[0].LineStatus)
 	}
 	if output.Lines[0].SpeakerTag != "Garrus" {
 		t.Errorf("lines[0].SpeakerTag = %q, want Garrus", output.Lines[0].SpeakerTag)
@@ -87,7 +90,7 @@ func TestBuildDumpLines_EmptySpeakerTagFallback(t *testing.T) {
 				GameProfile: "me2_ot",
 				ParseMode:   "row_payload_struct_matrix",
 				Entries: []dialogue.EntryNode{
-					{ID: 0, SpeakerTag: "", LineStrRef: intPtr(50), LineText: "..."},
+					{ID: 0, SpeakerTag: "", LineStrRef: intPtr(50), LineText: "...", LineStatus: "resolved"},
 				},
 				Replies: []dialogue.ReplyNode{},
 				Speakers: []dialogue.Speaker{
@@ -116,7 +119,7 @@ func TestBuildDumpLines_EmptySpeakerTagUsesSpeakerID(t *testing.T) {
 				GameProfile: "me2_ot",
 				ParseMode:   "row_payload_struct_matrix",
 				Entries: []dialogue.EntryNode{
-					{ID: 0, SpeakerID: &playerID, LineStrRef: intPtr(50), LineText: "..."},
+					{ID: 0, SpeakerID: &playerID, LineStrRef: intPtr(50), LineText: "...", LineStatus: "resolved"},
 				},
 				Speakers: []dialogue.Speaker{
 					{ID: -2, Tag: "player"},
@@ -144,7 +147,7 @@ func TestBuildDumpLines_ReplyAlwaysPlayer(t *testing.T) {
 				ParseMode:   "struct_property_semantic",
 				Entries:     []dialogue.EntryNode{},
 				Replies: []dialogue.ReplyNode{
-					{ID: 0, LineStrRef: intPtr(300), LineText: "Let's go."},
+					{ID: 0, LineStrRef: intPtr(300), LineText: "Let's go.", LineStatus: "resolved"},
 				},
 			},
 		},

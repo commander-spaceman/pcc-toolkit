@@ -283,7 +283,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 		}
 		entries = make([]EntryNode, len(entryIDs))
 		for i, id := range entryIDs {
-			entries[i] = EntryNode{ID: id, ReplyLinks: []int{}}
+			entries[i] = EntryNode{ID: id, LineStatus: "no_line_text", ReplyLinks: []int{}}
 		}
 	}
 
@@ -300,7 +300,7 @@ func parseOneConversation(data []byte, names []string, gameProfile string, expor
 			if target >= 0 {
 				tids = append(tids, target)
 			}
-			replies[i] = ReplyNode{ID: i, TargetEntryIDs: tids}
+			replies[i] = ReplyNode{ID: i, LineStatus: "no_line_text", TargetEntryIDs: tids}
 		}
 	}
 

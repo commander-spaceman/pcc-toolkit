@@ -21,10 +21,15 @@ func buildEntriesRowMode(entryRows, entryMatrix [][]int, schema ConversationList
 				listenerTag = names[nameIdx]
 			}
 		}
+		lineStatus := "no_line_text"
+		if lineStrRef != nil {
+			lineStatus = "unresolved_strref"
+		}
 		entries[idx] = EntryNode{
 			ID:          row[0],
 			SpeakerID:   speakerID,
 			LineStrRef:  lineStrRef,
+			LineStatus:  lineStatus,
 			ListenerTag: listenerTag,
 			ReplyLinks:  []int{},
 		}
@@ -52,9 +57,14 @@ func buildRepliesRowMode(replyRows, replyMatrix [][]int, schema ConversationList
 				}
 			}
 		}
+		lineStatus := "no_line_text"
+		if lineStrRef != nil {
+			lineStatus = "unresolved_strref"
+		}
 		replies[idx] = ReplyNode{
 			ID:             row[0],
 			LineStrRef:     lineStrRef,
+			LineStatus:     lineStatus,
 			TargetEntryIDs: targetEntryIDs,
 			ConditionRefs:  condRefs,
 		}

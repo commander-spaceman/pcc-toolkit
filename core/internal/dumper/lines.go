@@ -12,6 +12,7 @@ type DumpLine struct {
 	SpeakerTag     string `json:"speaker_tag"`
 	StrRef         int    `json:"strref"`
 	LineText       string `json:"line_text,omitempty"`
+	LineStatus     string `json:"line_status"`
 	File           string `json:"file"`
 }
 
@@ -45,6 +46,7 @@ func BuildDumpLines(result *dialogue.ParseResult) *DumpLinesOutput {
 				SpeakerTag:     resolveEntrySpeakerTag(entry.SpeakerTag, entry.SpeakerID, conv.Speakers),
 				StrRef:         strref,
 				LineText:       entry.LineText,
+				LineStatus:     entry.LineStatus,
 				File:           result.File,
 			})
 		}
@@ -65,6 +67,7 @@ func BuildDumpLines(result *dialogue.ParseResult) *DumpLinesOutput {
 				SpeakerTag:     "player",
 				StrRef:         strref,
 				LineText:       reply.LineText,
+				LineStatus:     reply.LineStatus,
 				File:           result.File,
 			})
 		}

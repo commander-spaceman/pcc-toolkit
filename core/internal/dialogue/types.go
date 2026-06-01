@@ -24,6 +24,7 @@ type EntryNode struct {
 	ListenerTag          string        `json:"listener_tag,omitempty"`
 	LineStrRef           *int          `json:"line_strref,omitempty"`
 	LineText             string        `json:"line_text,omitempty"`
+	LineStatus           string        `json:"line_status"`
 	ReplyLinks           []int         `json:"reply_links"`
 	ReplyChoices         []ReplyChoice `json:"reply_choices,omitempty"`
 	ConditionalFunc      *int          `json:"conditional_func,omitempty"`
@@ -45,6 +46,7 @@ type ReplyNode struct {
 	ID                   int      `json:"id"`
 	LineStrRef           *int     `json:"line_strref,omitempty"`
 	LineText             string   `json:"line_text,omitempty"`
+	LineStatus           string   `json:"line_status"`
 	TargetEntryIDs       []int    `json:"target_entry_ids,omitempty"`
 	ConditionRefs        []string `json:"condition_refs,omitempty"`
 	Category             string   `json:"category,omitempty"`

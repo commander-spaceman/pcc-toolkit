@@ -323,11 +323,16 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 		for _, rc := range replyChoices {
 			replyLinks = append(replyLinks, rc.ToReplyID)
 		}
+		lineStatus := "no_line_text"
+		if lineStrRef != nil {
+			lineStatus = "unresolved_strref"
+		}
 		entries[idx] = EntryNode{
 			ID:                   idx,
 			SpeakerID:            speakerID,
 			ListenerIndex:        listenerIndex,
 			LineStrRef:           lineStrRef,
+			LineStatus:           lineStatus,
 			ReplyLinks:           replyLinks,
 			ReplyChoices:         replyChoices,
 			ConditionalFunc:      conditionalFunc,
@@ -471,9 +476,14 @@ func trySemanticStructNodes(data []byte, names []string, tagMap map[string]pcc.P
 				guiStyle = s
 			}
 		}
+		lineStatus := "no_line_text"
+		if lineStrRef != nil {
+			lineStatus = "unresolved_strref"
+		}
 		replies[idx] = ReplyNode{
 			ID:                   idx,
 			LineStrRef:           lineStrRef,
+			LineStatus:           lineStatus,
 			TargetEntryIDs:       targetEntryIDs,
 			ConditionRefs:        condRefs,
 			Category:             category,
