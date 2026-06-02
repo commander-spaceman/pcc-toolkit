@@ -40,16 +40,17 @@ type StrRefEvidence struct {
 }
 
 type EvidenceReport struct {
-	Query            string           `json:"query"`
-	TlkPath          string           `json:"tlk_path"`
-	DlcDir           string           `json:"dlc_dir,omitempty"`
-	BioGameRoot      string           `json:"biogame_root,omitempty"`
-	CandidateStrRefs []int            `json:"candidate_strrefs"`
-	FilesScanned     int              `json:"files_scanned"`
-	FilesWithHits    int              `json:"files_with_hits"`
-	TotalHits        int              `json:"total_hits"`
-	Evidence         []StrRefEvidence `json:"evidence"`
-	Errors           []string         `json:"errors,omitempty"`
+	Query             string           `json:"query"`
+	TlkPath           string           `json:"tlk_path"`
+	DlcDir            string           `json:"dlc_dir,omitempty"`
+	BioGameRoot       string           `json:"biogame_root,omitempty"`
+	CandidateStrRefs  []int            `json:"candidate_strrefs"`
+	FilesScanned      int              `json:"files_scanned"`
+	FilesWithHits     int              `json:"files_with_hits"`
+	TotalHits         int              `json:"total_hits"`
+	Evidence          []StrRefEvidence `json:"evidence"`
+	NarrativeProfiles []ProfileMatch   `json:"narrative_profiles,omitempty"`
+	Errors            []string         `json:"errors,omitempty"`
 }
 
 func ClassifyTier(className string, hasBioConversationInFile bool) EvidenceTier {

@@ -21,7 +21,7 @@ import (
 	"pcc-toolkit/core/internal/tlk"
 )
 
-var version = "0.2.0" // overridable via -ldflags "-X main.version=x.y.z"
+var version = "0.3.0" // overridable via -ldflags "-X main.version=x.y.z"
 var target = "me2_ot"
 
 var capabilities = []string{

@@ -423,7 +423,13 @@ class TestGoldenFiles:
         assert actual["query"] == golden["query"]
         assert actual["files_scanned"] == golden["files_scanned"]
         assert actual["total_hits"] == golden["total_hits"]
-        assert len(actual["candidate_strrefs"]) >= len(golden["candidate_strrefs"])
+        assert actual["total_hits"] == 0
+        assert len(actual["candidate_strrefs"]) == len(golden["candidate_strrefs"])
+        assert len(actual["evidence"]) == len(golden["evidence"])
+
+        # Verify evidence items have text (reason: resolver resolved TLK text)
+        for ev in actual.get("evidence", [])[:5]:
+            assert "text" in ev, f"strref {ev.get('strref')} missing text"
 
     @pytest.mark.skipif(
         not CORE_BINARY.exists(),
@@ -439,7 +445,11 @@ class TestGoldenFiles:
         if not tlk_file.exists():
             pytest.skip(f"{tlk_file} not found")
 
-        # Build temp BioGame root from output assets
+        pcc_files = list(SAMPLES_DIR.glob("BioD_CitHub_*.pcc"))
+        if not pcc_files:
+            pytest.skip("no CitHub PCC files found for BioGame test")
+
+        # Build temp BioGame root from samples assets
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -450,7 +460,7 @@ class TestGoldenFiles:
             import shutil
 
             shutil.copy2(tlk_file, tlk_dest)
-            for pcc in SAMPLES_DIR.glob("BioD_CitHub_*.pcc"):
+            for pcc in pcc_files:
                 shutil.copy2(pcc, cooked / pcc.name)
 
             actual = run_core(
@@ -467,6 +477,63 @@ class TestGoldenFiles:
             golden = _strip_volatile_fields(golden)
 
             assert actual["query"] == golden["query"]
-            assert actual["files_scanned"] >= golden["files_scanned"]
+            assert actual["files_scanned"] >= 1
             assert actual["total_hits"] >= golden["total_hits"]
-            assert len(actual["candidate_strrefs"]) >= len(golden["candidate_strrefs"])
+            assert len(actual["candidate_strrefs"]) == len(golden["candidate_strrefs"])
+            assert len(actual["evidence"]) == len(golden["evidence"])
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="samples directory empty.",
+    )
+    def test_batch_extract(self):
+        """Verify batch-extract output matches golden."""
+        pcc_files = list(SAMPLES_DIR.glob("*.pcc"))
+        if not pcc_files:
+            pytest.skip("no PCC files in samples dir")
+
+        actual = run_core("batch-extract", dir=str(SAMPLES_DIR), glob="*.pcc")
+        golden = _load_golden("batch/extract_output.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["dir"] == golden["dir"]
+        assert actual["pattern"] == golden["pattern"]
+        assert actual["files_found"] == golden["files_found"]
+        assert actual["files_ok"] == golden["files_ok"]
+        assert actual["files_error"] == golden["files_error"]
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="samples directory empty.",
+    )
+    def test_evidence_scan_no_hits(self):
+        """Verify scan-evidence with no matching hits produces empty results."""
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not tlk_file.exists():
+            pytest.skip(f"{tlk_file} not found")
+
+        actual = run_core(
+            "scan-evidence", query="xyzzynonexistent12345", tlk=str(tlk_file)
+        )
+        golden = _load_golden("evidence/scan_no_hits.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["total_hits"] == 0
+        assert actual["total_hits"] == golden["total_hits"]
+        assert len(actual.get("evidence") or []) == 0

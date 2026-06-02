@@ -168,8 +168,7 @@ def scan_evidence(
     dlc_dir: str | None = None,
     language: str = "INT",
     biogame_root: str | None = None,
-    auto_index: bool = False,
-    candidate_index: str | None = None,
+    cache: str | None = None,
     workers: int = 0,
 ) -> dict[str, Any]:
     return _run(
@@ -179,8 +178,7 @@ def scan_evidence(
         dlc_dir=dlc_dir,
         language=language,
         biogame_root=biogame_root,
-        auto_index=auto_index,
-        candidate_index=candidate_index,
+        cache=cache,
         workers=workers,
     )
 

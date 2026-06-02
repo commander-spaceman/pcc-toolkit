@@ -182,3 +182,92 @@ def owner_table(owners: dict) -> Table:
     for conv_name, owner_tag in owners.items():
         table.add_row(conv_name, owner_tag)
     return table
+
+
+def tlk_info_table(result: dict) -> Table:
+    table = Table(title="TLK File Info")
+    table.add_column("Field", style="cyan")
+    table.add_column("Value", style="green")
+
+    h = result.get("header", {})
+    table.add_row("Magic", f"0x{h.get('magic', 0):08X}")
+    table.add_row(
+        "Version", f"{h.get('version', '?')} (min {h.get('min_version', '?')})"
+    )
+    table.add_row("Male entries", str(h.get("male_entry_count", 0)))
+    table.add_row("Female entries", str(h.get("female_entry_count", 0)))
+    table.add_row("Huffman nodes", str(h.get("tree_node_count", 0)))
+    table.add_row("Bitstream size", f"{h.get('data_len', 0)} bytes")
+    table.add_row("Total entries", str(result.get("total_entries", 0)))
+    return table
+
+
+def tlk_search_table(results: list[dict]) -> Table:
+    table = Table(title="TLK Search Results")
+    table.add_column("StringRef", justify="right", style="cyan")
+    table.add_column("Text", style="green")
+
+    for r in results:
+        text = r.get("text", "")
+        if len(text) > 100:
+            text = text[:97] + "..."
+        table.add_row(str(r.get("string_id", "")), text)
+    return table
+
+
+def tlk_resolve_table(results: list[dict]) -> Table:
+    table = Table(title="TLK Resolution")
+    table.add_column("StringRef", justify="right", style="cyan")
+    table.add_column("Text", style="green")
+    table.add_column("Source", style="yellow")
+
+    for r in results:
+        text = r.get("text", "")
+        if len(text) > 80:
+            text = text[:77] + "..."
+        table.add_row(
+            str(r.get("string_id", "")),
+            text,
+            r.get("source_tlk", "-"),
+        )
+    return table
+
+
+def graph_summary(result: dict) -> Table:
+    table = Table(title="Dialogue Graph")
+    table.add_column("Node", style="cyan")
+    table.add_column("Type", style="yellow")
+    table.add_column("X", justify="right")
+    table.add_column("Y", justify="right")
+    table.add_column("Speaker", style="green")
+
+    nodes = result.get("nodes", {})
+    positions = result.get("positions", {})
+
+    for node_key, meta in sorted(nodes.items()):
+        pos = positions.get(node_key, [0, 0])
+        speaker = meta.get("speaker_tag", "") or "-"
+        table.add_row(
+            node_key,
+            meta.get("type", "?"),
+            f"{pos[0]:.0f}",
+            f"{pos[1]:.0f}",
+            speaker,
+        )
+    return table
+
+
+def narrative_profiles_summary(profiles: list[dict]) -> None:
+    if not profiles:
+        return
+
+    console.print("\n[bold]Narrative Profiles:[/bold]")
+    for p in profiles:
+        conf = p.get("confidence", 0)
+        color = "green" if conf >= 0.3 else "yellow"
+        bar = "█" * int(conf * 20)
+        console.print(
+            f"  [{color}]{bar}[/{color}] "
+            f"[cyan]{p.get('profile', '?')}[/cyan] "
+            f"({conf:.0%})"
+        )

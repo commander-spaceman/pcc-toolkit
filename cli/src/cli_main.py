@@ -29,8 +29,13 @@ from format import (
     conversation_table,
     dump_lines_table,
     evidence_report,
+    graph_summary,
+    narrative_profiles_summary,
     owner_table,
     pcc_export_table,
+    tlk_info_table,
+    tlk_resolve_table,
+    tlk_search_table,
     validation_summary,
 )
 
@@ -109,9 +114,20 @@ def callback(
 def package_list(
     file: Path = typer.Argument(..., help="Path to PCC file"),
     class_: str = typer.Option(None, "--class", help="Filter by class name"),
+    property_tags: bool = typer.Option(
+        False, "--property-tags", help="Include raw property tag data"
+    ),
+    semantic_props: bool = typer.Option(
+        False, "--semantic-props", help="Include semantic property collections"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
-    result = engine_parse_pcc(file, exports_only=True)
+    result = engine_parse_pcc(
+        file,
+        exports_only=True,
+        property_tags=property_tags,
+        semantic_props=semantic_props,
+    )
     exports = result.get("exports", [])
     profile = result.get("game_profile", "unknown")
     compressed = result.get("compressed", False)
@@ -132,9 +148,20 @@ def package_list(
 def package_inspect(
     file: Path = typer.Argument(..., help="Path to PCC file"),
     index: int = typer.Argument(..., help="Export index to inspect"),
+    property_tags: bool = typer.Option(
+        False, "--property-tags", help="Include raw property tag data"
+    ),
+    semantic_props: bool = typer.Option(
+        False, "--semantic-props", help="Include semantic property collections"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
-    result = engine_parse_pcc(file, export_index=index)
+    result = engine_parse_pcc(
+        file,
+        export_index=index,
+        property_tags=property_tags,
+        semantic_props=semantic_props,
+    )
     if json_output:
         typer.echo(json.dumps(result, indent=2))
         return
@@ -225,17 +252,8 @@ def tlk_info(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    h = result.get("header", {})
-    typer.echo(f"File: {file}")
-    typer.echo(f"  Magic:       0x{h.get('magic', 0):08X}")
-    typer.echo(
-        f"  Version:     {h.get('version', '?')} (min {h.get('min_version', '?')})"
-    )
-    typer.echo(f"  Male entries:   {h.get('male_entry_count', 0)}")
-    typer.echo(f"  Female entries: {h.get('female_entry_count', 0)}")
-    typer.echo(f"  Huffman nodes:  {h.get('tree_node_count', 0)}")
-    typer.echo(f"  Bitstream len:  {h.get('data_len', 0)} bytes")
-    typer.echo(f"  Total entries:  {result.get('total_entries', 0)}")
+    console.print(f"File: [bold]{file}[/bold]")
+    console.print(tlk_info_table(result))
 
 
 @tlk_app.command("search")
@@ -251,11 +269,10 @@ def tlk_search(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    typer.echo(f"Searching for '{query}' in {file}")
-    typer.echo(f"Results: {len(results)}")
-    typer.echo()
-    for r in results:
-        typer.echo(f"  #{r['string_id']}: {r['text']}")
+    console.print(f"Search: [bold]'{query}'[/bold] in [dim]{file}[/dim]")
+    console.print(f"Results: {len(results)}")
+    if results:
+        console.print(tlk_search_table(results))
 
 
 @tlk_app.command("resolve")
@@ -283,12 +300,9 @@ def tlk_resolve(
     results = result.get("results", [])
     items = entries + results
     if not items:
-        typer.echo(f"StringRef #{strref} not found")
+        console.print(f"StringRef [bold]#{strref}[/bold] not found")
         return
-    for item in items:
-        source = item.get("source_tlk", "")
-        label = f" (source: {source})" if source else ""
-        typer.echo(f"#{item['string_id']}: {item['text']}{label}")
+    console.print(tlk_resolve_table(items))
 
 
 @tlk_app.command("dump")
@@ -405,12 +419,11 @@ def dialogue_graph(
         typer.echo(json.dumps(result, indent=2))
         return
 
-    typer.echo(f"Conversation: {result.get('conversation_id', '?')}")
-    typer.echo(f"Nodes: {result.get('node_count', 0)}")
-    typer.echo(f"Edges: {len(result.get('edges', []))}")
-    typer.echo()
-    for key, pos in result.get("positions", {}).items():
-        typer.echo(f"  {key}: ({pos[0]:.1f}, {pos[1]:.1f})")
+    console.print(f"Conversation: [bold]{result.get('conversation_id', '?')}[/bold]")
+    console.print(
+        f"Nodes: {result.get('node_count', 0)}  Edges: {len(result.get('edges', []))}"
+    )
+    console.print(graph_summary(result))
 
 
 @dialogue_app.command("dump-lines")
@@ -538,6 +551,12 @@ def evidence_scan(
     biogame_root: Path = typer.Option(
         None, "--biogame-root", help="BioGame root for PCC scanning"
     ),
+    cache: Path = typer.Option(
+        None, "--cache", help="File cache JSON for scan persistence"
+    ),
+    workers: int = typer.Option(
+        0, "--workers", help="Number of concurrent workers (0=CPU count)"
+    ),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
@@ -547,6 +566,8 @@ def evidence_scan(
         dlc_dir=str(dlc_dir) if dlc_dir else None,
         language=language,
         biogame_root=str(biogame_root) if biogame_root else None,
+        cache=str(cache) if cache else None,
+        workers=workers,
     )
 
     data = json.dumps(result, indent=2, ensure_ascii=False)
@@ -561,6 +582,7 @@ def evidence_scan(
         return
 
     evidence_report(result)
+    narrative_profiles_summary(result.get("narrative_profiles", []))
 
 
 if __name__ == "__main__":

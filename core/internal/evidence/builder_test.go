@@ -167,3 +167,45 @@ func TestMatchProfileNoMatch(t *testing.T) {
 		t.Errorf("expected no matches, got %d", len(matches))
 	}
 }
+
+func TestBuildReport_WithNarrativeProfiles(t *testing.T) {
+	resolver := &tlk.Resolver{}
+	scanReport := &scan.ScanReport{
+		FilesScanned:  0,
+		FilesWithHits: 0,
+		TotalHits:     0,
+	}
+
+	report := BuildReport(
+		"quarian pilgrimage",
+		"test.tlk",
+		"",
+		"",
+		[]int32{42},
+		scanReport,
+		resolver,
+	)
+
+	if len(report.NarrativeProfiles) == 0 {
+		t.Error("expected narrative profiles for query with keyword 'quarian'")
+	}
+}
+
+func TestBuildReport_NoNarrativeMatch(t *testing.T) {
+	resolver := &tlk.Resolver{}
+	scanReport := &scan.ScanReport{}
+
+	report := BuildReport(
+		"xyzzy",
+		"test.tlk",
+		"",
+		"",
+		[]int32{99},
+		scanReport,
+		resolver,
+	)
+
+	if len(report.NarrativeProfiles) != 0 {
+		t.Errorf("expected no narrative profiles, got %d", len(report.NarrativeProfiles))
+	}
+}

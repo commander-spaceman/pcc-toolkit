@@ -104,6 +104,8 @@ func BuildReport(
 		report.Evidence = append(report.Evidence, *ev)
 	}
 
+	report.NarrativeProfiles = computeNarrativeProfiles(report)
+
 	return report
 }
 
@@ -212,4 +214,23 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 			}
 		}
 	}
+}
+
+func computeNarrativeProfiles(report *EvidenceReport) []ProfileMatch {
+	var combined string
+	for _, ev := range report.Evidence {
+		if ev.Text != "" {
+			if combined != "" {
+				combined += " "
+			}
+			combined += ev.Text
+		}
+	}
+	if combined == "" {
+		combined = report.Query
+	}
+	if combined == "" {
+		return nil
+	}
+	return MatchProfile(combined)
 }
