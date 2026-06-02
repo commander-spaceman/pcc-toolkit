@@ -611,6 +611,7 @@ func cmdScanEvidence(args []string) {
 			DlcDir:           *dlcDir,
 			BioGameRoot:      *bioGameRoot,
 			CandidateStrRefs: []int{},
+			Evidence:         []evidence.StrRefEvidence{},
 		}
 		var enc *json.Encoder
 		if *pretty {

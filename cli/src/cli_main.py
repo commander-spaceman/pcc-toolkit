@@ -491,7 +491,12 @@ def batch_validate(
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
-    result = engine_batch_validate(dir, glob_pattern=glob_pattern, strict=strict)
+    result = engine_batch_validate(
+        dir,
+        glob_pattern=glob_pattern,
+        strict=strict,
+        output=str(output) if output else None,
+    )
     if json_output:
         typer.echo(json.dumps(result, indent=2))
         return
