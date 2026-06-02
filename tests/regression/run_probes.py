@@ -4,8 +4,8 @@ Runs pcc-core against sample files, validates output shape,
 and optionally regenerates golden files.
 
 Usage:
-    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone
-    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone --regenerate
+    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output
+    .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output --regenerate
 """
 
 import argparse
@@ -18,7 +18,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
-SAMPLES_DIR = REPO_ROOT / "dropzone"
+SAMPLES_DIR = REPO_ROOT / "output"
 
 PROBES = [
     {
@@ -208,7 +208,9 @@ def run_core(subcommand: str, **kwargs) -> dict[str, Any]:
                 args.extend([flag, str(v)])
         elif value is not None:
             args.extend([flag, str(value)])
-    proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    proc = subprocess.run(
+        args, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     if proc.returncode != 0:
         stderr = (proc.stderr or "").strip()
         raise RuntimeError(
@@ -387,10 +389,8 @@ def main():
     print(f"Running {len(probes)} probes against {args.samples_dir}")
 
     passed, failed, skipped = run_probes(probes, args.samples_dir, args.regenerate)
-    print(f"\n{'='*50}")
-    print(
-        f"Results: {passed} passed, {failed} failed, {skipped} skipped"
-    )
+    print(f"\n{'=' * 50}")
+    print(f"Results: {passed} passed, {failed} failed, {skipped} skipped")
 
     if failed > 0:
         sys.exit(1)

@@ -27,23 +27,22 @@ Agents should work task-by-task, using the smallest correct change.
 
 ## Repository Map
 
-| Path                        | What it contains                                                                    | When to read                                                |
-| --------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `PRD-MVP.md`                | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work                         |
-| `MAP.md`                    | Current repository structure and navigation guide                                   | Before structural changes or multi-module work              |
-| `core/`                     | Go engine; domain logic belongs here                                                | Parsing, AST, layout, evidence, validation                  |
-| `cli/`                      | Python CLI; thin dispatch wrapper                                                   | CLI arg parsing and output formatting                       |
-| `tests/test_golden.py`      | Golden regression checks for `pcc-core` output                                      | Contract and parser regression validation                   |
-| `tests/test_smoke.py`       | CLI entry-point smoke tests                                                         | CLI packaging and command visibility checks                 |
-| `tests/golden/`             | Known-good regression outputs                                                       | Port validation and parser regression checks                |
-| `tests/regression/`         | Probe/regression runners                                                            | Golden or probe validation workflows                        |
-| `tests/fixtures/synthetic/` | Synthetic test fixture builders/data                                                | Unit tests that do not require game files                   |
-| `pyproject.toml`            | Python packaging metadata, version, script entry point                              | Packaging, version, dependency, or CLI registration changes |
-| `pytest.ini`                | Pytest configuration                                                                | Test discovery/configuration changes                        |
-| `requirements.txt`          | Local Python dependency list                                                        | Environment setup or dependency changes                     |
-| `dropzone/`                 | Real ME2 OT PCC/TLK files copied locally, gitignored                                | Local input for golden tests and real-file probes           |
-| `output/`                   | Generated local outputs, gitignored except `.gitkeep`                               | Runtime artifacts only                                      |
-| `scripts/`                  | Build and release automation scripts                                                | Before building pcc-core or creating a release              |
+| Path                        | What it contains                                                                    | When to read                                                          |
+| --------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `PRD-MVP.md`                | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work                                   |
+| `MAP.md`                    | Current repository structure and navigation guide                                   | Before structural changes or multi-module work                        |
+| `core/`                     | Go engine; domain logic belongs here                                                | Parsing, AST, layout, evidence, validation                            |
+| `cli/`                      | Python CLI; thin dispatch wrapper                                                   | CLI arg parsing and output formatting                                 |
+| `tests/test_golden.py`      | Golden regression checks for `pcc-core` output                                      | Contract and parser regression validation                             |
+| `tests/test_smoke.py`       | CLI entry-point smoke tests                                                         | CLI packaging and command visibility checks                           |
+| `tests/golden/`             | Known-good regression outputs                                                       | Port validation and parser regression checks                          |
+| `tests/regression/`         | Probe/regression runners                                                            | Golden or probe validation workflows                                  |
+| `tests/fixtures/synthetic/` | Synthetic test fixture builders/data                                                | Unit tests that do not require game files                             |
+| `pyproject.toml`            | Python packaging metadata, version, script entry point                              | Packaging, version, dependency, or CLI registration changes           |
+| `pytest.ini`                | Pytest configuration                                                                | Test discovery/configuration changes                                  |
+| `requirements.txt`          | Local Python dependency list                                                        | Environment setup or dependency changes                               |
+| `output/`                   | Real ME2 OT PCC/TLK files and generated local outputs, gitignored except `.gitkeep` | Local input for golden tests, real-file probes, and runtime artifacts |
+| `scripts/`                  | Build and release automation scripts                                                | Before building pcc-core or creating a release                        |
 
 ## LegendaryExplorer Reference
 
@@ -69,11 +68,11 @@ LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restricti
 - Go core writes success payloads as JSON to stdout and error payloads as JSON to stderr.
 - One feature at a time. Validate behavior against golden files, regression probes, and LegendaryExplorer semantics before moving on.
 - Golden files are the structural contract. Do not edit them manually unless the task is explicitly to regenerate and justify them.
-- `scan-evidence --biogame-root` expects a ME2-style `BioGame` root containing `CookedPC/` and optionally `DLC/`; a flat `dropzone/` directory is not a substitute for scan workflows.
+- `scan-evidence --biogame-root` expects a ME2-style `BioGame` root containing `CookedPC/` and optionally `DLC/`; a flat `output/` directory is not a substitute for scan workflows.
 - Prefer additive, low-intrusion changes over broad rewrites.
 - Avoid touching unrelated systems.
 - Python commands must use this repository's virtual environment. On Windows, prefer `.venv\Scripts\python.exe -m pytest` and `.venv\Scripts\pcc-toolkit.exe`; do not run bare `pytest` or system Python unless the venv is unavailable and the user approves.
-- Real ME2 OT test assets must be copied into `dropzone/` from the local install at `C:\Program Files\EA Games\Mass Effect 2`. Do not run golden tests directly against the install tree, and never commit copied game files.
+- Real ME2 OT test assets must be copied into `output/` from the local install at `C:\Program Files\EA Games\Mass Effect 2`. Do not run golden tests directly against the install tree, and never commit copied game files.
 
 ## Language Policy
 
@@ -97,7 +96,7 @@ LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restricti
 - Go core tests: from `core/`, run `go test ./...`.
 - Go formatting: from `core/`, run `go fmt ./...`.
 - Python CLI tests: from the repository root, run `.venv\Scripts\python.exe -m pytest`.
-- Real-file regression probes: copy only the needed ME2 OT `.pcc`/`.tlk` files from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/`, then run `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone`.
+- Real-file regression probes: copy only the needed ME2 OT `.pcc`/`.tlk` files from `C:\Program Files\EA Games\Mass Effect 2` into `output/`, then run `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output`.
 
 No single top-level build command is guaranteed. If one is added, document it here.
 
@@ -166,7 +165,7 @@ For public distribution they are attached to GitHub Releases as Windows archives
 - Choose the smallest verification set that proves the change.
 - From `core/`, run `go test ./...` for core parser, domain logic, or integration-sensitive Go changes.
 - Run `.venv\Scripts\python.exe -m pytest` when Python code is affected and tests exist.
-- Use `dropzone/` as the local sample directory for golden tests. If real game files are needed, copy them from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/` first.
+- Use `output/` as the local sample directory for golden tests. If real game files are needed, copy them from `C:\Program Files\EA Games\Mass Effect 2` into `output/` first.
 - Compare against golden files when parser output changes.
 - Consult LegendaryExplorer through the GitHub MCP when LEX semantics matter.
 - Final summaries should mention what changed, what verification ran, and any skipped or failing checks.

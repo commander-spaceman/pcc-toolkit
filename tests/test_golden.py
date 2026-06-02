@@ -2,7 +2,7 @@ r"""Golden file regression tests.
 
 Verifies pcc-core output matches known-good golden files.
 Golden files are committed to tests/golden/ and should not be edited manually.
-Regenerate with: .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone --regenerate
+Regenerate with: .venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output --regenerate
 """
 
 import json
@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_DIR = REPO_ROOT / "tests" / "golden"
 
 _samples_dir = os.environ.get("PCC_SAMPLES_DIR", "")
-SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "dropzone")
+SAMPLES_DIR = Path(_samples_dir) if _samples_dir else (REPO_ROOT / "output")
 
 CORE_BINARY = (
     REPO_ROOT / "build" / "pcc-core.exe"
@@ -133,7 +133,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty. Copy needed ME2 OT files into dropzone/ to run golden tests.",
+        reason="output/ directory empty. Copy needed ME2 OT files into output/ to run golden tests.",
     )
     def test_conversation_BioD_CitHub_LOC_INT(self):
         """Verify parse-conversations output matches golden."""
@@ -177,7 +177,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_tlk_info(self):
         """Verify TLK header matches golden."""
@@ -205,7 +205,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_pcc_header(self):
         """Verify PCC header extraction matches golden."""
@@ -228,7 +228,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_graph_layout_sugiyama(self):
         """Verify layout-graph output matches golden and includes node metadata."""
@@ -263,7 +263,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_tlk_dlc_resolve_precedence(self):
         """Verify DLC TLK override precedence matches golden."""
@@ -272,7 +272,7 @@ class TestGoldenFiles:
         if not base_tlk.exists():
             pytest.skip(f"{base_tlk} not found")
         if not (dlc_dir / "DLC_HEN_MT").exists():
-            pytest.skip(f"dlc subdirectory not found in dropzone/")
+            pytest.skip(f"dlc subdirectory not found in output/")
 
         actual = run_core(
             "resolve-tlk",
@@ -311,7 +311,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_dump_lines_BioD_CitHub_LOC_INT(self):
         """Verify dump-lines output matches golden."""
@@ -349,7 +349,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_scan_owners_BioD_CitHub_LOC_INT(self):
         """Verify scan-owners output matches golden."""
@@ -375,16 +375,16 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_batch_validate(self):
         """Verify batch-validate output matches golden."""
         pcc_files = list(SAMPLES_DIR.glob("*.pcc"))
         if not pcc_files:
-            pytest.skip("no PCC files in dropzone/")
+            pytest.skip("no PCC files in output/")
 
         actual = run_core("batch-validate", dir=str(SAMPLES_DIR), glob="*.pcc")
-        golden = _load_golden("batch/validate_dropzone.json")
+        golden = _load_golden("batch/validate_output.json")
         if golden is None:
             pytest.skip("golden file not found; generate with --regenerate")
 
@@ -404,7 +404,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_evidence_scan_tlk_only(self):
         """Verify scan-evidence TLK-only output matches golden."""
@@ -431,7 +431,7 @@ class TestGoldenFiles:
     )
     @pytest.mark.skipif(
         not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
-        reason="dropzone/ directory empty.",
+        reason="output/ directory empty.",
     )
     def test_evidence_scan_biogame(self):
         """Verify scan-evidence with --biogame-root matches golden."""
@@ -439,7 +439,7 @@ class TestGoldenFiles:
         if not tlk_file.exists():
             pytest.skip(f"{tlk_file} not found")
 
-        # Build temp BioGame root from dropzone assets
+        # Build temp BioGame root from output assets
         import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:

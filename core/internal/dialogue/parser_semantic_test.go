@@ -8,12 +8,12 @@ import (
 	"pcc-toolkit/core/internal/pcc"
 )
 
-func dropzonePCCPath(name string) string {
+func outputPCCPath(name string) string {
 	wd, err := os.Getwd()
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(wd, "..", "..", "..", "dropzone", "property-parsing", name)
+	return filepath.Join(wd, "..", "..", "..", "output", "property-parsing", name)
 }
 
 func TestSchemaGuidedParse_Synthetic(t *testing.T) {
@@ -113,9 +113,9 @@ func TestSchemaGuidedParse_UnknownType(t *testing.T) {
 }
 
 func TestParseConversation_RealFile(t *testing.T) {
-	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	pccPath := outputPCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
 	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
-		t.Skipf("dropzone file not found: %s", pccPath)
+		t.Skipf("output file not found: %s", pccPath)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(pccPath)
@@ -173,9 +173,9 @@ func TestParseConversation_RealFile(t *testing.T) {
 }
 
 func TestExportProperties_RealFile(t *testing.T) {
-	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	pccPath := outputPCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
 	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
-		t.Skipf("dropzone file not found: %s", pccPath)
+		t.Skipf("output file not found: %s", pccPath)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(pccPath)
@@ -213,9 +213,9 @@ func TestExportProperties_RealFile(t *testing.T) {
 }
 
 func TestParseConversation_RealFile_ReplyChoices(t *testing.T) {
-	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	pccPath := outputPCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
 	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
-		t.Skipf("dropzone file not found: %s", pccPath)
+		t.Skipf("output file not found: %s", pccPath)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(pccPath)
@@ -270,9 +270,9 @@ func TestParseConversation_RealFile_ReplyChoices(t *testing.T) {
 }
 
 func TestParseConversation_RealFile_ReplyChoices_Category(t *testing.T) {
-	pccPath := dropzonePCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
+	pccPath := outputPCCPath("BioD_CitHub_300Dialogue_LOC_INT.pcc")
 	if _, err := os.Stat(pccPath); os.IsNotExist(err) {
-		t.Skipf("dropzone file not found: %s", pccPath)
+		t.Skipf("output file not found: %s", pccPath)
 	}
 
 	rawData, summary, err := pcc.ReadFileRaw(pccPath)

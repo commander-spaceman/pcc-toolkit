@@ -105,8 +105,7 @@ pcc-toolkit/
 ├── cli/         Python Typer command wrapper
 ├── tests/       Golden, smoke, and regression tests
 ├── scripts/     Windows build and release scripts
-├── dropzone/    Local copied ME2 OT test assets, gitignored
-└── output/      Local generated outputs, gitignored except .gitkeep
+├── output/      Local copied ME2 OT test assets and generated outputs, gitignored except .gitkeep
 ```
 
 ### 4.1 Ownership Rules
@@ -189,8 +188,7 @@ Generated or local-only areas:
 
 - `build/`: local compiled binaries, gitignored.
 - `release/`: release directories and zip files, gitignored.
-- `dropzone/`: copied game assets, gitignored.
-- `output/`: generated local outputs, gitignored except `.gitkeep`.
+- `output/`: copied game assets and generated local outputs, gitignored except `.gitkeep`.
 - `.venv/`, `.pytest_cache/`, `__pycache__/`: dependency/test caches, gitignored.
 
 ## 6. Dependencies
@@ -395,7 +393,7 @@ Path rule:
 
 ```text
 --biogame-root must point to a BioGame-style root containing CookedPC/ and
-optionally DLC/. A flat dropzone/ directory is not a scan root.
+optionally DLC/. A flat output/ directory is not a scan root.
 ```
 
 ### 7.8 `validate`
@@ -779,7 +777,7 @@ Scan root rule:
 
 ```text
 scan-evidence --biogame-root expects a ME2 BioGame root containing CookedPC/ and
-optionally DLC/. A flat dropzone/ directory is only a sample folder, not a BioGame root.
+optionally DLC/. A flat output/ directory is only a sample folder, not a BioGame root.
 ```
 
 ## 14. Validation Requirements
@@ -937,14 +935,14 @@ Golden rules:
 
 - Do not edit golden files manually unless explicitly regenerating them.
 - Regeneration must be justified by an intentional contract or parser behavior change.
-- Real input files must be copied to `dropzone/`; they are not committed.
+- Real input files must be copied to `output/`; they are not committed.
 
 ### 17.3 Real-File Probes
 
 Real-file probes use copied local game assets:
 
 ```powershell
-.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone
+.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output
 ```
 
 Do not run tests directly against the game installation tree.
@@ -968,7 +966,7 @@ Before declaring an MVP release, validate:
 - ME2 OT only.
 - `pcc-core.exe --help` is minimal because core is primarily consumed through CLI.
 - `scan-evidence --biogame-root` requires a BioGame-style directory and will not scan
-  a flat `dropzone/` directory as package root.
+  a flat `output/` directory as package root.
 - Semantic parsing can still fall back for unusual or malformed conversation exports.
 - Evidence tiers may include fallback byte-level hits when AST context is unavailable.
 

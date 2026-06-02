@@ -212,12 +212,8 @@ tests/__pycache__/
 tests/.pytest_cache/
 tests/**/__pycache__/
 
-# Local test assets (game files, not committed)
-dropzone/
-
-# Generated local outputs (gitignored except .gitkeep)
+# Local test assets and generated outputs (gitignored)
 output/*
-!output/.gitkeep
 
 # Release artifacts
 release/

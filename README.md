@@ -68,10 +68,10 @@ cd core && go test ./...                           # Go core tests
 ```
 
 For real-file regression, copy ME2 OT `.pcc`/`.tlk` files from your local install into
-`dropzone/`, then run:
+`output/`, then run:
 
 ```powershell
-.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone
+.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir output
 ```
 
 ## Requirements

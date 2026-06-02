@@ -133,7 +133,7 @@ tests/
 **Relationships:**
 
 - Depends on a built `pcc-core` binary in `build/` or on PATH.
-- Uses `dropzone/` for optional real game inputs; these files are local artifacts and not source code.
+- Uses `output/` for optional real game inputs; these files are local artifacts and not source code.
 - Golden files should be updated only when parser/output behavior intentionally changes.
 
 ---
@@ -182,8 +182,7 @@ These folders hold local inputs and generated outputs. They are useful during de
 
 ```text
 pcc-toolkit/
-├── dropzone/
-└── output/
+├── output/
 ```
 
 **Main responsibilities:**
@@ -193,12 +192,11 @@ pcc-toolkit/
 
 **Key files:**
 
-- `dropzone/`: Expected location for real `.pcc` and `.tlk` files copied from the local ME2 OT install for tests and manual runs.
-- `output/`: Generated output directory; contains runtime artifacts rather than source code.
+- `output/`: Expected location for real `.pcc` and `.tlk` files copied from the local ME2 OT install for tests and manual runs.
 
 **Relationships:**
 
-- `tests/` and regression probes read from `dropzone/` when available.
+- `tests/` and regression probes read from `output/` when available.
 - CLI and batch workflows may write generated data to `output/`.
 - Neither folder should be treated as a source-of-truth module.
 
