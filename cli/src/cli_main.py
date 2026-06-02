@@ -11,12 +11,14 @@ from engine import (
     EngineError,
     batch_extract as engine_batch_extract,
     batch_validate as engine_batch_validate,
+    dump_lines as engine_dump_lines,
     layout_graph as engine_layout_graph,
     parse_conversations as engine_parse_conversations,
     parse_pcc as engine_parse_pcc,
     parse_tlk as engine_parse_tlk,
     resolve_tlk as engine_resolve_tlk,
     scan_evidence as engine_scan_evidence,
+    scan_owners as engine_scan_owners,
     serialize as engine_serialize,
     validate as engine_validate,
     version as engine_version,
@@ -25,7 +27,9 @@ from format import (
     batch_summary,
     console,
     conversation_table,
+    dump_lines_table,
     evidence_report,
+    owner_table,
     pcc_export_table,
     validation_summary,
 )
@@ -42,39 +46,6 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
-
-@app.command()
-def gui() -> None:
-    """Launch the interactive GUI."""
-    import sys
-    import importlib.util
-
-    gui_src_path = Path(__file__).resolve().parents[2] / "gui" / "src"
-    gui_src = str(gui_src_path)
-    if gui_src not in sys.path:
-        sys.path.insert(0, gui_src)
-
-    # The CLI package ships a top-level `engine.py`, and the GUI source tree also
-    # has an `engine.py`. When launching the GUI from the installed CLI entry
-    # point, `engine` is already imported (CLI engine) and cached in
-    # `sys.modules`, so GUI imports like `from engine import run_async` would
-    # incorrectly resolve to the CLI engine.
-    #
-    # Force-load the GUI engine module into `sys.modules["engine"]` before
-    # importing the GUI app.
-    gui_engine_path = gui_src_path / "engine.py"
-    spec = importlib.util.spec_from_file_location("engine", gui_engine_path)
-    if spec and spec.loader:
-        gui_engine = importlib.util.module_from_spec(spec)
-        sys.modules["engine"] = gui_engine
-        spec.loader.exec_module(gui_engine)
-    try:
-        from app import main as gui_main
-    except ImportError as e:
-        typer.echo(f"Cannot load GUI: {e}", err=True)
-        typer.echo("Install GUI dependencies: pip install .[gui]", err=True)
-        raise typer.Exit(code=1)
-    gui_main()
 
 package_app = typer.Typer(help="Inspect PCC packages")
 tlk_app = typer.Typer(help="Work with TLK talk files")
@@ -132,6 +103,7 @@ def callback(
 
 
 # ── package ────────────────────────────────────────────────────────────────
+
 
 @package_app.command("list")
 def package_list(
@@ -196,7 +168,9 @@ def package_extract(
     file: Path = typer.Argument(..., help="Path to PCC file"),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
-    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    dlc_dir: Path = typer.Option(
+        None, "--dlc-dir", help="DLC directory for TLK overrides"
+    ),
     pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
 ) -> None:
     kwargs = {}
@@ -206,7 +180,11 @@ def package_extract(
         kwargs["dlc_dir"] = str(dlc_dir)
 
     result = engine_serialize(file, **kwargs)
-    data = json.dumps(result, indent=2, ensure_ascii=False) if pretty else json.dumps(result, ensure_ascii=False)
+    data = (
+        json.dumps(result, indent=2, ensure_ascii=False)
+        if pretty
+        else json.dumps(result, ensure_ascii=False)
+    )
 
     if output:
         output.write_text(data, encoding="utf-8")
@@ -216,7 +194,26 @@ def package_extract(
     typer.echo(data)
 
 
+@package_app.command("scan-owners")
+def package_scan_owners(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_scan_owners(file)
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    owners = result.get("owners", {})
+    console.print(f"File: [bold]{file}[/bold]")
+    if owners:
+        console.print(owner_table(owners))
+    else:
+        console.print("  No conversation owners found.")
+
+
 # ── tlk ────────────────────────────────────────────────────────────────────
+
 
 @tlk_app.command("info")
 def tlk_info(
@@ -231,7 +228,9 @@ def tlk_info(
     h = result.get("header", {})
     typer.echo(f"File: {file}")
     typer.echo(f"  Magic:       0x{h.get('magic', 0):08X}")
-    typer.echo(f"  Version:     {h.get('version', '?')} (min {h.get('min_version', '?')})")
+    typer.echo(
+        f"  Version:     {h.get('version', '?')} (min {h.get('min_version', '?')})"
+    )
     typer.echo(f"  Male entries:   {h.get('male_entry_count', 0)}")
     typer.echo(f"  Female entries: {h.get('female_entry_count', 0)}")
     typer.echo(f"  Huffman nodes:  {h.get('tree_node_count', 0)}")
@@ -264,11 +263,15 @@ def tlk_resolve(
     strref: int = typer.Argument(..., help="StringRef ID to resolve"),
     file: Path = typer.Option(..., "--file", help="Path to TLK file"),
     dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for overrides"),
-    language: str = typer.Option("INT", "--language", help="TLK language code (INT, DEU, FRA, etc.)"),
+    language: str = typer.Option(
+        "INT", "--language", help="TLK language code (INT, DEU, FRA, etc.)"
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
     if dlc_dir:
-        result = engine_resolve_tlk(base=file, dlc_dir=dlc_dir, strrefs=[strref], language=language)
+        result = engine_resolve_tlk(
+            base=file, dlc_dir=dlc_dir, strrefs=[strref], language=language
+        )
     else:
         result = engine_parse_tlk(file, strref=strref)
 
@@ -313,6 +316,7 @@ def main() -> None:
 
 # ── dialogue ────────────────────────────────────────────────────────────────
 
+
 @dialogue_app.command("list")
 def dialogue_list(
     file: Path = typer.Argument(..., help="Path to PCC file"),
@@ -339,9 +343,13 @@ def dialogue_export(
     file: Path = typer.Argument(..., help="Path to PCC file"),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
-    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    dlc_dir: Path = typer.Option(
+        None, "--dlc-dir", help="DLC directory for TLK overrides"
+    ),
     language: str = typer.Option("INT", "--language", help="TLK language code"),
-    conv_index: int = typer.Option(None, "--conv-index", help="Export a single conversation"),
+    conv_index: int = typer.Option(
+        None, "--conv-index", help="Export a single conversation"
+    ),
     pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
 ) -> None:
     kwargs = {}
@@ -355,7 +363,11 @@ def dialogue_export(
 
     result = engine_parse_conversations(file, **kwargs)
 
-    data = json.dumps(result, indent=2, ensure_ascii=False) if pretty else json.dumps(result, ensure_ascii=False)
+    data = (
+        json.dumps(result, indent=2, ensure_ascii=False)
+        if pretty
+        else json.dumps(result, ensure_ascii=False)
+    )
 
     if output:
         output.write_text(data, encoding="utf-8")
@@ -367,10 +379,14 @@ def dialogue_export(
 @dialogue_app.command("graph")
 def dialogue_graph(
     file: Path = typer.Argument(..., help="Path to PCC file"),
-    conv_index: int = typer.Option(..., "--conv-index", help="Conversation export index"),
+    conv_index: int = typer.Option(
+        ..., "--conv-index", help="Conversation export index"
+    ),
     algorithm: str = typer.Option("sugiyama", "--algorithm", help="Layout algorithm"),
     node_width: float = typer.Option(240, "--node-width", help="Node width in pixels"),
-    node_height: float = typer.Option(64, "--node-height", help="Node height in pixels"),
+    node_height: float = typer.Option(
+        64, "--node-height", help="Node height in pixels"
+    ),
     x_spacing: float = typer.Option(80, "--x-spacing", help="Horizontal spacing"),
     y_spacing: float = typer.Option(120, "--y-spacing", help="Vertical spacing"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
@@ -397,20 +413,78 @@ def dialogue_graph(
         typer.echo(f"  {key}: ({pos[0]:.1f}, {pos[1]:.1f})")
 
 
+@dialogue_app.command("dump-lines")
+def dialogue_dump_lines(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
+    dlc_dir: Path = typer.Option(
+        None, "--dlc-dir", help="DLC directory for TLK overrides"
+    ),
+    language: str = typer.Option("INT", "--language", help="TLK language code"),
+    output_format: str = typer.Option(
+        "json", "--format", help="Output format: json or csv"
+    ),
+    pretty: bool = typer.Option(False, "--pretty", help="Pretty-print JSON"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_dump_lines(
+        file,
+        resolve_tlk=str(tlk) if tlk else None,
+        dlc_dir=str(dlc_dir) if dlc_dir else None,
+        language=language,
+        output_format=output_format,
+        pretty=pretty,
+    )
+
+    lines = result.get("lines", [])
+    if output_format == "csv":
+        typer.echo(
+            "conversation_id,export_index,node_type,node_id,"
+            "speaker_tag,strref,line_text,line_status,file"
+        )
+        for line in lines:
+            text = (line.get("line_text") or "").replace('"', '""')
+            typer.echo(
+                f"{line.get('conversation_id', '')},"
+                f"{line.get('export_index', '')},"
+                f"{line.get('node_type', '')},"
+                f"{line.get('node_id', '')},"
+                f"{line.get('speaker_tag', '')},"
+                f"{line.get('strref', '')},"
+                f'"{text}",'
+                f"{line.get('line_status', '')},"
+                f"{line.get('file', '')}"
+            )
+        return
+
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    console.print(f"File: [bold]{file}[/bold]")
+    console.print(f"Lines: {len(lines)}")
+    if lines:
+        console.print(dump_lines_table(lines))
+
+
 # ── batch ────────────────────────────────────────────────────────────────────
+
 
 @batch_app.command("validate")
 def batch_validate(
     dir: Path = typer.Argument(..., help="Directory to scan for PCC files"),
     glob_pattern: str = typer.Option("*.pcc", "--glob", help="Glob pattern"),
+    strict: bool = typer.Option(False, "--strict", help="Fail on warnings"),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
-    result = engine_batch_validate(dir, glob_pattern=glob_pattern)
+    result = engine_batch_validate(dir, glob_pattern=glob_pattern, strict=strict)
     if json_output:
         typer.echo(json.dumps(result, indent=2))
         return
 
+    console.print(f"Directory: [bold]{dir}[/bold]")
+    console.print(f"Pattern: {glob_pattern}")
     batch_summary(result)
 
 
@@ -420,7 +494,9 @@ def batch_extract(
     glob_pattern: str = typer.Option("*.pcc", "--glob", help="Glob pattern"),
     output_dir: Path = typer.Option(None, "--output-dir", help="Output directory"),
     tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
-    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    dlc_dir: Path = typer.Option(
+        None, "--dlc-dir", help="DLC directory for TLK overrides"
+    ),
     language: str = typer.Option("INT", "--language", help="TLK language code"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
@@ -438,7 +514,9 @@ def batch_extract(
 
     typer.echo(f"Dir: {dir}  Pattern: {glob_pattern}")
     typer.echo(f"Files found: {result.get('files_found', 0)}")
-    typer.echo(f"Files OK: {result.get('files_ok', 0)}  Errors: {result.get('files_error', 0)}")
+    typer.echo(
+        f"Files OK: {result.get('files_ok', 0)}  Errors: {result.get('files_error', 0)}"
+    )
     for r in result.get("results", []):
         if r.get("error"):
             typer.echo(f"  ERR: {r['file']} — {r['error']}")
@@ -448,13 +526,18 @@ def batch_extract(
 
 # ── evidence ─────────────────────────────────────────────────────────────────
 
+
 @evidence_app.command("scan")
 def evidence_scan(
     query: str = typer.Argument(..., help="Text to search for in dialogue"),
     tlk: Path = typer.Option(..., "--tlk", help="Path to base TLK file"),
-    dlc_dir: Path = typer.Option(None, "--dlc-dir", help="DLC directory for TLK overrides"),
+    dlc_dir: Path = typer.Option(
+        None, "--dlc-dir", help="DLC directory for TLK overrides"
+    ),
     language: str = typer.Option("INT", "--language", help="TLK language code"),
-    biogame_root: Path = typer.Option(None, "--biogame-root", help="BioGame root for PCC scanning"),
+    biogame_root: Path = typer.Option(
+        None, "--biogame-root", help="BioGame root for PCC scanning"
+    ),
     output: Path = typer.Option(None, "--output", help="Output JSON file"),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:

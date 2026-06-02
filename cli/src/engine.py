@@ -1,4 +1,4 @@
-"""Go core subprocess interface — shared between CLI and GUI."""
+"""Go core subprocess interface for the CLI."""
 
 import json
 import subprocess
@@ -243,3 +243,27 @@ def batch_extract(
         dlc_dir=dlc_dir,
         language=language,
     )
+
+
+def dump_lines(
+    file: Path | str,
+    *,
+    resolve_tlk: str | None = None,
+    dlc_dir: str | None = None,
+    language: str = "INT",
+    output_format: str = "json",
+    pretty: bool = False,
+) -> dict[str, Any]:
+    return _run(
+        "dump-lines",
+        file=str(file),
+        resolve_tlk=resolve_tlk,
+        dlc_dir=dlc_dir,
+        language=language,
+        format=output_format,
+        pretty=pretty,
+    )
+
+
+def scan_owners(file: Path | str) -> dict[str, Any]:
+    return _run("scan-owners", file=str(file))

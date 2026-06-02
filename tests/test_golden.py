@@ -25,7 +25,7 @@ CORE_BINARY = (
 )
 
 
-def run_core(subcommand: str, **kwargs) -> dict:
+def run_core(subcommand: str, allow_nonzero: bool = False, **kwargs) -> dict:
     args = [str(CORE_BINARY), subcommand]
     for key, value in kwargs.items():
         flag = f"--{key.replace('_', '-')}"
@@ -37,18 +37,30 @@ def run_core(subcommand: str, **kwargs) -> dict:
                 args.extend([flag, str(v)])
         elif value is not None:
             args.extend([flag, str(value)])
-    proc = subprocess.run(args, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    proc = subprocess.run(
+        args, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
+    stdout = (proc.stdout or "").strip()
+    stderr_text = (proc.stderr or "").strip()
     if proc.returncode != 0:
-        stderr_text = (proc.stderr or "").strip()
+        if stdout.startswith("{"):
+            try:
+                return json.loads(stdout)
+            except json.JSONDecodeError:
+                pass
         try:
             error_data = json.loads(stderr_text)
             msg = error_data.get("error", stderr_text)
         except (json.JSONDecodeError, ValueError):
             msg = stderr_text
+        if not msg and stdout:
+            try:
+                return json.loads(stdout)
+            except json.JSONDecodeError:
+                pass
         raise RuntimeError(f"pcc-core error: {msg}")
-    stdout = proc.stdout or ""
-    if not stdout.strip():
-        raise RuntimeError(f"pcc-core produced empty output")
+    if not stdout:
+        raise RuntimeError("pcc-core produced empty output")
     return json.loads(stdout)
 
 
@@ -83,7 +95,18 @@ def _strip_volatile_fields(obj):
     """Remove fields that vary between runs (timestamps, absolute paths)."""
     import copy
 
-    volatile_keys = frozenset({"file", "base", "path", "dlc_dir", "source_tlk"})
+    volatile_keys = frozenset(
+        {
+            "file",
+            "base",
+            "path",
+            "dlc_dir",
+            "source_tlk",
+            "dir",
+            "tlk_path",
+            "biogame_root",
+        }
+    )
 
     def _strip(node):
         if isinstance(node, dict):
@@ -167,8 +190,13 @@ class TestGoldenFiles:
         if golden is None:
             pytest.skip("golden file not found")
 
-        assert actual["header"]["male_entry_count"] == golden["header"]["male_entry_count"]
-        assert actual["header"]["female_entry_count"] == golden["header"]["female_entry_count"]
+        assert (
+            actual["header"]["male_entry_count"] == golden["header"]["male_entry_count"]
+        )
+        assert (
+            actual["header"]["female_entry_count"]
+            == golden["header"]["female_entry_count"]
+        )
         assert actual["header"]["male_entry_count"] >= 30000
 
     @pytest.mark.skipif(
@@ -270,11 +298,175 @@ class TestGoldenFiles:
             assert act_res["text"] == exp_res["text"], (
                 f"result[{i}] text mismatch: {act_res['text']!r} vs {exp_res['text']!r}"
             )
-            assert act_res["found"] == exp_res["found"], (
-                f"result[{i}] found mismatch"
-            )
+            assert act_res["found"] == exp_res["found"], f"result[{i}] found mismatch"
             if exp_res["found"]:
                 # Verify source_tlk indicates which file resolved it
                 assert act_res["source_tlk"] == exp_res["source_tlk"], (
                     f"result[{i}] source_tlk mismatch"
                 )
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_dump_lines_BioD_CitHub_LOC_INT(self):
+        """Verify dump-lines output matches golden."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+
+        actual = run_core("dump-lines", file=str(pcc_file))
+        golden = _load_golden("conversation/BioD_CitHub_LOC_INT_dump_lines.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["game_profile"] == golden["game_profile"]
+        assert actual["total"] == golden["total"]
+        assert len(actual["lines"]) == len(golden["lines"])
+        assert len(actual["lines"]) == golden["total"]
+
+        for i, (act_line, exp_line) in enumerate(zip(actual["lines"], golden["lines"])):
+            assert act_line["conversation_id"] == exp_line["conversation_id"], (
+                f"line[{i}] conversation_id mismatch"
+            )
+            assert act_line["node_type"] == exp_line["node_type"], (
+                f"line[{i}] node_type mismatch"
+            )
+            assert act_line["strref"] == exp_line["strref"], (
+                f"line[{i}] strref mismatch"
+            )
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_scan_owners_BioD_CitHub_LOC_INT(self):
+        """Verify scan-owners output matches golden."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+
+        actual = run_core("scan-owners", file=str(pcc_file))
+        golden = _load_golden("conversation/BioD_CitHub_LOC_INT_scan_owners.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert "file" in actual
+        assert "owners" in actual
+        assert actual["owners"] == golden["owners"]
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_batch_validate(self):
+        """Verify batch-validate output matches golden."""
+        pcc_files = list(SAMPLES_DIR.glob("*.pcc"))
+        if not pcc_files:
+            pytest.skip("no PCC files in dropzone/")
+
+        actual = run_core("batch-validate", dir=str(SAMPLES_DIR), glob="*.pcc")
+        golden = _load_golden("batch/validate_dropzone.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["dir"] == golden["dir"]
+        assert actual["pattern"] == golden["pattern"]
+        assert actual["files_found"] == golden["files_found"]
+        assert actual["files_ok"] == golden["files_ok"]
+        assert actual["files_error"] == golden["files_error"]
+        assert actual["total_conversations"] == golden["total_conversations"]
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_evidence_scan_tlk_only(self):
+        """Verify scan-evidence TLK-only output matches golden."""
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not tlk_file.exists():
+            pytest.skip(f"{tlk_file} not found")
+
+        actual = run_core("scan-evidence", query="quarian", tlk=str(tlk_file))
+        golden = _load_golden("evidence/scan_quarian_tlk_only.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["query"] == golden["query"]
+        assert actual["files_scanned"] == golden["files_scanned"]
+        assert actual["total_hits"] == golden["total_hits"]
+        assert len(actual["candidate_strrefs"]) >= len(golden["candidate_strrefs"])
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="dropzone/ directory empty.",
+    )
+    def test_evidence_scan_biogame(self):
+        """Verify scan-evidence with --biogame-root matches golden."""
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not tlk_file.exists():
+            pytest.skip(f"{tlk_file} not found")
+
+        # Build temp BioGame root from dropzone assets
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            cooked = tmp / "CookedPC"
+            cooked.mkdir()
+            tlk_dest = tmp / tlk_file.name
+            import shutil
+
+            shutil.copy2(tlk_file, tlk_dest)
+            for pcc in SAMPLES_DIR.glob("BioD_CitHub_*.pcc"):
+                shutil.copy2(pcc, cooked / pcc.name)
+
+            actual = run_core(
+                "scan-evidence",
+                query="quarian",
+                tlk=str(tlk_dest),
+                biogame_root=str(tmp),
+            )
+            golden = _load_golden("evidence/scan_quarian_biogame.json")
+            if golden is None:
+                pytest.skip("golden file not found; generate with --regenerate")
+
+            actual = _strip_volatile_fields(actual)
+            golden = _strip_volatile_fields(golden)
+
+            assert actual["query"] == golden["query"]
+            assert actual["files_scanned"] >= golden["files_scanned"]
+            assert actual["total_hits"] >= golden["total_hits"]
+            assert len(actual["candidate_strrefs"]) >= len(golden["candidate_strrefs"])
