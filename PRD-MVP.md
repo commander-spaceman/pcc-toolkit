@@ -2,21 +2,14 @@
 
 ## 1. Purpose
 
-PCC Toolkit MVP is a Windows-first CLI and GUI toolkit for inspecting, extracting,
+PCC Toolkit MVP is a Windows-first CLI toolkit for inspecting, extracting,
 validating, and analyzing Mass Effect 2 Original Trilogy dialogue data from `.pcc`
 package files and `.tlk` talk files.
 
-The toolkit serves two primary users:
-
-- Modders who need a fast read-only explorer for ME2 OT packages, TLK text,
-  dialogue graphs, validation output, and evidence trails.
-- AI agents and automation scripts that need deterministic JSON contracts for
-  repeatable analysis, regression testing, and code-assisted modding workflows.
-
-The MVP is intentionally read-only. It does not edit, write, or reinject PCC data.
-This document is detailed enough to rebuild the project from scratch, including in
-another implementation language, as long as the contracts and verification model are
-preserved.
+The toolkit is designed for AI agents and automation scripts that need deterministic
+JSON contracts for repeatable analysis, regression testing, and code-assisted modding
+workflows. It provides fast read-only access to ME2 OT dialogue data through a
+subprocess-callable Go engine with a thin Python CLI wrapper.
 
 ## 2. Scope
 
@@ -41,7 +34,6 @@ preserved.
 - Kismet conversation owner scanning.
 - Batch validation and extraction workflows.
 - Python Typer CLI as a thin wrapper over the Go core.
-- Python Dear ImGui GUI as a thin renderer over core JSON output.
 - Golden-file, smoke-test, and local real-file regression coverage.
 
 ### 2.2 Out of Scope
@@ -58,7 +50,7 @@ preserved.
 
 ### 2.3 MVP Readiness Definition
 
-The MVP is production-ready for controlled/internal Windows use when:
+The MVP is production-ready for controlled/internal use when:
 
 - `pcc-core.exe version` reports target `me2_ot` and the implemented capability list.
 - `go test ./...` passes from `core/`.
@@ -68,6 +60,8 @@ The MVP is production-ready for controlled/internal Windows use when:
 - CLI commands can inspect packages, parse TLKs, extract conversations, validate,
   generate graph layouts, run batch validation, and scan evidence.
 - Known limitations are documented rather than implicit.
+
+The MVP is intentionally read-only. It does not edit, write, or reinject PCC data.
 
 ## 3. Reference Implementation Policy
 
@@ -103,13 +97,12 @@ Does this match how LegendaryExplorer handles the same ME2 OT data?
 
 ## 4. Architecture
 
-PCC Toolkit is split into one domain engine and two thin Python adapters.
+PCC Toolkit is split into a Go domain engine and a thin Python CLI adapter.
 
 ```text
 pcc-toolkit/
 ├── core/        Go domain engine and JSON producer
 ├── cli/         Python Typer command wrapper
-├── gui/         Python Dear ImGui renderer
 ├── tests/       Golden, smoke, and regression tests
 ├── scripts/     Windows build and release scripts
 ├── dropzone/    Local copied ME2 OT test assets, gitignored
@@ -120,33 +113,30 @@ pcc-toolkit/
 
 - Go core owns all domain logic.
 - Python CLI owns argument parsing, subprocess dispatch, terminal formatting, and file output.
-- Python GUI owns UI state, widgets, viewport interaction, subprocess calls, and rendering.
 - JSON stdout/stderr is the integration boundary.
 - No domain parsing, TLK resolution, AST building, graph layout, validation, evidence
   assembly, owner scanning, or serialization logic belongs in Python.
 
 ### 4.2 Capability Ownership Matrix
 
-| Capability | Go core | Python CLI | Python GUI |
-|---|---|---|---|
-| PCC header/table parsing | All | None | None |
-| LZO decompression | All | None | None |
-| Unreal property parsing | All | None | None |
-| BioConversation AST building | All | None | None |
-| TLK parsing and StringRef resolution | All | None | None |
-| DLC priority and module TLK resolution | All | None | None |
-| Graph layout | All | None | None |
-| Evidence scanning and tiering | All | None | None |
-| Dialogue line dumping | All | None | None |
-| Conversation owner scanning | All | None | None |
-| Validation | All | None | None |
-| JSON serialization | All | None | None |
-| Batch aggregation | All | None | None |
-| CLI argument parsing | None | All | None |
-| Terminal formatting | None | All | None |
-| GUI widgets and viewport state | None | None | All |
-| GUI hit testing and pan/zoom | None | None | All |
-| Error display | None | All | All |
+| Capability                             | Go core | Python CLI |
+| -------------------------------------- | ------- | ---------- |
+| PCC header/table parsing               | All     | None       |
+| LZO decompression                      | All     | None       |
+| Unreal property parsing                | All     | None       |
+| BioConversation AST building           | All     | None       |
+| TLK parsing and StringRef resolution   | All     | None       |
+| DLC priority and module TLK resolution | All     | None       |
+| Graph layout                           | All     | None       |
+| Evidence scanning and tiering          | All     | None       |
+| Dialogue line dumping                  | All     | None       |
+| Conversation owner scanning            | All     | None       |
+| Validation                             | All     | None       |
+| JSON serialization                     | All     | None       |
+| Batch aggregation                      | All     | None       |
+| CLI argument parsing                   | None    | All        |
+| Terminal formatting                    | None    | All        |
+| Error display                          | None    | All        |
 
 ## 5. Repository Structure
 
@@ -179,17 +169,6 @@ pcc-toolkit/
 │   ├── cli_main.py
 │   ├── engine.py
 │   └── format.py
-├── gui/src/
-│   ├── __init__.py
-│   ├── app.py
-│   ├── engine.py
-│   ├── state.py
-│   └── views/
-│       ├── __init__.py
-│       ├── package.py
-│       ├── tlk.py
-│       ├── dialogue.py
-│       └── evidence.py
 ├── scripts/
 │   ├── build.ps1
 │   └── release.ps1
@@ -218,32 +197,26 @@ Generated or local-only areas:
 
 ### 6.1 Go Core
 
-| Package | Version | Purpose |
-|---|---:|---|
+| Package                     |  Version | Purpose                                            |
+| --------------------------- | -------: | -------------------------------------------------- |
 | `github.com/anchore/go-lzo` | `v0.1.0` | LZO1X decompression for ME2 OT compressed packages |
-| `encoding/json` | stdlib | JSON contracts |
-| `flag` | stdlib | Core subcommand flags |
-| `runtime` | stdlib | Worker default for scanning |
+| `encoding/json`             |   stdlib | JSON contracts                                     |
+| `flag`                      |   stdlib | Core subcommand flags                              |
+| `runtime`                   |   stdlib | Worker default for scanning                        |
 
 The Go core is otherwise self-contained.
 
 ### 6.2 Python CLI
 
-| Package | Version | Purpose |
-|---|---:|---|
-| `typer` | `>=0.15` | CLI command groups and options |
-| `rich` | `>=13` | Terminal tables and formatted summaries |
+| Package | Version  | Purpose                                 |
+| ------- | -------- | --------------------------------------- |
+| `typer` | `>=0.15` | CLI command groups and options          |
+| `rich`  | `>=13`   | Terminal tables and formatted summaries |
 
-### 6.3 Python GUI
+### 6.3 Development
 
-| Package | Version | Purpose |
-|---|---:|---|
-| `imgui-bundle` | `>=1.90` | Dear ImGui and HelloImGui bindings |
-
-### 6.4 Development
-
-| Package | Version | Purpose |
-|---|---:|---|
+| Package  | Version | Purpose            |
+| -------- | ------- | ------------------ |
 | `pytest` | `>=9.0` | Python test runner |
 
 Python code should target Python 3.14+ style while maintaining project metadata
@@ -391,7 +364,7 @@ Responsibilities:
 - Parse the requested conversation.
 - Build a directed graph of start, entry, and reply nodes.
 - Use deterministic Sugiyama-style layered layout.
-- Return node positions, edge metadata, and node metadata needed by the GUI.
+- Return node positions, edge metadata, and node metadata needed by consumers.
 
 Current algorithm support is `sugiyama` only.
 
@@ -737,7 +710,7 @@ with unrelated text.
 
 ## 12. Graph Layout Requirements
 
-The graph layout output must include enough metadata for the GUI to render a graph
+The graph layout output must include enough metadata for consumers to render a graph
 without reparsing AST internals.
 
 Required output fields:
@@ -767,7 +740,7 @@ Layout rules:
 - Deterministic for identical input.
 - Start nodes should appear before reachable entries where possible.
 - Long or cyclic structures should still produce usable output.
-- The GUI owns viewport transforms and hit testing; core owns graph positions.
+- The consumer owns viewport transforms and hit testing; core owns graph positions.
 
 ## 13. Evidence Requirements
 
@@ -845,7 +818,6 @@ CLI command tree:
 
 ```text
 pcc-toolkit
-├── gui
 ├── package
 │   ├── list <file> [--class CLASS] [--json]
 │   ├── inspect <file> <index> [--json]
@@ -882,43 +854,9 @@ CLI rules:
 - CLI must not parse PCC/TLK bytes or build domain objects itself.
 - CLI should surface core JSON errors clearly.
 
-## 16. GUI Requirements
+## 16. Build, Release, And Installation
 
-The GUI is a Dear ImGui application launched by `pcc-toolkit gui`.
-
-GUI responsibilities:
-
-- Maintain UI-only state.
-- Let users select PCC, TLK, and DLC paths.
-- Render package/export data.
-- Render TLK search results.
-- Render conversation lists and graph views.
-- Render evidence search output.
-- Handle loading, status, and error messages.
-- Handle pan, zoom, click selection, and tab state.
-
-GUI non-responsibilities:
-
-- No PCC parsing.
-- No TLK parsing.
-- No AST construction.
-- No graph layout math.
-- No validation logic.
-- No evidence assembly.
-
-Recommended tabs:
-
-- Package tab: PCC exports, package metadata, validation entry point.
-- TLK tab: TLK info, text search, StringRef lookup.
-- Dialogue tab: conversation list, graph canvas, selected node details.
-- Evidence tab: query input, tiered result display, export report action.
-
-Graph rendering should support start, entry, and reply nodes; category-colored edges
-where metadata exists; selection; pan and zoom; and a detail panel for selected nodes.
-
-## 17. Build, Release, And Installation
-
-### 17.1 Build Core
+### 16.1 Build Core
 
 Standalone build:
 
@@ -938,14 +876,13 @@ CLI-assisted build:
 .venv\Scripts\pcc-toolkit.exe dev build-core
 ```
 
-### 17.2 Install CLI Or GUI
+### 16.2 Install CLI
 
 ```powershell
 .venv\Scripts\python.exe -m pip install -e .[cli]
-.venv\Scripts\python.exe -m pip install -e .[gui]
 ```
 
-### 17.3 Create Local Release
+### 16.3 Create Local Release
 
 ```powershell
 .\scripts\release.ps1 -Version "0.2.0" -Archive
@@ -963,15 +900,15 @@ release/pcc-toolkit-v0.2.0-windows-amd64.zip
 
 Published MVP binary:
 
-| Binary | Platform | Built from |
-|---|---|---|
+| Binary         | Platform      | Built from           |
+| -------------- | ------------- | -------------------- |
 | `pcc-core.exe` | Windows amd64 | `core/cmd/pcc-core/` |
 
 Build and release outputs are never committed.
 
-## 18. Testing And Verification
+## 17. Testing And Verification
 
-### 18.1 Automated Tests
+### 17.1 Automated Tests
 
 Go tests:
 
@@ -986,7 +923,7 @@ Python tests:
 .venv\Scripts\python.exe -m pytest
 ```
 
-### 18.2 Golden Files
+### 17.2 Golden Files
 
 Golden files live under `tests/golden/` and define stable expected outputs for:
 
@@ -1002,7 +939,7 @@ Golden rules:
 - Regeneration must be justified by an intentional contract or parser behavior change.
 - Real input files must be copied to `dropzone/`; they are not committed.
 
-### 18.3 Real-File Probes
+### 17.3 Real-File Probes
 
 Real-file probes use copied local game assets:
 
@@ -1012,7 +949,7 @@ Real-file probes use copied local game assets:
 
 Do not run tests directly against the game installation tree.
 
-### 18.4 Release Smoke Tests
+### 17.4 Release Smoke Tests
 
 Before declaring an MVP release, validate:
 
@@ -1024,52 +961,43 @@ Before declaring an MVP release, validate:
 - Run `scan-evidence` against a temporary `BioGame/CookedPC` tree.
 - Run representative CLI commands against the repository build.
 
-## 19. Known Limitations
+## 18. Known Limitations
 
 - Windows-only distribution for MVP.
 - Read-only data access; no PCC writing or editing.
 - ME2 OT only.
-- GUI automated coverage is limited compared to core and CLI coverage.
 - `pcc-core.exe --help` is minimal because core is primarily consumed through CLI.
 - `scan-evidence --biogame-root` requires a BioGame-style directory and will not scan
   a flat `dropzone/` directory as package root.
 - Semantic parsing can still fall back for unusual or malformed conversation exports.
 - Evidence tiers may include fallback byte-level hits when AST context is unavailable.
 
-## 20. Roadmap After MVP
+## 19. Roadmap After MVP
 
-### 20.1 Contract Hardening
+### 19.1 Contract Hardening
 
 - Add formal JSON schema or schema-like validation for core outputs.
 - Add more golden files for edge-case conversations and DLC precedence.
 - Improve core help output for direct `pcc-core.exe` users.
 
-### 20.2 Semantic Expansion
+### 19.2 Semantic Expansion
 
 - Expand semantic parsing for additional ME2 dialogue fields.
 - Improve script, sequence, and FaceFX metadata coverage where useful for read-only display.
 - Add more owner/context extraction where Kismet structures expose it.
 
-### 20.3 Evidence Improvements
+### 19.3 Evidence Improvements
 
 - Improve ranking of semantic container hits.
-- Add evidence-to-conversation navigation in GUI.
 - Add saved evidence report browsing.
 
-### 20.4 GUI Usability
-
-- Improve graph rendering polish.
-- Add category-colored reply edges where metadata exists.
-- Add richer node detail panels.
-- Add graceful missing-core and missing-game-file onboarding.
-
-### 20.5 Future Scope Decisions
+### 19.4 Future Scope Decisions
 
 - Editing support requires a separate PRD.
 - Legendary Edition support requires a separate PRD and different package/compression assumptions.
 - Non-Windows distribution can be revisited after the Windows MVP is stable.
 
-## 21. Reconstruction Notes
+## 20. Reconstruction Notes
 
 If this project is rebuilt in another language, preserve these invariants:
 

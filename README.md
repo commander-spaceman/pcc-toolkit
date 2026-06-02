@@ -1,7 +1,7 @@
 # pcc-toolkit
 
-CLI + GUI toolkit for inspecting, extracting, and analyzing Mass Effect 2 Original Trilogy
-dialogue from `.pcc` package files and `.tlk` talk files.
+CLI toolkit for inspecting, extracting, and analyzing Mass Effect 2 Original Trilogy
+dialogue from `.pcc` package files and `.tlk` talk files. Built for AI agent workflows.
 
 **WIP** — Read-only. Windows-only. ME2 OT only.
 
@@ -15,9 +15,8 @@ python -m venv .venv
 # Build the Go core engine
 .\scripts\build.ps1
 
-# Install the CLI (and GUI if desired)
+# Install the CLI
 .venv\Scripts\python.exe -m pip install -e ".[cli]"
-.venv\Scripts\python.exe -m pip install -e ".[gui]"
 ```
 
 ## What It Does
@@ -38,10 +37,10 @@ python -m venv .venv
 | `pcc-toolkit evidence scan`    | Search TLK text, then scan PCCs for StringRef hits |
 | `pcc-toolkit batch validate`   | Validate all PCCs in a directory                   |
 | `pcc-toolkit batch extract`    | Extract all PCCs in a directory                    |
-| `pcc-toolkit gui`              | Launch the Dear ImGui interactive GUI              |
-| `pcc-toolkit dev build-core`   | Build the Go core from the CLI                     |
-| `pcc-toolkit dev test-core`    | Run Go core tests from the CLI                     |
-| `pcc-toolkit --version`        | Show version and capabilities                      |
+
+| `pcc-toolkit dev build-core` | Build the Go core from the CLI |
+| `pcc-toolkit dev test-core` | Run Go core tests from the CLI |
+| `pcc-toolkit --version` | Show version and capabilities |
 
 ## Capabilities
 
@@ -55,7 +54,6 @@ dialogue line dumping, and Kismet owner scanning.
 ```
 core/     ── Go engine (all domain logic, JSON stdout/stderr)
 cli/      ── Python Typer CLI (argument parsing, terminal formatting)
-gui/      ── Python Dear ImGui GUI (renderer layer)
 tests/    ── Golden files, smoke tests, and regression probes
 ```
 
@@ -79,7 +77,7 @@ For real-file regression, copy ME2 OT `.pcc`/`.tlk` files from your local instal
 ## Requirements
 
 - Go 1.22+ (core engine)
-- Python 3.11+ (CLI and GUI)
+- Python 3.11+ (CLI)
 - Windows amd64
 
 ## License

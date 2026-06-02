@@ -27,24 +27,23 @@ Agents should work task-by-task, using the smallest correct change.
 
 ## Repository Map
 
-| Path | What it contains | When to read |
-|------|------------------|--------------|
-| `PRD-MVP.md` | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work |
-| `MAP.md` | Current repository structure and navigation guide | Before structural changes or multi-module work |
-| `core/` | Go engine; domain logic belongs here | Parsing, AST, layout, evidence, validation |
-| `cli/` | Python CLI; thin dispatch wrapper | CLI arg parsing and output formatting |
-| `gui/` | Python GUI; thin renderer | ImGui views and interaction |
-| `tests/test_golden.py` | Golden regression checks for `pcc-core` output | Contract and parser regression validation |
-| `tests/test_smoke.py` | CLI entry-point smoke tests | CLI packaging and command visibility checks |
-| `tests/golden/` | Known-good regression outputs | Port validation and parser regression checks |
-| `tests/regression/` | Probe/regression runners | Golden or probe validation workflows |
-| `tests/fixtures/synthetic/` | Synthetic test fixture builders/data | Unit tests that do not require game files |
-| `pyproject.toml` | Python packaging metadata, version, script entry point | Packaging, version, dependency, or CLI registration changes |
-| `pytest.ini` | Pytest configuration | Test discovery/configuration changes |
-| `requirements.txt` | Local Python dependency list | Environment setup or dependency changes |
-| `dropzone/` | Real ME2 OT PCC/TLK files copied locally, gitignored | Local input for golden tests and real-file probes |
-| `output/` | Generated local outputs, gitignored except `.gitkeep` | Runtime artifacts only |
-| `scripts/` | Build and release automation scripts | Before building pcc-core or creating a release |
+| Path                        | What it contains                                                                    | When to read                                                |
+| --------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `PRD-MVP.md`                | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work                         |
+| `MAP.md`                    | Current repository structure and navigation guide                                   | Before structural changes or multi-module work              |
+| `core/`                     | Go engine; domain logic belongs here                                                | Parsing, AST, layout, evidence, validation                  |
+| `cli/`                      | Python CLI; thin dispatch wrapper                                                   | CLI arg parsing and output formatting                       |
+| `tests/test_golden.py`      | Golden regression checks for `pcc-core` output                                      | Contract and parser regression validation                   |
+| `tests/test_smoke.py`       | CLI entry-point smoke tests                                                         | CLI packaging and command visibility checks                 |
+| `tests/golden/`             | Known-good regression outputs                                                       | Port validation and parser regression checks                |
+| `tests/regression/`         | Probe/regression runners                                                            | Golden or probe validation workflows                        |
+| `tests/fixtures/synthetic/` | Synthetic test fixture builders/data                                                | Unit tests that do not require game files                   |
+| `pyproject.toml`            | Python packaging metadata, version, script entry point                              | Packaging, version, dependency, or CLI registration changes |
+| `pytest.ini`                | Pytest configuration                                                                | Test discovery/configuration changes                        |
+| `requirements.txt`          | Local Python dependency list                                                        | Environment setup or dependency changes                     |
+| `dropzone/`                 | Real ME2 OT PCC/TLK files copied locally, gitignored                                | Local input for golden tests and real-file probes           |
+| `output/`                   | Generated local outputs, gitignored except `.gitkeep`                               | Runtime artifacts only                                      |
+| `scripts/`                  | Build and release automation scripts                                                | Before building pcc-core or creating a release              |
 
 ## LegendaryExplorer Reference
 
@@ -66,7 +65,7 @@ LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restricti
 
 - Scope is Mass Effect 2 Original Trilogy only. Do not add LE1, LE2, LE3, ME1, or ME3 behavior unless the task explicitly changes project scope.
 - ME2 OT compressed package support is LZO-only per `PRD-MVP.md`.
-- Go core contains all domain logic. Python CLI and GUI are thin layers only.
+- Go core contains all domain logic. Python CLI is a thin layer only.
 - Go core writes success payloads as JSON to stdout and error payloads as JSON to stderr.
 - One feature at a time. Validate behavior against golden files, regression probes, and LegendaryExplorer semantics before moving on.
 - Golden files are the structural contract. Do not edit them manually unless the task is explicitly to regenerate and justify them.
@@ -97,7 +96,7 @@ LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restricti
 
 - Go core tests: from `core/`, run `go test ./...`.
 - Go formatting: from `core/`, run `go fmt ./...`.
-- Python CLI/GUI tests: from the repository root, run `.venv\Scripts\python.exe -m pytest`.
+- Python CLI tests: from the repository root, run `.venv\Scripts\python.exe -m pytest`.
 - Real-file regression probes: copy only the needed ME2 OT `.pcc`/`.tlk` files from `C:\Program Files\EA Games\Mass Effect 2` into `dropzone/`, then run `.venv\Scripts\python.exe tests\regression\run_probes.py --samples-dir dropzone`.
 
 No single top-level build command is guaranteed. If one is added, document it here.
@@ -107,6 +106,7 @@ No single top-level build command is guaranteed. If one is added, document it he
 ### Build pcc-core (Go core binary)
 
 **Standalone (no Python required):**
+
 ```powershell
 .\scripts\build.ps1 -Version "0.2.0"
 ```
@@ -115,17 +115,17 @@ Builds a single static binary to `build/pcc-core.exe` with ldflags version injec
 The default build target is Windows.
 
 **Via Python CLI (requires installed CLI):**
+
 ```
 pcc-toolkit dev build-core
 ```
 
-### Install CLI/GUI
+### Install CLI
 
 From the repository root, inside the project virtual environment:
 
 ```
-.venv\Scripts\python.exe -m pip install -e .[cli]    # CLI only
-.venv\Scripts\python.exe -m pip install -e .[gui]    # CLI + GUI
+.venv\Scripts\python.exe -m pip install -e .[cli]    # CLI
 ```
 
 After installation, the `pcc-toolkit` command is available.
@@ -137,6 +137,7 @@ After installation, the `pcc-toolkit` command is available.
 ```
 
 This builds the Go core binary and creates:
+
 - `release/pcc-toolkit-v0.2.0-windows-amd64/` directory with:
   - `pcc-core.exe` — the Go engine binary
   - `INSTALL.txt` — install instructions
@@ -146,8 +147,8 @@ This builds the Go core binary and creates:
 
 The following binaries are produced for distribution (never committed to the repository):
 
-| Binary | Platform | Built from |
-|--------|----------|------------|
+| Binary         | Platform        | Built from                          |
+| -------------- | --------------- | ----------------------------------- |
 | `pcc-core.exe` | Windows (amd64) | `core/cmd/pcc-core/` via `go build` |
 
 These are excluded from version control via `.gitignore` rules (`*.exe`, `build/`).

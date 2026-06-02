@@ -95,17 +95,16 @@ $installContent = @"
 pcc-toolkit v$Version — $OS/$Arch
 ====================================
 
-This is the Go core engine (pcc-core). It must be paired with the Python CLI/GUI.
+This is the Go core engine (pcc-core). It must be paired with the Python CLI.
 
 Install steps:
 
 1. Place pcc-core${exeSuffix} in your PATH, or in the build/ directory
    of the pcc-toolkit repository.
 
-2. Install the Python CLI/GUI from the repository root:
+2. Install the Python CLI from the repository root:
 
-   pip install .[cli]    # CLI only
-   pip install .[gui]    # CLI + GUI
+   pip install .[cli]    # CLI
 
 3. Verify installation:
 
