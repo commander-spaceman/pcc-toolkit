@@ -118,10 +118,10 @@ func (ctx *encodeCtx) encodeMetadata(pv PropertyValue) ([]byte, int, error) {
 		return mw.Bytes(), fnameByteSize, nil
 
 	case "BoolProperty":
-		mw := newWriteBuffer(4)
-		val := boolToInt(pv.Value)
-		mw.WriteI32(val)
-		return mw.Bytes(), 4, nil
+		mw := newWriteBuffer(1)
+		mw.buf[0] = boolByte(pv.Value)
+		mw.pos = 1
+		return mw.Bytes(), 1, nil
 
 	case "ArrayProperty":
 		if pv.ArrayElementType == "" {
@@ -304,15 +304,12 @@ func encodeByteValue(v interface{}) ([]byte, error) {
 	}
 }
 
-func boolToInt(v interface{}) int {
+func boolByte(v interface{}) byte {
 	b, ok := v.(bool)
-	if !ok {
+	if !ok || !b {
 		return 0
 	}
-	if b {
-		return 1
-	}
-	return 0
+	return 1
 }
 
 func toInt(v interface{}) (int, bool) {
