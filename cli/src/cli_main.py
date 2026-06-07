@@ -12,6 +12,7 @@ from engine import (
     batch_extract as engine_batch_extract,
     batch_validate as engine_batch_validate,
     dump_lines as engine_dump_lines,
+    edit_conversation as engine_edit_conversation,
     layout_graph as engine_layout_graph,
     parse_conversations as engine_parse_conversations,
     parse_pcc as engine_parse_pcc,
@@ -478,6 +479,26 @@ def dialogue_dump_lines(
     console.print(f"Lines: {len(lines)}")
     if lines:
         console.print(dump_lines_table(lines))
+
+
+@dialogue_app.command("edit")
+def dialogue_edit(
+    file: Path = typer.Argument(..., help="Path to PCC file"),
+    conv_index: int = typer.Option(
+        ..., "--conv-index", help="Export index of the conversation to edit"
+    ),
+    patch_file: Path = typer.Option(..., "--patch", help="Path to JSON patch file"),
+    output: Path = typer.Option(..., "--output", help="Path for the output PCC file"),
+) -> None:
+    result = engine_edit_conversation(
+        file,
+        conv_index=conv_index,
+        patch_file=patch_file,
+        output=output,
+    )
+    status = result.get("status", "unknown")
+    out = result.get("output", str(output))
+    console.print(f"[green]{status}[/green] -> {out}")
 
 
 # ── batch ────────────────────────────────────────────────────────────────────

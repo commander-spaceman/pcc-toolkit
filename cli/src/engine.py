@@ -265,3 +265,19 @@ def dump_lines(
 
 def scan_owners(file: Path | str) -> dict[str, Any]:
     return _run("scan-owners", file=str(file))
+
+
+def edit_conversation(
+    file: Path | str,
+    *,
+    conv_index: int,
+    patch_file: Path | str,
+    output: Path | str,
+) -> dict[str, Any]:
+    return _run(
+        "edit-conversation",
+        file=str(file),
+        conv_index=conv_index,
+        patch=str(patch_file),
+        output=str(output),
+    )
