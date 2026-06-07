@@ -27,12 +27,34 @@ const (
 type encodeCtx struct {
 	names      []string
 	nameLookup map[string]int
+	added      *[]string
+}
+
+func (ctx *encodeCtx) resolveNameIdx(name string) (int, error) {
+	if name == "" {
+		return -1, errors.New("empty name not allowed")
+	}
+	if idx, ok := ctx.nameLookup[name]; ok {
+		return idx, nil
+	}
+	if ctx.added != nil {
+		idx := len(ctx.names) + len(*ctx.added)
+		*ctx.added = append(*ctx.added, name)
+		ctx.nameLookup[name] = idx
+		return idx, nil
+	}
+	return -1, errors.New("name not found in table: " + name)
 }
 
 func EncodePropertyValue(pv PropertyValue, names []string) ([]byte, error) {
+	return EncodePropertyValueWithAdditions(pv, names, nil)
+}
+
+func EncodePropertyValueWithAdditions(pv PropertyValue, names []string, added *[]string) ([]byte, error) {
 	ctx := &encodeCtx{
 		names:      names,
 		nameLookup: buildNameLookup(names),
+		added:      added,
 	}
 	return ctx.encodeProperty(pv)
 }
@@ -53,12 +75,21 @@ func EncodePropertyCollection(props []PropertyValue, names []string) ([]byte, er
 	return ctx.encodeCollection(props)
 }
 
+func EncodePropertyCollectionWithAdditions(props []PropertyValue, names []string, added *[]string) ([]byte, error) {
+	ctx := &encodeCtx{
+		names:      names,
+		nameLookup: buildNameLookup(names),
+		added:      added,
+	}
+	return ctx.encodeCollection(props)
+}
+
 func (ctx *encodeCtx) encodeProperty(pv PropertyValue) ([]byte, error) {
-	nameIdx, err := resolveNameIdx(pv.Name, ctx.names, ctx.nameLookup)
+	nameIdx, err := ctx.resolveNameIdx(pv.Name)
 	if err != nil {
 		return nil, err
 	}
-	typeIdx, err := resolveTypeIdx(pv.PropType, ctx.names, ctx.nameLookup)
+	typeIdx, err := ctx.resolveNameIdx(pv.PropType)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +128,7 @@ func (ctx *encodeCtx) encodeMetadata(pv PropertyValue) ([]byte, int, error) {
 		if pv.StructTypeName == "" {
 			return nil, 0, errors.New("StructProperty requires StructTypeName")
 		}
-		idx, err := resolveNameIdx(pv.StructTypeName, ctx.names, ctx.nameLookup)
+		idx, err := ctx.resolveNameIdx(pv.StructTypeName)
 		if err != nil {
 			return nil, 0, fmt.Errorf("struct type %q: %w", pv.StructTypeName, err)
 		}
@@ -109,7 +140,7 @@ func (ctx *encodeCtx) encodeMetadata(pv PropertyValue) ([]byte, int, error) {
 		if pv.ByteSubTypeName == "" {
 			return nil, 0, errors.New("ByteProperty requires ByteSubTypeName")
 		}
-		idx, err := resolveNameIdx(pv.ByteSubTypeName, ctx.names, ctx.nameLookup)
+		idx, err := ctx.resolveNameIdx(pv.ByteSubTypeName)
 		if err != nil {
 			return nil, 0, fmt.Errorf("byte subtype %q: %w", pv.ByteSubTypeName, err)
 		}
@@ -127,7 +158,7 @@ func (ctx *encodeCtx) encodeMetadata(pv PropertyValue) ([]byte, int, error) {
 		if pv.ArrayElementType == "" {
 			return nil, 0, errors.New("ArrayProperty requires ArrayElementType")
 		}
-		idx, err := resolveNameIdx(pv.ArrayElementType, ctx.names, ctx.nameLookup)
+		idx, err := ctx.resolveNameIdx(pv.ArrayElementType)
 		if err != nil {
 			return nil, 0, fmt.Errorf("array element type %q: %w", pv.ArrayElementType, err)
 		}
@@ -196,7 +227,7 @@ func (ctx *encodeCtx) encodeNameValue(v interface{}) ([]byte, error) {
 	if !ok {
 		return nil, fmt.Errorf("expected string for NameProperty/EnumProperty, got %T", v)
 	}
-	idx, err := resolveNameIdx(name, ctx.names, ctx.nameLookup)
+	idx, err := ctx.resolveNameIdx(name)
 	if err != nil {
 		return nil, err
 	}
@@ -282,7 +313,7 @@ func (ctx *encodeCtx) encodeCollection(props []PropertyValue) ([]byte, error) {
 }
 
 func (ctx *encodeCtx) encodeNoneProperty() ([]byte, error) {
-	idx, err := resolveNameIdx("None", ctx.names, ctx.nameLookup)
+	idx, err := ctx.resolveNameIdx("None")
 	if err != nil {
 		return nil, err
 	}

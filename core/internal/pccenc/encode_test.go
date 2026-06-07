@@ -557,6 +557,41 @@ func TestArrayProperty_Empty(t *testing.T) {
 	}
 }
 
+func TestConsecutiveBoolProperties(t *testing.T) {
+	names := append(testNames(),
+		"bFirst", "bSecond", "bThird",
+	)
+
+	props := []PropertyValue{
+		{Name: "bFirst", PropType: "BoolProperty", Value: true},
+		{Name: "bSecond", PropType: "BoolProperty", Value: false},
+		{Name: "bThird", PropType: "BoolProperty", Value: true},
+	}
+
+	enc, err := EncodePropertyCollection(props, names)
+	if err != nil {
+		t.Fatalf("encode: %v", err)
+	}
+
+	parsed, _ := pcc.ParsePropertyCollection(enc, names, 0, len(enc))
+	if parsed == nil {
+		t.Fatal("ParsePropertyCollection returned nil")
+	}
+	if len(parsed) != 3 {
+		t.Fatalf("expected 3 properties, got %d", len(parsed))
+	}
+
+	if v, ok := parsed["bFirst"]; !ok || v.Value.(bool) != true {
+		t.Error("bFirst mismatch")
+	}
+	if v, ok := parsed["bSecond"]; !ok || v.Value.(bool) != false {
+		t.Error("bSecond mismatch")
+	}
+	if v, ok := parsed["bThird"]; !ok || v.Value.(bool) != true {
+		t.Error("bThird mismatch")
+	}
+}
+
 func TestEmptyStrProperty(t *testing.T) {
 	names := testNames()
 

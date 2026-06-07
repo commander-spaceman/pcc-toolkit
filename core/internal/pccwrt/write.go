@@ -54,7 +54,7 @@ func buildUncompressedPCC(summary *pcc.FileSummary, rawData []byte) ([]byte, err
 	totalSize := dependsOffset + len(dependsBytes) + len(exportData)
 	buf := make([]byte, totalSize)
 
-	writeHeader(buf, summary.Header.Flags, len(summary.Names), nameOffset,
+	writeHeader(buf, summary.Header.Flags & ^uint32(pcc.CompressedFlag), len(summary.Names), nameOffset,
 		len(summary.Exports), exportOffset,
 		len(summary.Imports), importOffset,
 		len(summary.Exports), dependsOffset)

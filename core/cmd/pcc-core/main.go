@@ -12,6 +12,7 @@ import (
 
 	"pcc-toolkit/core/internal/dialogue"
 	"pcc-toolkit/core/internal/dumper"
+	"pcc-toolkit/core/internal/editor"
 	"pcc-toolkit/core/internal/evidence"
 	"pcc-toolkit/core/internal/graph"
 	"pcc-toolkit/core/internal/owners"
@@ -38,6 +39,7 @@ var capabilities = []string{
 	"batch_validate_v1",
 	"dump_lines_v1",
 	"scan_owners_v1",
+	"edit_conversation_v1",
 }
 
 type versionOutput struct {
@@ -88,6 +90,8 @@ func main() {
 		cmdDumpLines(args[1:])
 	case "scan-owners":
 		cmdScanOwners(args[1:])
+	case "edit-conversation":
+		cmdEditConversation(args[1:])
 	default:
 		writeError(fmt.Sprintf("unknown subcommand: %s", args[0]), 2)
 	}
@@ -1092,5 +1096,135 @@ type multiFlag []string
 func (m *multiFlag) String() string { return strings.Join(*m, ",") }
 func (m *multiFlag) Set(v string) error {
 	*m = append(*m, v)
+	return nil
+}
+
+func cmdEditConversation(args []string) {
+	fs := flag.NewFlagSet("edit-conversation", flag.ExitOnError)
+	file := fs.String("file", "", "Path to PCC file")
+	convIndex := fs.Int("conv-index", -1, "Export index of the conversation to edit")
+	output := fs.String("output", "", "Path for the output PCC file")
+	patchFile := fs.String("patch", "", "Path to JSON patch file")
+
+	fs.Parse(args)
+
+	if *file == "" {
+		writeError("--file is required", 2)
+	}
+	if *convIndex < 0 {
+		writeError("--conv-index is required", 2)
+	}
+	if *output == "" {
+		writeError("--output is required", 2)
+	}
+	if *patchFile == "" {
+		writeError("--patch is required", 2)
+	}
+
+	patchData, err := os.ReadFile(*patchFile)
+	if err != nil {
+		writeError(fmt.Sprintf("read patch file: %v", err), 1)
+	}
+
+	var patch conversationPatch
+	if err := json.Unmarshal(patchData, &patch); err != nil {
+		writeError(fmt.Sprintf("parse patch JSON: %v", err), 1)
+	}
+
+	modifyFn := func(conv *dialogue.Conversation) error {
+		return applyPatch(conv, &patch)
+	}
+
+	if err := editor.EditConversation(*file, *output, *convIndex, modifyFn); err != nil {
+		writeError(fmt.Sprintf("edit failed: %v", err), 1)
+	}
+
+	successPayload := map[string]string{"status": "ok", "output": *output}
+	enc := json.NewEncoder(os.Stdout)
+	if err := enc.Encode(successPayload); err != nil {
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
+	}
+}
+
+type conversationPatch struct {
+	AddEntries []entryPatch `json:"add_entries"`
+	AddReplies []replyPatch `json:"add_replies"`
+}
+
+type entryPatch struct {
+	SpeakerID   *int   `json:"speaker_id"`
+	LineStrRef  *int   `json:"line_strref"`
+	ReplyLinks  []int  `json:"reply_links"`
+	ListenerTag string `json:"listener_tag"`
+}
+
+type replyPatch struct {
+	LineStrRef     *int   `json:"line_strref"`
+	TargetEntryIDs []int  `json:"target_entry_ids"`
+	Category       string `json:"category"`
+	ReplyType      string `json:"reply_type"`
+}
+
+func applyPatch(conv *dialogue.Conversation, patch *conversationPatch) error {
+	entryBase := len(conv.Entries)
+	for i, ep := range patch.AddEntries {
+		speakerID := 0
+		if ep.SpeakerID != nil {
+			speakerID = *ep.SpeakerID
+		}
+		lineStrRef := -1
+		if ep.LineStrRef != nil {
+			lineStrRef = *ep.LineStrRef
+		}
+
+		entry := dialogue.EntryNode{
+			ID:         entryBase + i,
+			SpeakerID:  &speakerID,
+			LineStrRef: &lineStrRef,
+		}
+
+		if len(ep.ReplyLinks) > 0 {
+			replyBase := len(conv.Replies)
+			entry.ReplyLinks = make([]int, len(ep.ReplyLinks))
+			for j, replyIdx := range ep.ReplyLinks {
+				actualIdx := replyBase + replyIdx
+				entry.ReplyLinks[j] = actualIdx
+				entry.ReplyChoices = append(entry.ReplyChoices, dialogue.ReplyChoice{
+					FromEntryID: entry.ID,
+					ToReplyID:   actualIdx,
+					Order:       j,
+				})
+			}
+		}
+
+		conv.Entries = append(conv.Entries, entry)
+	}
+
+	replyBase := len(conv.Replies)
+	for i, rp := range patch.AddReplies {
+		lineStrRef := -1
+		if rp.LineStrRef != nil {
+			lineStrRef = *rp.LineStrRef
+		}
+		category := rp.Category
+		if category == "" {
+			category = "REPLY_CATEGORY_DEFAULT"
+		}
+		replyType := rp.ReplyType
+		if replyType == "" {
+			replyType = "REPLY_TYPE_DEFAULT"
+		}
+
+		reply := dialogue.ReplyNode{
+			ID:             replyBase + i,
+			LineStrRef:     &lineStrRef,
+			TargetEntryIDs: rp.TargetEntryIDs,
+			Category:       category,
+			ReplyType:      replyType,
+		}
+
+		conv.Replies = append(conv.Replies, reply)
+	}
+
 	return nil
 }
