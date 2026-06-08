@@ -48,9 +48,10 @@ python -m venv .venv
 
 ## Capabilities
 
-PCC parsing, LZO compression and decompression, Unreal property tags and encoding,
+PCC reading (`me2pcc`), TLK reading (`me2tlk`), LZO compression and
+decompression (`me2lzo`), Unreal property tag parsing and encoding,
 BioConversation AST extraction and binary serialization, conversation editing with
-round-trip fidelity, TLK parsing with Huffman decoding and writing, DLC-aware
+round-trip fidelity, TLK writing with Huffman encoding, DLC-aware
 StringRef resolution, deterministic Sugiyama graph layout, evidence scanning with
 tiered reports, conversation validation, dialogue line dumping, Kismet owner
 scanning, and batch edit/validate/extract workflows.
@@ -82,8 +83,8 @@ For real-file regression, copy ME2 OT `.pcc`/`.tlk` files from your local instal
 
 ## Requirements
 
-- Go 1.22+ (core engine)
-- Python 3.11+ (CLI)
+- Go 1.25+ (core engine)
+- Python 3.14+ (CLI)
 - Windows amd64
 
 ## License
