@@ -46,7 +46,7 @@ core/
 
 **Key files:**
 
-- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `resolve-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `batch-validate`, `batch-extract`, `dump-lines`, `scan-owners`, and `edit-conversation`.
+- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `resolve-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `batch-validate`, `batch-extract`, `dump-lines`, `scan-owners`, `edit-conversation`, and `batch-edit`.
 - `core/internal/pcc/reader.go`: Reads PCC headers, names, imports, exports, and package metadata.
 - `core/internal/pcc/decompress.go`: Handles ME2 OT LZO decompression.
 - `core/internal/pcc/properties.go`: Parses Unreal property tags and semantic property collections.
@@ -64,6 +64,7 @@ core/
 - `core/internal/dialenc/encode.go`: Encodes dialogue AST nodes and reply links back into binary conversation form.
 - `core/internal/editor/editor.go`: Edits conversation exports in-place, preserving unchanged data via binary preservation helpers.
 - `core/internal/editor/preserve.go`: Property span scanning and byte-level splice for round-trip fidelity.
+- `core/internal/editor/conv_ser.go`: Serializes a modified `dialogue.Conversation` AST back into binary property form for PCC writing.
 - `core/internal/pccenc/encode.go`: Encodes Unreal properties for PCC writing.
 - `core/internal/pccenc/writer.go`: Buffered writer for PCC encoding output.
 - `core/internal/pccpat/patch.go`: Applies binary patches to PCC files at specific export offsets.
@@ -141,6 +142,7 @@ tests/
 ├── golden/
 │   ├── batch/
 │   ├── conversation/
+│   ├── edit/
 │   ├── evidence/
 │   ├── graph/
 │   ├── pcc/
