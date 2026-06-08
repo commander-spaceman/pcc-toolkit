@@ -36,21 +36,6 @@ def test_help_succeeds() -> None:
 
 
 @requires_entry_point
-def test_version_output() -> None:
-    """pcc-toolkit --version prints version info."""
-    proc = subprocess.run(
-        [str(ENTRY_POINT), "--version"],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-    )
-    assert proc.returncode == 0, f"stderr:\n{proc.stderr}"
-    output = proc.stdout + proc.stderr
-    assert "version" in output.lower()
-
-
-@requires_entry_point
 def test_dev_subcommand_visible() -> None:
     """pcc-toolkit --help shows dev subcommand group."""
     proc = subprocess.run(

@@ -22,7 +22,6 @@ from engine import (
     scan_owners as engine_scan_owners,
     serialize as engine_serialize,
     validate as engine_validate,
-    version as engine_version,
 )
 from format import (
     batch_summary,
@@ -92,20 +91,6 @@ def dev_test_core() -> None:
     except subprocess.CalledProcessError as e:
         typer.echo(f"Tests failed: {e}", err=True)
         raise typer.Exit(code=1)
-
-
-@app.callback(invoke_without_command=True)
-def callback(
-    _version: bool = typer.Option(
-        False,
-        "--version",
-        help="Show version and capabilities",
-        is_eager=True,
-    ),
-) -> None:
-    if _version:
-        result = engine_version()
-        typer.echo(json.dumps(result, indent=2))
 
 
 # ── package ────────────────────────────────────────────────────────────────

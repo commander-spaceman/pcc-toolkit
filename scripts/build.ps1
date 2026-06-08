@@ -63,7 +63,7 @@ $outputPath = Join-Path $OutputDir $binaryName
 $env:GOOS = $OS
 $env:GOARCH = $Arch
 
-$ldflags = "-s -w -X main.version=$Version"
+$ldflags = "-s -w"
 
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 

@@ -65,10 +65,6 @@ def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
     return json.loads(proc.stdout)
 
 
-def version() -> dict[str, Any]:
-    return _run("version")
-
-
 def parse_pcc(
     file: Path | str,
     *,

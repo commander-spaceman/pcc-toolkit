@@ -7,33 +7,6 @@ import (
 	"os"
 )
 
-var version = "0.3.0" // overridable via -ldflags "-X main.version=x.y.z"
-var target = "me2_ot"
-
-var capabilities = []string{
-	"pcc_parse_v1",
-	"pcc_property_tags_v1",
-	"pcc_semantic_props_v1",
-	"conversation_ast_v1",
-	"graph_layout_v1",
-	"tlk_parse_v1",
-	"tlk_dlc_resolve_v1",
-	"evidence_scan_v1",
-	"validate_v1",
-	"serialize_v1",
-	"batch_validate_v1",
-	"dump_lines_v1",
-	"scan_owners_v1",
-	"edit_conversation_v1",
-	"batch_edit_v1",
-}
-
-type versionOutput struct {
-	Version      string   `json:"version"`
-	Target       string   `json:"target"`
-	Capabilities []string `json:"capabilities"`
-}
-
 func writeError(msg string, exitCode int) {
 	errPayload := map[string]string{"error": msg}
 	enc := json.NewEncoder(os.Stderr)
@@ -50,8 +23,6 @@ func main() {
 	}
 
 	switch args[0] {
-	case "version":
-		cmdVersion()
 	case "parse-pcc":
 		cmdParsePcc(args[1:])
 	case "parse-tlk":
@@ -82,18 +53,5 @@ func main() {
 		cmdBatchEdit(args[1:])
 	default:
 		writeError(fmt.Sprintf("unknown subcommand: %s", args[0]), 2)
-	}
-}
-
-func cmdVersion() {
-	out := versionOutput{
-		Version:      version,
-		Target:       target,
-		Capabilities: capabilities,
-	}
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(out); err != nil {
-		writeError(fmt.Sprintf("failed to encode version: %v", err), 1)
 	}
 }

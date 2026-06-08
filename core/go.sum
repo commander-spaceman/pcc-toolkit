@@ -1,6 +1,6 @@
 github.com/commander-spaceman/me2lzo v1.0.0 h1:tOLogtgJ7e6mGgOogH0QBqHyPdCDFAwh0YFlDay00ak=
 github.com/commander-spaceman/me2lzo v1.0.0/go.mod h1:9BUBCCBihRv3PQE/l6Aff9rdxR+kcVtlUcqAiQ5SAsA=
-github.com/commander-spaceman/me2pcc v0.0.0-20260608155936-2b7d11315f7c h1:KulmfzIbdwtsd3CyZAvwonkJo3MLuNZfdkjOtt9IIrw=
-github.com/commander-spaceman/me2pcc v0.0.0-20260608155936-2b7d11315f7c/go.mod h1:3gi0uTQU8z851WuQsDCHVmcbe8E5V2VdnZ82hjLG5CU=
+github.com/commander-spaceman/me2pcc v0.0.0-20260608175550-e1fd2674acc1 h1:xmUFLg11sBl60/nsKzd9EoddSK4r1KfB4DD0HhNs8Zg=
+github.com/commander-spaceman/me2pcc v0.0.0-20260608175550-e1fd2674acc1/go.mod h1:3gi0uTQU8z851WuQsDCHVmcbe8E5V2VdnZ82hjLG5CU=
 github.com/commander-spaceman/me2tlk v0.0.0-20260608153259-e989349340b2 h1:oEyCwQk/MsEw+FVHIRJql4z3fmpNZ1AhGcv3ug47upY=
 github.com/commander-spaceman/me2tlk v0.0.0-20260608153259-e989349340b2/go.mod h1:XklnY2cthUY4YnvYj8fGC1/IVNnG2ePmvsIAxFVWiO4=
