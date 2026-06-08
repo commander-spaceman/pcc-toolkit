@@ -98,11 +98,18 @@ type StringEntry struct {
 }
 
 func WriteFile(path string, tlkFile *File, newEntries []StringEntry) error {
-	buf, err := BuildBytes(tlkFile, newEntries)
+	if err := AddEntries(tlkFile, newEntries); err != nil {
+		return err
+	}
+	buf, err := BuildBytes(tlkFile, nil)
 	if err != nil {
 		return err
 	}
 	return os.WriteFile(path, buf, 0644)
+}
+
+func WriteFileBytes(tlkFile *File) ([]byte, error) {
+	return BuildBytes(tlkFile, nil)
 }
 
 func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
@@ -215,6 +222,9 @@ func AddEntries(tlkFile *File, entries []StringEntry) error {
 	copy(newBitstream, tlkFile.Bits)
 	bitstreamPos := len(newBitstream) * 8
 
+	addedMales := int32(0)
+	addedFemales := int32(0)
+
 	for _, entry := range entries {
 		if _, ok := tlkFile.MaleEntries[entry.StringID]; ok {
 			continue
@@ -232,6 +242,9 @@ func AddEntries(tlkFile *File, entries []StringEntry) error {
 		target := tlkFile.MaleEntries
 		if !entry.Male {
 			target = tlkFile.FemaleEntries
+			addedFemales++
+		} else {
+			addedMales++
 		}
 		target[entry.StringID] = bitOffset
 
@@ -241,18 +254,9 @@ func AddEntries(tlkFile *File, entries []StringEntry) error {
 
 	tlkFile.Bits = newBitstream
 	tlkFile.Header.DataLen = int32(len(newBitstream))
-
-	if added := len(entries); added > 0 {
-		males := 0
-		for _, e := range entries {
-			if e.Male {
-				males++
-			}
-		}
-		tlkFile.Header.MaleEntryCount += int32(males)
-		tlkFile.Header.FemaleEntryCount += int32(len(entries) - males)
-		tlkFile.TotalEntries += len(entries)
-	}
+	tlkFile.Header.MaleEntryCount += addedMales
+	tlkFile.Header.FemaleEntryCount += addedFemales
+	tlkFile.TotalEntries += int(addedMales + addedFemales)
 
 	return nil
 }

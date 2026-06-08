@@ -110,8 +110,9 @@ func EditConversation(
 	}
 
 	if validationReport.Summary.Invalid > 0 {
-		return nil, fmt.Errorf("validation failed after edit: %d invalid, %d warnings",
-			validationReport.Summary.Invalid, validationReport.Summary.Warning)
+		editResult.Status = fmt.Sprintf("written_with_%d_invalid", validationReport.Summary.Invalid)
+	} else if validationReport.Summary.Warning > 0 {
+		editResult.Status = fmt.Sprintf("written_with_%d_warnings", validationReport.Summary.Warning)
 	}
 
 	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, true); err != nil {

@@ -516,6 +516,8 @@ func TestWriteFile_HeaderFields(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Parse: %v", err)
 	}
+	expectedMale := tlkFile.Header.MaleEntryCount + 2
+	expectedFemale := tlkFile.Header.FemaleEntryCount + 1
 	err = WriteFile(outPath, tlkFile, []StringEntry{
 		{StringID: 10, Text: "AB", Male: true},
 		{StringID: 20, Text: "AB", Male: true},
@@ -537,8 +539,6 @@ func TestWriteFile_HeaderFields(t *testing.T) {
 	if readBack.Header.MinVersion != 2 {
 		t.Errorf("MinVersion: want 2, got %d", readBack.Header.MinVersion)
 	}
-	expectedMale := tlkFile.Header.MaleEntryCount + 2
-	expectedFemale := tlkFile.Header.FemaleEntryCount + 1
 	if readBack.Header.MaleEntryCount != expectedMale {
 		t.Errorf("MaleEntryCount: want %d, got %d", expectedMale, readBack.Header.MaleEntryCount)
 	}

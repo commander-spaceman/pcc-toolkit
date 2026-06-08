@@ -1106,6 +1106,8 @@ func cmdEditConversation(args []string) {
 	output := fs.String("output", "", "Path for the output PCC file")
 	patchFile := fs.String("patch", "", "Path to JSON patch file")
 	dryRun := fs.Bool("dry-run", false, "Validate without writing output")
+	tlkPath := fs.String("tlk", "", "Path to TLK file for text resolution/additions")
+	tlkOutput := fs.String("tlk-output", "", "Path for the output TLK file")
 
 	fs.Parse(args)
 
@@ -1130,6 +1132,25 @@ func cmdEditConversation(args []string) {
 	var patch conversationPatch
 	if err := json.Unmarshal(patchData, &patch); err != nil {
 		writeError(fmt.Sprintf("parse patch JSON: %v", err), 1)
+	}
+
+	if *tlkPath != "" {
+		tlkFile, err := tlk.ReadFile(*tlkPath)
+		if err != nil {
+			writeError(fmt.Sprintf("read TLK: %v", err), 1)
+		}
+		if err := resolveTextToStrRefs(&patch, tlkFile); err != nil {
+			writeError(fmt.Sprintf("resolve TLK text: %v", err), 1)
+		}
+		if *tlkOutput != "" {
+			buf, err := tlk.WriteFileBytes(tlkFile)
+			if err != nil {
+				writeError(fmt.Sprintf("build TLK bytes: %v", err), 1)
+			}
+			if err := os.WriteFile(*tlkOutput, buf, 0644); err != nil {
+				writeError(fmt.Sprintf("write TLK: %v", err), 1)
+			}
+		}
 	}
 
 	outPath := *output
@@ -1167,12 +1188,14 @@ type conversationPatch struct {
 type entryPatch struct {
 	SpeakerID   *int   `json:"speaker_id"`
 	LineStrRef  *int   `json:"line_strref"`
+	Text        string `json:"text"`
 	ReplyLinks  []int  `json:"reply_links"`
 	ListenerTag string `json:"listener_tag"`
 }
 
 type replyPatch struct {
 	LineStrRef     *int   `json:"line_strref"`
+	Text           string `json:"text"`
 	TargetEntryIDs []int  `json:"target_entry_ids"`
 	Category       string `json:"category"`
 	ReplyType      string `json:"reply_type"`
@@ -1477,6 +1500,53 @@ func applySetStarts(conv *dialogue.Conversation, patches []startPatch) error {
 			TargetEntryIDs: sp.TargetEntryIDs,
 			Label:          sp.Label,
 		}
+	}
+	return nil
+}
+
+func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
+	maxID := int32(0)
+	for id := range tlkFile.MaleEntries {
+		if id > maxID {
+			maxID = id
+		}
+	}
+	for id := range tlkFile.FemaleEntries {
+		if id > maxID {
+			maxID = id
+		}
+	}
+
+	var newTLKEntries []tlk.StringEntry
+	nextID := int(maxID) + 1
+
+	for i := range patch.AddEntries {
+		if patch.AddEntries[i].Text != "" {
+			id := nextID
+			nextID++
+			patch.AddEntries[i].LineStrRef = &id
+			newTLKEntries = append(newTLKEntries, tlk.StringEntry{
+				StringID: int32(id),
+				Text:     patch.AddEntries[i].Text,
+				Male:     true,
+			})
+		}
+	}
+	for i := range patch.AddReplies {
+		if patch.AddReplies[i].Text != "" {
+			id := nextID
+			nextID++
+			patch.AddReplies[i].LineStrRef = &id
+			newTLKEntries = append(newTLKEntries, tlk.StringEntry{
+				StringID: int32(id),
+				Text:     patch.AddReplies[i].Text,
+				Male:     true,
+			})
+		}
+	}
+
+	if len(newTLKEntries) > 0 {
+		return tlk.AddEntries(tlkFile, newTLKEntries)
 	}
 	return nil
 }
