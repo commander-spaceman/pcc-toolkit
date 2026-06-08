@@ -179,6 +179,13 @@ For real-file regression, copy ME2 OT `.pcc`/`.tlk` files from your local instal
 - Python 3.14+ (CLI)
 - Windows amd64
 
+## LegendaryExplorer
+
+PCC Toolkit uses [LegendaryExplorer](https://github.com/ME3Tweaks/LegendaryExplorer)
+as a behavioral reference for ME2 OT file format semantics, implemented through a
+clean-room approach: observe behavior, document it, and implement independently.
+See [docs/REFERENCE.md](docs/REFERENCE.md) for details.
+
 ## License
 
 MIT
