@@ -282,3 +282,7 @@ func findPlausibleStructStarts(data []byte, names []string, payloadOffset, end i
 	}
 	return starts
 }
+
+func ParsePropertyHeader(data []byte, names []string, cursor, end int) (string, string, int, int, int, int) {
+	return parsePropertyHeader(data, names, cursor, end)
+}

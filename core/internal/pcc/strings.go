@@ -63,3 +63,11 @@ func resolveName(index int, names []string) string {
 	}
 	return ""
 }
+
+func ResolveName(data []byte, offset int, names []string) string {
+	if offset+4 > len(data) {
+		return ""
+	}
+	idx := readI32(data, offset)
+	return resolveName(idx, names)
+}

@@ -36,14 +36,33 @@ func EditConversation(
 
 	conv := &result.Conversations[convIndex]
 
+	exportIndex := conv.ExportIndex
+	if exportIndex < 0 || exportIndex >= len(summary.Exports) {
+		return fmt.Errorf("export index %d out of range", exportIndex)
+	}
+	originalSerial := rawData[summary.Exports[exportIndex].SerialOffset:]
+	if len(originalSerial) > summary.Exports[exportIndex].SerialSize {
+		originalSerial = originalSerial[:summary.Exports[exportIndex].SerialSize]
+	}
+
 	if err := modifyFn(conv); err != nil {
 		return fmt.Errorf("modify conversation: %w", err)
 	}
 
-	exportIndex := conv.ExportIndex
-	newSerialData, addedNames, err := SerializeConversation(*conv, summary.Names)
-	if err != nil {
-		return fmt.Errorf("serialize conversation: %w", err)
+	var newSerialData []byte
+	var addedNames []string
+
+	if len(originalSerial) > 0 {
+		newSerialData, err = SerializeConversationPreserving(*conv, originalSerial, summary.Names)
+		if err != nil {
+			return fmt.Errorf("serialize preserving: %w", err)
+		}
+		addedNames = nil
+	} else {
+		newSerialData, addedNames, err = SerializeConversation(*conv, summary.Names)
+		if err != nil {
+			return fmt.Errorf("serialize conversation: %w", err)
+		}
 	}
 
 	if len(addedNames) > 0 {
