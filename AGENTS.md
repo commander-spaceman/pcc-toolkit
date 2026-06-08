@@ -65,6 +65,32 @@ Treat LegendaryExplorer as the reference implementation unless `docs/PRD-INSPECT
 
 LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restrictions on low-value generative-AI contributions. Use it as a behavioral and semantic reference only: do not copy, paste, translate, or port its code into this repository unless the project intentionally accepts the resulting license obligations. Prefer documenting observed behavior, public file/class names consulted, and independently implemented logic.
 
+## External Libraries
+
+The Go core depends on three external libraries maintained in separate repositories:
+
+| Library  | Repository                                    | Purpose                         |
+| -------- | --------------------------------------------- | ------------------------------- |
+| `me2lzo` | `github.com/commander-spaceman/me2lzo` v1.0.0 | LZO compression / decompression |
+| `me2pcc` | `github.com/commander-spaceman/me2pcc`        | PCC package reading             |
+| `me2tlk` | `github.com/commander-spaceman/me2tlk`        | TLK file reading                |
+
+These libraries are imported via `core/go.mod` and are maintained independently
+from this repository. When a bug is traced to one of these libraries:
+
+1. Fix the library in its own repository.
+2. Tag or push the fix, then update the dependency in this project:
+   ```powershell
+   cd core
+   go get github.com/commander-spaceman/<library>@<version-or-commit>
+   go mod tidy
+   ```
+3. Run `go test ./...` from `core/` to confirm the fix resolves the issue.
+4. Commit the updated `go.mod` and `go.sum` in this repository.
+
+Do not vendor, fork, or inline code from these libraries into this repository.
+The library boundaries keep each module independently testable and replaceable.
+
 ## Operational Rules
 
 - Scope is Mass Effect 2 Original Trilogy only. Do not add LE1, LE2, LE3, ME1, or ME3 behavior unless the task explicitly changes project scope.
