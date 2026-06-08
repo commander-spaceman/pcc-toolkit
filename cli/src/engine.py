@@ -272,12 +272,14 @@ def edit_conversation(
     *,
     conv_index: int,
     patch_file: Path | str,
-    output: Path | str,
+    output: Path | str | None = None,
+    dry_run: bool = False,
 ) -> dict[str, Any]:
     return _run(
         "edit-conversation",
         file=str(file),
         conv_index=conv_index,
         patch=str(patch_file),
-        output=str(output),
+        output=str(output) if output else None,
+        dry_run=dry_run,
     )

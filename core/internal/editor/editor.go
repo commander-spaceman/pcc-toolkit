@@ -10,35 +10,42 @@ import (
 	"pcc-toolkit/core/internal/pccwrt"
 )
 
+type EditResult struct {
+	Status     string                            `json:"status"`
+	Output     string                            `json:"output,omitempty"`
+	Validation *dialogue.ValidationReportSummary `json:"validation,omitempty"`
+}
+
 func EditConversation(
 	pccPath string,
 	outputPath string,
 	convIndex int,
+	dryRun bool,
 	modifyFn func(*dialogue.Conversation) error,
-) error {
+) (*EditResult, error) {
 	rawData, summary, err := pcc.ReadFileRaw(pccPath)
 	if err != nil {
-		return fmt.Errorf("read PCC: %w", err)
+		return nil, fmt.Errorf("read PCC: %w", err)
 	}
 
 	if err := summary.RequireME2(); err != nil {
-		return err
+		return nil, err
 	}
 
 	result := dialogue.ParseConversations(summary, rawData, "resilient")
 	if err := firstError(*result); err != nil {
-		return fmt.Errorf("parse conversations: %w", err)
+		return nil, fmt.Errorf("parse conversations: %w", err)
 	}
 
 	if convIndex < 0 || convIndex >= len(result.Conversations) {
-		return fmt.Errorf("conversation index %d out of range [0, %d)", convIndex, len(result.Conversations))
+		return nil, fmt.Errorf("conversation index %d out of range [0, %d)", convIndex, len(result.Conversations))
 	}
 
 	conv := &result.Conversations[convIndex]
 
 	exportIndex := conv.ExportIndex
 	if exportIndex < 0 || exportIndex >= len(summary.Exports) {
-		return fmt.Errorf("export index %d out of range", exportIndex)
+		return nil, fmt.Errorf("export index %d out of range", exportIndex)
 	}
 	originalSerial := rawData[summary.Exports[exportIndex].SerialOffset:]
 	if len(originalSerial) > summary.Exports[exportIndex].SerialSize {
@@ -46,7 +53,7 @@ func EditConversation(
 	}
 
 	if err := modifyFn(conv); err != nil {
-		return fmt.Errorf("modify conversation: %w", err)
+		return nil, fmt.Errorf("modify conversation: %w", err)
 	}
 
 	var newSerialData []byte
@@ -55,13 +62,13 @@ func EditConversation(
 	if len(originalSerial) > 0 {
 		newSerialData, err = SerializeConversationPreserving(*conv, originalSerial, summary.Names)
 		if err != nil {
-			return fmt.Errorf("serialize preserving: %w", err)
+			return nil, fmt.Errorf("serialize preserving: %w", err)
 		}
 		addedNames = nil
 	} else {
 		newSerialData, addedNames, err = SerializeConversation(*conv, summary.Names)
 		if err != nil {
-			return fmt.Errorf("serialize conversation: %w", err)
+			return nil, fmt.Errorf("serialize conversation: %w", err)
 		}
 	}
 
@@ -73,25 +80,45 @@ func EditConversation(
 
 		rawData, err = expandNameTable(rawData, summary, addedNames)
 		if err != nil {
-			return fmt.Errorf("expand name table: %w", err)
+			return nil, fmt.Errorf("expand name table: %w", err)
 		}
 
 		newSerialData, _, err = SerializeConversation(*conv, summary.Names)
 		if err != nil {
-			return fmt.Errorf("re-serialize with expanded names: %w", err)
+			return nil, fmt.Errorf("re-serialize with expanded names: %w", err)
 		}
 	}
 
 	patchedData, newSummary, err := pccpat.PatchExport(rawData, summary, exportIndex, newSerialData)
 	if err != nil {
-		return fmt.Errorf("patch export: %w", err)
+		return nil, fmt.Errorf("patch export: %w", err)
+	}
+
+	validateResult := dialogue.ParseConversations(newSummary, patchedData, "resilient")
+	validationReport := dialogue.BuildValidationReport(validateResult)
+
+	editResult := &EditResult{
+		Status:     "ok",
+		Output:     outputPath,
+		Validation: &validationReport.Summary,
+	}
+
+	if dryRun {
+		editResult.Status = "dry_run"
+		editResult.Output = ""
+		return editResult, nil
+	}
+
+	if validationReport.Summary.Invalid > 0 {
+		return nil, fmt.Errorf("validation failed after edit: %d invalid, %d warnings",
+			validationReport.Summary.Invalid, validationReport.Summary.Warning)
 	}
 
 	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, true); err != nil {
-		return fmt.Errorf("write PCC: %w", err)
+		return nil, fmt.Errorf("write PCC: %w", err)
 	}
 
-	return nil
+	return editResult, nil
 }
 
 func firstError(result dialogue.ParseResult) error {

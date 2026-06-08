@@ -488,17 +488,33 @@ def dialogue_edit(
         ..., "--conv-index", help="Export index of the conversation to edit"
     ),
     patch_file: Path = typer.Option(..., "--patch", help="Path to JSON patch file"),
-    output: Path = typer.Option(..., "--output", help="Path for the output PCC file"),
+    output: Path = typer.Option(None, "--output", help="Path for the output PCC file"),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Validate without writing output"
+    ),
 ) -> None:
     result = engine_edit_conversation(
         file,
         conv_index=conv_index,
         patch_file=patch_file,
         output=output,
+        dry_run=dry_run,
     )
     status = result.get("status", "unknown")
-    out = result.get("output", str(output))
+    validation = result.get("validation")
+    out = result.get("output", str(output) if output else "(dry-run)")
     console.print(f"[green]{status}[/green] -> {out}")
+    if validation:
+        total = validation.get("total", 0)
+        valid = validation.get("valid", 0)
+        warning = validation.get("warning", 0)
+        invalid = validation.get("invalid", 0)
+        console.print(
+            f"  validation: [green]{valid} valid[/green]"
+            f" / [yellow]{warning} warnings[/yellow]"
+            f" / [red]{invalid} invalid[/red]"
+            f" ({total} total)"
+        )
 
 
 # ── batch ────────────────────────────────────────────────────────────────────

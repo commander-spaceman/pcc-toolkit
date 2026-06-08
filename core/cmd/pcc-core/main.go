@@ -1105,6 +1105,7 @@ func cmdEditConversation(args []string) {
 	convIndex := fs.Int("conv-index", -1, "Export index of the conversation to edit")
 	output := fs.String("output", "", "Path for the output PCC file")
 	patchFile := fs.String("patch", "", "Path to JSON patch file")
+	dryRun := fs.Bool("dry-run", false, "Validate without writing output")
 
 	fs.Parse(args)
 
@@ -1114,11 +1115,11 @@ func cmdEditConversation(args []string) {
 	if *convIndex < 0 {
 		writeError("--conv-index is required", 2)
 	}
-	if *output == "" {
-		writeError("--output is required", 2)
-	}
 	if *patchFile == "" {
 		writeError("--patch is required", 2)
+	}
+	if !*dryRun && *output == "" {
+		writeError("--output is required (or use --dry-run)", 2)
 	}
 
 	patchData, err := os.ReadFile(*patchFile)
@@ -1131,17 +1132,23 @@ func cmdEditConversation(args []string) {
 		writeError(fmt.Sprintf("parse patch JSON: %v", err), 1)
 	}
 
+	outPath := *output
+	if *dryRun {
+		outPath = ""
+	}
+
 	modifyFn := func(conv *dialogue.Conversation) error {
 		return applyPatch(conv, &patch)
 	}
 
-	if err := editor.EditConversation(*file, *output, *convIndex, modifyFn); err != nil {
+	editResult, err := editor.EditConversation(*file, outPath, *convIndex, *dryRun, modifyFn)
+	if err != nil {
 		writeError(fmt.Sprintf("edit failed: %v", err), 1)
 	}
 
-	successPayload := map[string]string{"status": "ok", "output": *output}
 	enc := json.NewEncoder(os.Stdout)
-	if err := enc.Encode(successPayload); err != nil {
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(editResult); err != nil {
 		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
 	}
 }
