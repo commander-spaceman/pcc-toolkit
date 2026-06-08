@@ -1147,8 +1147,14 @@ func cmdEditConversation(args []string) {
 }
 
 type conversationPatch struct {
-	AddEntries []entryPatch `json:"add_entries"`
-	AddReplies []replyPatch `json:"add_replies"`
+	AddEntries      []entryPatch       `json:"add_entries"`
+	AddReplies      []replyPatch       `json:"add_replies"`
+	ModifyEntries   []modifyEntryPatch `json:"modify_entries"`
+	ModifyReplies   []modifyReplyPatch `json:"modify_replies"`
+	DeleteEntries   []int              `json:"delete_entries"`
+	DeleteReplies   []int              `json:"delete_replies"`
+	AddReplyChoices []replyChoicePatch `json:"add_reply_choices"`
+	SetStarts       []startPatch       `json:"set_starts"`
 }
 
 type entryPatch struct {
@@ -1165,9 +1171,65 @@ type replyPatch struct {
 	ReplyType      string `json:"reply_type"`
 }
 
+type modifyEntryPatch struct {
+	ID         int   `json:"id"`
+	SpeakerID  *int  `json:"speaker_id"`
+	LineStrRef *int  `json:"line_strref"`
+	ReplyLinks []int `json:"reply_links"`
+}
+
+type modifyReplyPatch struct {
+	ID             int    `json:"id"`
+	LineStrRef     *int   `json:"line_strref"`
+	TargetEntryIDs []int  `json:"target_entry_ids"`
+	Category       string `json:"category"`
+	ReplyType      string `json:"reply_type"`
+}
+
+type replyChoicePatch struct {
+	FromEntryID      int    `json:"from_entry_id"`
+	ToReplyID        int    `json:"to_reply_id"`
+	ParaphraseStrRef *int   `json:"paraphrase_strref"`
+	Paraphrase       string `json:"paraphrase"`
+	Category         string `json:"category"`
+}
+
+type startPatch struct {
+	TargetEntryIDs []int  `json:"target_entry_ids"`
+	Label          string `json:"label"`
+}
+
 func applyPatch(conv *dialogue.Conversation, patch *conversationPatch) error {
+	if err := applyDeleteReplies(conv, patch.DeleteReplies); err != nil {
+		return err
+	}
+	if err := applyDeleteEntries(conv, patch.DeleteEntries); err != nil {
+		return err
+	}
+	if err := applyModifyEntries(conv, patch.ModifyEntries); err != nil {
+		return err
+	}
+	if err := applyModifyReplies(conv, patch.ModifyReplies); err != nil {
+		return err
+	}
+	if err := applyAddReplyChoices(conv, patch.AddReplyChoices); err != nil {
+		return err
+	}
+	if err := applyAddEntries(conv, patch.AddEntries); err != nil {
+		return err
+	}
+	if err := applyAddReplies(conv, patch.AddReplies); err != nil {
+		return err
+	}
+	if err := applySetStarts(conv, patch.SetStarts); err != nil {
+		return err
+	}
+	return nil
+}
+
+func applyAddEntries(conv *dialogue.Conversation, patches []entryPatch) error {
 	entryBase := len(conv.Entries)
-	for i, ep := range patch.AddEntries {
+	for i, ep := range patches {
 		speakerID := 0
 		if ep.SpeakerID != nil {
 			speakerID = *ep.SpeakerID
@@ -1199,9 +1261,12 @@ func applyPatch(conv *dialogue.Conversation, patch *conversationPatch) error {
 
 		conv.Entries = append(conv.Entries, entry)
 	}
+	return nil
+}
 
+func applyAddReplies(conv *dialogue.Conversation, patches []replyPatch) error {
 	replyBase := len(conv.Replies)
-	for i, rp := range patch.AddReplies {
+	for i, rp := range patches {
 		lineStrRef := -1
 		if rp.LineStrRef != nil {
 			lineStrRef = *rp.LineStrRef
@@ -1225,6 +1290,186 @@ func applyPatch(conv *dialogue.Conversation, patch *conversationPatch) error {
 
 		conv.Replies = append(conv.Replies, reply)
 	}
+	return nil
+}
 
+func applyModifyEntries(conv *dialogue.Conversation, patches []modifyEntryPatch) error {
+	for _, mp := range patches {
+		found := false
+		for i := range conv.Entries {
+			if conv.Entries[i].ID != mp.ID {
+				continue
+			}
+			found = true
+			if mp.SpeakerID != nil {
+				v := *mp.SpeakerID
+				conv.Entries[i].SpeakerID = &v
+			}
+			if mp.LineStrRef != nil {
+				v := *mp.LineStrRef
+				conv.Entries[i].LineStrRef = &v
+			}
+			if mp.ReplyLinks != nil {
+				conv.Entries[i].ReplyLinks = mp.ReplyLinks
+				conv.Entries[i].ReplyChoices = nil
+				for j, replyIdx := range mp.ReplyLinks {
+					conv.Entries[i].ReplyChoices = append(conv.Entries[i].ReplyChoices, dialogue.ReplyChoice{
+						FromEntryID: mp.ID,
+						ToReplyID:   replyIdx,
+						Order:       j,
+					})
+				}
+			}
+			break
+		}
+		if !found {
+			return fmt.Errorf("entry %d not found for modify", mp.ID)
+		}
+	}
+	return nil
+}
+
+func applyModifyReplies(conv *dialogue.Conversation, patches []modifyReplyPatch) error {
+	for _, mp := range patches {
+		found := false
+		for i := range conv.Replies {
+			if conv.Replies[i].ID != mp.ID {
+				continue
+			}
+			found = true
+			if mp.LineStrRef != nil {
+				v := *mp.LineStrRef
+				conv.Replies[i].LineStrRef = &v
+			}
+			if mp.TargetEntryIDs != nil {
+				conv.Replies[i].TargetEntryIDs = mp.TargetEntryIDs
+			}
+			if mp.Category != "" {
+				conv.Replies[i].Category = mp.Category
+			}
+			if mp.ReplyType != "" {
+				conv.Replies[i].ReplyType = mp.ReplyType
+			}
+			break
+		}
+		if !found {
+			return fmt.Errorf("reply %d not found for modify", mp.ID)
+		}
+	}
+	return nil
+}
+
+func applyDeleteEntries(conv *dialogue.Conversation, ids []int) error {
+	for _, delID := range ids {
+		idx := -1
+		for i := range conv.Entries {
+			if conv.Entries[i].ID == delID {
+				idx = i
+				break
+			}
+		}
+		if idx < 0 {
+			return fmt.Errorf("entry %d not found for delete", delID)
+		}
+		conv.Entries = append(conv.Entries[:idx], conv.Entries[idx+1:]...)
+
+		for i := range conv.Starts {
+			filtered := conv.Starts[i].TargetEntryIDs[:0]
+			for _, tid := range conv.Starts[i].TargetEntryIDs {
+				if tid != delID {
+					filtered = append(filtered, tid)
+				}
+			}
+			conv.Starts[i].TargetEntryIDs = filtered
+		}
+
+		for i := range conv.Replies {
+			filtered := conv.Replies[i].TargetEntryIDs[:0]
+			for _, tid := range conv.Replies[i].TargetEntryIDs {
+				if tid != delID {
+					filtered = append(filtered, tid)
+				}
+			}
+			conv.Replies[i].TargetEntryIDs = filtered
+		}
+	}
+	return nil
+}
+
+func applyDeleteReplies(conv *dialogue.Conversation, ids []int) error {
+	for _, delID := range ids {
+		idx := -1
+		for i := range conv.Replies {
+			if conv.Replies[i].ID == delID {
+				idx = i
+				break
+			}
+		}
+		if idx < 0 {
+			return fmt.Errorf("reply %d not found for delete", delID)
+		}
+		conv.Replies = append(conv.Replies[:idx], conv.Replies[idx+1:]...)
+
+		for i := range conv.Entries {
+			filteredLinks := conv.Entries[i].ReplyLinks[:0]
+			filteredChoices := conv.Entries[i].ReplyChoices[:0]
+			for j, rl := range conv.Entries[i].ReplyLinks {
+				if rl != delID {
+					filteredLinks = append(filteredLinks, rl)
+					if j < len(conv.Entries[i].ReplyChoices) {
+						filteredChoices = append(filteredChoices, conv.Entries[i].ReplyChoices[j])
+					}
+				}
+			}
+			conv.Entries[i].ReplyLinks = filteredLinks
+			conv.Entries[i].ReplyChoices = filteredChoices
+		}
+	}
+	return nil
+}
+
+func applyAddReplyChoices(conv *dialogue.Conversation, patches []replyChoicePatch) error {
+	for _, rcp := range patches {
+		found := false
+		for i := range conv.Entries {
+			if conv.Entries[i].ID != rcp.FromEntryID {
+				continue
+			}
+			found = true
+			conv.Entries[i].ReplyLinks = append(conv.Entries[i].ReplyLinks, rcp.ToReplyID)
+
+			order := len(conv.Entries[i].ReplyChoices)
+			rc := dialogue.ReplyChoice{
+				FromEntryID: rcp.FromEntryID,
+				ToReplyID:   rcp.ToReplyID,
+				Order:       order,
+				Paraphrase:  rcp.Paraphrase,
+				Category:    rcp.Category,
+			}
+			if rcp.ParaphraseStrRef != nil {
+				rc.ParaphraseStrRef = rcp.ParaphraseStrRef
+			}
+			conv.Entries[i].ReplyChoices = append(conv.Entries[i].ReplyChoices, rc)
+			break
+		}
+		if !found {
+			return fmt.Errorf("entry %d not found for add_reply_choice", rcp.FromEntryID)
+		}
+	}
+	return nil
+}
+
+func applySetStarts(conv *dialogue.Conversation, patches []startPatch) error {
+	if patches == nil {
+		return nil
+	}
+	conv.Starts = make([]dialogue.StartNode, len(patches))
+	for i, sp := range patches {
+		conv.Starts[i] = dialogue.StartNode{
+			ID:             i,
+			TargetEntryIDs: sp.TargetEntryIDs,
+			Label:          sp.Label,
+		}
+	}
 	return nil
 }
