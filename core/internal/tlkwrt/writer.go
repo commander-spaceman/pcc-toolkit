@@ -1,19 +1,21 @@
-package tlk
+package tlkwrt
 
 import (
 	"encoding/binary"
 	"fmt"
 	"os"
 	"sort"
+
+	"github.com/commander-spaceman/me2tlk/reader"
 )
 
-func BuildCodeTable(nodes []Node) map[uint16]string {
+func BuildCodeTable(nodes []reader.Node) map[uint16]string {
 	table := make(map[uint16]string)
 	buildCodeTableRecursive(nodes, 0, "", table)
 	return table
 }
 
-func buildCodeTableRecursive(nodes []Node, nodeIdx int32, prefix string, table map[uint16]string) {
+func buildCodeTableRecursive(nodes []reader.Node, nodeIdx int32, prefix string, table map[uint16]string) {
 	if nodeIdx < 0 || nodeIdx >= int32(len(nodes)) {
 		return
 	}
@@ -97,7 +99,7 @@ type StringEntry struct {
 	Male     bool
 }
 
-func WriteFile(path string, tlkFile *File, newEntries []StringEntry) error {
+func WriteFile(path string, tlkFile *reader.File, newEntries []StringEntry) error {
 	if err := AddEntries(tlkFile, newEntries); err != nil {
 		return err
 	}
@@ -108,11 +110,11 @@ func WriteFile(path string, tlkFile *File, newEntries []StringEntry) error {
 	return os.WriteFile(path, buf, 0644)
 }
 
-func WriteFileBytes(tlkFile *File) ([]byte, error) {
+func WriteFileBytes(tlkFile *reader.File) ([]byte, error) {
 	return BuildBytes(tlkFile, nil)
 }
 
-func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
+func BuildBytes(tlkFile *reader.File, newEntries []StringEntry) ([]byte, error) {
 	if tlkFile == nil {
 		return nil, fmt.Errorf("tlk file is nil")
 	}
@@ -122,12 +124,12 @@ func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
 	maleCount := int(tlkFile.Header.MaleEntryCount)
 	femaleCount := int(tlkFile.Header.FemaleEntryCount)
 
-	var maleEntries, femaleEntries []Tuple
+	var maleEntries, femaleEntries []reader.Tuple
 	for id, off := range tlkFile.MaleEntries {
-		maleEntries = append(maleEntries, Tuple{StringID: id, BitOffset: off})
+		maleEntries = append(maleEntries, reader.Tuple{StringID: id, BitOffset: off})
 	}
 	for id, off := range tlkFile.FemaleEntries {
-		femaleEntries = append(femaleEntries, Tuple{StringID: id, BitOffset: off})
+		femaleEntries = append(femaleEntries, reader.Tuple{StringID: id, BitOffset: off})
 	}
 
 	sort.Slice(maleEntries, func(i, j int) bool { return maleEntries[i].StringID < maleEntries[j].StringID })
@@ -161,7 +163,7 @@ func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
 			return nil, fmt.Errorf("encode string ID %d: %w", id, err)
 		}
 
-		newTuple := Tuple{StringID: id, BitOffset: int32(bitstreamPos)}
+		newTuple := reader.Tuple{StringID: id, BitOffset: int32(bitstreamPos)}
 		if entry.Male {
 			maleEntries = append(maleEntries, newTuple)
 			maleCount++
@@ -184,7 +186,7 @@ func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
 
 	buf := make([]byte, totalSize)
 
-	binary.LittleEndian.PutUint32(buf[0:4], uint32(TLKMagic))
+	binary.LittleEndian.PutUint32(buf[0:4], uint32(reader.TLKMagic))
 	binary.LittleEndian.PutUint32(buf[4:8], uint32(tlkFile.Header.Version))
 	binary.LittleEndian.PutUint32(buf[8:12], uint32(tlkFile.Header.MinVersion))
 	binary.LittleEndian.PutUint32(buf[12:16], uint32(maleCount))
@@ -211,7 +213,7 @@ func BuildBytes(tlkFile *File, newEntries []StringEntry) ([]byte, error) {
 	return buf, nil
 }
 
-func AddEntries(tlkFile *File, entries []StringEntry) error {
+func AddEntries(tlkFile *reader.File, entries []StringEntry) error {
 	if tlkFile == nil {
 		return fmt.Errorf("tlk file is nil")
 	}

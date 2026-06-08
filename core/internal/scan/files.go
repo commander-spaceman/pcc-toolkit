@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"pcc-toolkit/core/internal/tlk"
+	"github.com/commander-spaceman/me2tlk/resolver"
 )
 
 func CollectPccFiles(biogameRoot string) ([]FileEntry, error) {
@@ -50,7 +50,7 @@ func CollectPccFiles(biogameRoot string) ([]FileEntry, error) {
 				continue
 			}
 			dlcRoot := filepath.Join(dlcDir, dlcName)
-			pri := tlk.ReadMountPriority(dlcRoot)
+			pri := resolver.ReadMountPriority(dlcRoot)
 
 			cookedDirs, _ := filepath.Glob(filepath.Join(dlcRoot, "CookedPC*"))
 			for _, cookedDir := range cookedDirs {

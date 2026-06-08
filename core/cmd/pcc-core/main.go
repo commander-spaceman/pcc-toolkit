@@ -19,7 +19,10 @@ import (
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
 	"pcc-toolkit/core/internal/serialize"
-	"pcc-toolkit/core/internal/tlk"
+	"pcc-toolkit/core/internal/tlkwrt"
+
+	"github.com/commander-spaceman/me2tlk/reader"
+	me2resolver "github.com/commander-spaceman/me2tlk/resolver"
 )
 
 var version = "0.3.0" // overridable via -ldflags "-X main.version=x.y.z"
@@ -313,17 +316,17 @@ func cmdParseTlk(args []string) {
 		writeError("--file is required", 2)
 	}
 
-	tlkFile, err := tlk.ReadFile(*file)
+	tlkFile, err := reader.ReadFile(*file)
 	if err != nil {
 		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	type parseTlkOutput struct {
-		File         string      `json:"file"`
-		Header       tlk.Header  `json:"header"`
-		Entries      []tlk.Entry `json:"entries,omitempty"`
-		Results      []tlk.Entry `json:"results,omitempty"`
-		TotalEntries int         `json:"total_entries"`
+		File         string         `json:"file"`
+		Header       reader.Header  `json:"header"`
+		Entries      []reader.Entry `json:"entries,omitempty"`
+		Results      []reader.Entry `json:"results,omitempty"`
+		TotalEntries int            `json:"total_entries"`
 	}
 
 	out := parseTlkOutput{
@@ -333,15 +336,15 @@ func cmdParseTlk(args []string) {
 
 	switch {
 	case *strref >= 0:
-		text, ok := tlk.ResolveString(tlkFile, int32(*strref), true)
+		text, ok := reader.ResolveString(tlkFile, int32(*strref), true)
 		if ok {
-			out.Entries = []tlk.Entry{{StringID: int32(*strref), Text: text}}
+			out.Entries = []reader.Entry{{StringID: int32(*strref), Text: text}}
 		}
 	case *search != "":
 		out.Results = tlkFile.Search(*search)
 	case *dumpAll:
 		tlkFile.IterEntriesWithSource()(func(id int32, text string, source string) bool {
-			out.Entries = append(out.Entries, tlk.Entry{StringID: id, Text: text, Source: source})
+			out.Entries = append(out.Entries, reader.Entry{StringID: id, Text: text, Source: source})
 			return true
 		})
 	default:
@@ -383,15 +386,15 @@ func cmdResolveTlk(args []string) {
 		writeError("at least one --strref is required", 2)
 	}
 
-	resolver, err := tlk.BuildResolver(*base, *dlcDir, *language, false)
+	resolver, err := me2resolver.BuildResolver(*base, *dlcDir, *language, false)
 	if err != nil {
 		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
 	type resolveTlkOutput struct {
-		Base    string              `json:"base"`
-		DlcDir  string              `json:"dlc_dir,omitempty"`
-		Results []tlk.ResolveResult `json:"results"`
+		Base    string                      `json:"base"`
+		DlcDir  string                      `json:"dlc_dir,omitempty"`
+		Results []me2resolver.ResolveResult `json:"results"`
 	}
 
 	out := resolveTlkOutput{
@@ -402,7 +405,7 @@ func cmdResolveTlk(args []string) {
 	for _, raw := range *strrefFlags {
 		var id int
 		if _, err := fmt.Sscanf(raw, "%d", &id); err != nil {
-			out.Results = append(out.Results, tlk.ResolveResult{StringID: 0, Text: "", Found: false})
+			out.Results = append(out.Results, me2resolver.ResolveResult{StringID: 0, Text: "", Found: false})
 			continue
 		}
 		refID := int32(id)
@@ -447,9 +450,9 @@ func cmdParseConversations(args []string) {
 		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
-	var resolver *tlk.Resolver
+	var resolver *me2resolver.Resolver
 	if *resolveTlk != "" {
-		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
+		resolver, err = me2resolver.BuildResolver(*resolveTlk, *dlcDir, *language, false)
 		if err != nil {
 			writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 		}
@@ -490,7 +493,7 @@ func cmdParseConversations(args []string) {
 	}
 }
 
-func resolveConversationTLK(conv *dialogue.Conversation, resolver *tlk.Resolver) {
+func resolveConversationTLK(conv *dialogue.Conversation, resolver *me2resolver.Resolver) {
 	for i := range conv.Entries {
 		if conv.Entries[i].LineStrRef != nil {
 			text, ok := resolver.Resolve(int32(*conv.Entries[i].LineStrRef))
@@ -605,7 +608,7 @@ func cmdScanEvidence(args []string) {
 		writeError("--tlk is required", 2)
 	}
 
-	resolver, err := tlk.BuildResolver(*tlkPath, *dlcDir, *language, false)
+	resolver, err := me2resolver.BuildResolver(*tlkPath, *dlcDir, *language, false)
 	if err != nil {
 		writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 	}
@@ -1002,9 +1005,9 @@ func cmdDumpLines(args []string) {
 		writeError(fmt.Sprintf("error: %v", err), 1)
 	}
 
-	var resolver *tlk.Resolver
+	var resolver *me2resolver.Resolver
 	if *resolveTlk != "" {
-		resolver, err = tlk.BuildResolver(*resolveTlk, *dlcDir, *language, false)
+		resolver, err = me2resolver.BuildResolver(*resolveTlk, *dlcDir, *language, false)
 		if err != nil {
 			writeError(fmt.Sprintf("tlk resolver error: %v", err), 1)
 		}
@@ -1139,7 +1142,7 @@ func cmdEditConversation(args []string) {
 	}
 
 	if *tlkPath != "" {
-		tlkFile, err := tlk.ReadFile(*tlkPath)
+		tlkFile, err := reader.ReadFile(*tlkPath)
 		if err != nil {
 			writeError(fmt.Sprintf("read TLK: %v", err), 1)
 		}
@@ -1147,7 +1150,7 @@ func cmdEditConversation(args []string) {
 			writeError(fmt.Sprintf("resolve TLK text: %v", err), 1)
 		}
 		if *tlkOutput != "" {
-			buf, err := tlk.WriteFileBytes(tlkFile)
+			buf, err := tlkwrt.WriteFileBytes(tlkFile)
 			if err != nil {
 				writeError(fmt.Sprintf("build TLK bytes: %v", err), 1)
 			}
@@ -1519,7 +1522,7 @@ func applySetStarts(conv *dialogue.Conversation, patches []startPatch) error {
 	return nil
 }
 
-func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
+func resolveTextToStrRefs(patch *conversationPatch, tlkFile *reader.File) error {
 	maxID := int32(0)
 	for id := range tlkFile.MaleEntries {
 		if id > maxID {
@@ -1532,7 +1535,7 @@ func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
 		}
 	}
 
-	var newTLKEntries []tlk.StringEntry
+	var newTLKEntries []tlkwrt.StringEntry
 	nextID := int(maxID) + 1
 
 	for i := range patch.AddEntries {
@@ -1540,7 +1543,7 @@ func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
 			id := nextID
 			nextID++
 			patch.AddEntries[i].LineStrRef = &id
-			newTLKEntries = append(newTLKEntries, tlk.StringEntry{
+			newTLKEntries = append(newTLKEntries, tlkwrt.StringEntry{
 				StringID: int32(id),
 				Text:     patch.AddEntries[i].Text,
 				Male:     true,
@@ -1552,7 +1555,7 @@ func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
 			id := nextID
 			nextID++
 			patch.AddReplies[i].LineStrRef = &id
-			newTLKEntries = append(newTLKEntries, tlk.StringEntry{
+			newTLKEntries = append(newTLKEntries, tlkwrt.StringEntry{
 				StringID: int32(id),
 				Text:     patch.AddReplies[i].Text,
 				Male:     true,
@@ -1561,7 +1564,7 @@ func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
 	}
 
 	if len(newTLKEntries) > 0 {
-		return tlk.AddEntries(tlkFile, newTLKEntries)
+		return tlkwrt.AddEntries(tlkFile, newTLKEntries)
 	}
 	return nil
 }

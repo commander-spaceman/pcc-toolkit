@@ -1,18 +1,16 @@
-package tlk
+package tlkwrt
 
 import (
 	"encoding/binary"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/commander-spaceman/me2tlk/reader"
 )
 
 func TestBuildCodeTable(t *testing.T) {
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
 	table := BuildCodeTable(tlkFile.Nodes)
 	if len(table) == 0 {
@@ -28,18 +26,10 @@ func TestBuildCodeTable(t *testing.T) {
 	if _, ok := table[0]; !ok {
 		t.Error("null terminator code not found")
 	}
-
-	for char, code := range table {
-		t.Logf("char U+%04X (%q): code=%q (len=%d)", char, rune(char), code, len(code))
-	}
 }
 
 func TestEncodeString(t *testing.T) {
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
 	table := BuildCodeTable(tlkFile.Nodes)
 
@@ -49,7 +39,7 @@ func TestEncodeString(t *testing.T) {
 		t.Fatalf("EncodeString: %v", err)
 	}
 
-	decoded, ok := DecodeString(encoded, tlkFile.Nodes, 0)
+	decoded, ok := reader.DecodeString(encoded, tlkFile.Nodes, 0)
 	if !ok {
 		t.Fatal("DecodeString failed")
 	}
@@ -59,16 +49,12 @@ func TestEncodeString(t *testing.T) {
 }
 
 func TestEncodeString_Unicode(t *testing.T) {
-	nodes := []Node{
-		{LeftNodeID: -66, RightNodeID: 1},   // 0: root, leaf 'A' + internal
-		{LeftNodeID: -67, RightNodeID: 2},   // 1: leaf 'B' + internal
-		{LeftNodeID: -242, RightNodeID: -1}, // 2: leaf 'ñ' + null terminator
+	nodes := []reader.Node{
+		{LeftNodeID: -66, RightNodeID: 1},
+		{LeftNodeID: -67, RightNodeID: 2},
+		{LeftNodeID: -242, RightNodeID: -1},
 	}
 	table := BuildCodeTable(nodes)
-	t.Logf("table entries: %d", len(table))
-	for ch, code := range table {
-		t.Logf("  U+%04X code=%q", ch, code)
-	}
 
 	original := "Añ"
 	encoded, err := EncodeString(original, table)
@@ -76,7 +62,7 @@ func TestEncodeString_Unicode(t *testing.T) {
 		t.Fatalf("EncodeString: %v", err)
 	}
 
-	decoded, ok := DecodeString(encoded, nodes, 0)
+	decoded, ok := reader.DecodeString(encoded, nodes, 0)
 	if !ok {
 		t.Fatal("DecodeString failed")
 	}
@@ -86,20 +72,16 @@ func TestEncodeString_Unicode(t *testing.T) {
 }
 
 func TestAddEntries_InMemory(t *testing.T) {
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
-	err = AddEntries(tlkFile, []StringEntry{
+	err := AddEntries(tlkFile, []StringEntry{
 		{StringID: 10, Text: "AB", Male: true},
 	})
 	if err != nil {
 		t.Fatalf("AddEntries: %v", err)
 	}
 
-	text, ok := ResolveString(tlkFile, 10, true)
+	text, ok := reader.ResolveString(tlkFile, 10, true)
 	if !ok {
 		t.Fatal("new entry not found")
 	}
@@ -107,7 +89,7 @@ func TestAddEntries_InMemory(t *testing.T) {
 		t.Errorf("text: want %q, got %q", "AB", text)
 	}
 
-	text, ok = ResolveString(tlkFile, 1, true)
+	text, ok = reader.ResolveString(tlkFile, 1, true)
 	if !ok {
 		t.Fatal("original entry not found after add")
 	}
@@ -121,7 +103,7 @@ func TestAddEntries_InMemory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("AddEntries second: %v", err)
 	}
-	text2, ok := ResolveString(tlkFile, 20, true)
+	text2, ok := reader.ResolveString(tlkFile, 20, true)
 	if !ok {
 		t.Fatal("second new entry not found")
 	}
@@ -134,13 +116,9 @@ func TestWriteFile_RoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	outPath := filepath.Join(dir, "test.tlk")
 
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
-	err = WriteFile(outPath, tlkFile, []StringEntry{
+	err := WriteFile(outPath, tlkFile, []StringEntry{
 		{StringID: 20, Text: "AB", Male: true},
 		{StringID: 30, Text: "BA", Male: false},
 	})
@@ -152,26 +130,26 @@ func TestWriteFile_RoundTrip(t *testing.T) {
 		t.Fatal("output file does not exist")
 	}
 
-	readBack, err := ReadFile(outPath)
+	readBack, err := reader.ReadFile(outPath)
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
 
-	text, ok := ResolveString(readBack, 20, true)
+	text, ok := reader.ResolveString(readBack, 20, true)
 	if !ok {
 		t.Error("new male entry not found after round-trip")
 	} else if text != "AB" {
 		t.Errorf("male text: want %q, got %q", "AB", text)
 	}
 
-	text, ok = ResolveString(readBack, 30, false)
+	text, ok = reader.ResolveString(readBack, 30, false)
 	if !ok {
 		t.Error("new female entry not found after round-trip")
 	} else if text != "BA" {
 		t.Errorf("female text: want %q, got %q", "BA", text)
 	}
 
-	text, ok = ResolveString(readBack, 1, true)
+	text, ok = reader.ResolveString(readBack, 1, true)
 	if !ok {
 		t.Error("original entry not found after round-trip")
 	} else if text != "AB" {
@@ -187,18 +165,14 @@ func TestWriteFile_RoundTrip(t *testing.T) {
 }
 
 func TestBuildBytes_EmptyNewEntries(t *testing.T) {
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
 	buf, err := BuildBytes(tlkFile, nil)
 	if err != nil {
 		t.Fatalf("BuildBytes: %v", err)
 	}
 
-	readBack, err := Parse(buf, "test.tlk")
+	readBack, err := reader.Parse(buf, "test.tlk")
 	if err != nil {
 		t.Fatalf("Parse round-trip: %v", err)
 	}
@@ -209,7 +183,7 @@ func TestBuildBytes_EmptyNewEntries(t *testing.T) {
 }
 
 func TestEncodeString_CharNotFound(t *testing.T) {
-	nodes := []Node{
+	nodes := []reader.Node{
 		{LeftNodeID: -65, RightNodeID: -66},
 	}
 	table := BuildCodeTable(nodes)
@@ -221,7 +195,7 @@ func TestEncodeString_CharNotFound(t *testing.T) {
 }
 
 func TestEncodeString_NoNullTerminator(t *testing.T) {
-	nodes := []Node{
+	nodes := []reader.Node{
 		{LeftNodeID: -65, RightNodeID: -66},
 	}
 	table := BuildCodeTable(nodes)
@@ -233,20 +207,16 @@ func TestEncodeString_NoNullTerminator(t *testing.T) {
 }
 
 func TestAddEntries_Duplicate(t *testing.T) {
-	data := buildMinimalTLK()
-	tlkFile, err := Parse(data, "test.tlk")
-	if err != nil {
-		t.Fatalf("Parse: %v", err)
-	}
+	tlkFile := reader.BuildTestFile()
 
-	err = AddEntries(tlkFile, []StringEntry{
+	err := AddEntries(tlkFile, []StringEntry{
 		{StringID: 1, Text: "Should Not Overwrite", Male: true},
 	})
 	if err != nil {
 		t.Fatalf("AddEntries: %v", err)
 	}
 
-	text, ok := ResolveString(tlkFile, 1, true)
+	text, ok := reader.ResolveString(tlkFile, 1, true)
 	if !ok {
 		t.Fatal("entry not found")
 	}
@@ -269,7 +239,7 @@ func TestWriteFile_RealTLK(t *testing.T) {
 		t.Skip("real TLK file not available")
 	}
 
-	tlkFile, err := ReadFile(basePath)
+	tlkFile, err := reader.ReadFile(basePath)
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
@@ -286,12 +256,12 @@ func TestWriteFile_RealTLK(t *testing.T) {
 		t.Fatalf("WriteFile: %v", err)
 	}
 
-	readBack, err := ReadFile(outPath)
+	readBack, err := reader.ReadFile(outPath)
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
 
-	text, ok := ResolveString(readBack, newID, true)
+	text, ok := reader.ResolveString(readBack, newID, true)
 	if !ok {
 		t.Errorf("new entry %d not found", newID)
 	}
@@ -300,7 +270,7 @@ func TestWriteFile_RealTLK(t *testing.T) {
 	}
 
 	for _, originalID := range []int32{0, 1, 2, 3} {
-		origText, origOk := ResolveString(readBack, originalID, true)
+		origText, origOk := reader.ResolveString(readBack, originalID, true)
 		if origOk {
 			t.Logf("original ID %d: %q", originalID, origText)
 		}
@@ -320,7 +290,7 @@ func buildLargeTLK() []byte {
 		buf = append(buf, b...)
 	}
 
-	writeI32(int32(TLKMagic))
+	writeI32(int32(reader.TLKMagic))
 	writeI32(3)
 	writeI32(2)
 	writeI32(2)
@@ -355,7 +325,7 @@ func buildLargeTLK() []byte {
 func TestBuildLargeTLK(t *testing.T) {
 	t.Skip("data layout needs adjustment for 5-node tree")
 	data := buildLargeTLK()
-	tlkFile, err := Parse(data, "test.tlk")
+	tlkFile, err := reader.Parse(data, "test.tlk")
 	if err != nil {
 		t.Fatalf("Parse: %v", err)
 	}
@@ -363,11 +333,11 @@ func TestBuildLargeTLK(t *testing.T) {
 		t.Errorf("TotalEntries: want 2, got %d", tlkFile.TotalEntries)
 	}
 
-	text1, ok := ResolveString(tlkFile, 1, true)
+	text1, ok := reader.ResolveString(tlkFile, 1, true)
 	if !ok {
 		t.Error("entry 1 not found")
 	}
-	text2, ok := ResolveString(tlkFile, 2, true)
+	text2, ok := reader.ResolveString(tlkFile, 2, true)
 	if !ok {
 		t.Error("entry 2 not found")
 	}

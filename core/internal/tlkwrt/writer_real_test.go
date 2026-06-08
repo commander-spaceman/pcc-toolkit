@@ -1,9 +1,11 @@
-package tlk
+package tlkwrt
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/commander-spaceman/me2tlk/reader"
 )
 
 func TestWriteFile_RealTLK_Debug(t *testing.T) {
@@ -13,7 +15,7 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 		t.Skip("real TLK file not available")
 	}
 
-	tlkFile, err := ReadFile(basePath)
+	tlkFile, err := reader.ReadFile(basePath)
 	if err != nil {
 		t.Fatalf("ReadFile: %v", err)
 	}
@@ -41,7 +43,7 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 	}
 	t.Logf("Encoded %q: %d bytes", testText, len(encoded))
 
-	decoded, ok := DecodeString(encoded, tlkFile.Nodes, 0)
+	decoded, ok := reader.DecodeString(encoded, tlkFile.Nodes, 0)
 	if !ok {
 		t.Fatal("DecodeString failed for test encoding")
 	}
@@ -69,7 +71,7 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 		t.Errorf("MaleEntryCount: want %d, got %d", origMaleCount+1, tlkFile.Header.MaleEntryCount)
 	}
 
-	text, ok := ResolveString(tlkFile, newID, true)
+	text, ok := reader.ResolveString(tlkFile, newID, true)
 	if !ok {
 		t.Fatal("new entry not found in in-memory TLK after AddEntries")
 	}
@@ -88,7 +90,7 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 	fi, _ := os.Stat(outPath)
 	t.Logf("Written TLK: %d bytes", fi.Size())
 
-	readBack, err := ReadFile(outPath)
+	readBack, err := reader.ReadFile(outPath)
 	if err != nil {
 		t.Fatalf("ReadFile output: %v", err)
 	}
@@ -96,27 +98,26 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 		readBack.Header.MaleEntryCount, readBack.Header.FemaleEntryCount,
 		len(readBack.Bits))
 
-	text, ok = ResolveString(readBack, newID, true)
+	text, ok = reader.ResolveString(readBack, newID, true)
 	if !ok {
 		t.Logf("Entry %d not found via ResolveString, checking map directly", newID)
 		off, inMap := readBack.MaleEntries[newID]
 		t.Logf("  In map: %v, bitOffset: %d", inMap, off)
 		if inMap {
-			decoded, dok := DecodeString(readBack.Bits, readBack.Nodes, off)
+			decoded, dok := reader.DecodeString(readBack.Bits, readBack.Nodes, off)
 			t.Logf("  Decoded: %q, ok=%v", decoded, dok)
 		}
 		for id := range readBack.MaleEntries {
 			if id >= newID-5 && id <= newID+5 {
 				t.Logf("  nearby ID %d: offset=%d", id, readBack.MaleEntries[id])
 				if id == 134217731 {
-					decoded, dok := DecodeString(readBack.Bits, readBack.Nodes, readBack.MaleEntries[id])
+					decoded, dok := reader.DecodeString(readBack.Bits, readBack.Nodes, readBack.MaleEntries[id])
 					t.Logf("  ID 134217731 decoded: %q ok=%v", decoded, dok)
 				}
 			}
 		}
-		// Decode at exact bit offset
 		for bitOff := 10384280; bitOff <= 10384290; bitOff++ {
-			decoded, dok := DecodeString(readBack.Bits, readBack.Nodes, int32(bitOff))
+			decoded, dok := reader.DecodeString(readBack.Bits, readBack.Nodes, int32(bitOff))
 			t.Logf("  bitOffset %d: %q ok=%v", bitOff, decoded, dok)
 		}
 		t.Fatal("new entry not found in round-trip")
@@ -126,16 +127,16 @@ func TestWriteFile_RealTLK_Debug(t *testing.T) {
 	}
 	t.Logf("Round-trip OK: %q", text)
 
-	origText, _ := ResolveString(readBack, 0, true)
+	origText, _ := reader.ResolveString(readBack, 0, true)
 	t.Logf("Original entry 0: %q", origText)
 
 	for _, testID := range []int32{0, 10, 100, 1000} {
-		txt, ok2 := ResolveString(readBack, testID, true)
+		txt, ok2 := reader.ResolveString(readBack, testID, true)
 		t.Logf("  entry %d: ok=%v text=%q", testID, ok2, txt)
 	}
 
 	for _, testID := range []int32{0, 10, 100, 1000} {
-		txt, ok2 := ResolveString(tlkFile, testID, true)
+		txt, ok2 := reader.ResolveString(tlkFile, testID, true)
 		t.Logf("  ORIGINAL entry %d: ok=%v text=%q", testID, ok2, txt)
 	}
 }

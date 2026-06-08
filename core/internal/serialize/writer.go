@@ -3,9 +3,9 @@ package serialize
 import (
 	"fmt"
 
+	me2resolver "github.com/commander-spaceman/me2tlk/resolver"
 	"pcc-toolkit/core/internal/dialogue"
 	"pcc-toolkit/core/internal/pcc"
-	"pcc-toolkit/core/internal/tlk"
 )
 
 type SerializedConversation struct {
@@ -40,12 +40,12 @@ func Run(
 		return nil, err
 	}
 
-	var resolver *tlk.Resolver
+	var resolver *me2resolver.Resolver
 	if resolveTlk != "" {
 		if language == "" {
 			language = "INT"
 		}
-		resolver, err = tlk.BuildResolver(resolveTlk, dlcDir, language, false)
+		resolver, err = me2resolver.BuildResolver(resolveTlk, dlcDir, language, false)
 		if err != nil {
 			return nil, err
 		}
@@ -94,7 +94,7 @@ func Run(
 	return output, nil
 }
 
-func resolveText(conv *dialogue.Conversation, resolver *tlk.Resolver) {
+func resolveText(conv *dialogue.Conversation, resolver *me2resolver.Resolver) {
 	for i := range conv.Entries {
 		if conv.Entries[i].LineStrRef != nil {
 			text, ok := resolver.Resolve(int32(*conv.Entries[i].LineStrRef))

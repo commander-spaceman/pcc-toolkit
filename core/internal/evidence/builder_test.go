@@ -3,9 +3,9 @@ package evidence
 import (
 	"testing"
 
+	"github.com/commander-spaceman/me2tlk/resolver"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
-	"pcc-toolkit/core/internal/tlk"
 )
 
 func TestClassifyTier(t *testing.T) {
@@ -100,7 +100,7 @@ func TestBuildReport(t *testing.T) {
 		},
 	}
 
-	resolver := &tlk.Resolver{}
+	resolver := &resolver.Resolver{}
 
 	report := BuildReport(
 		"test query",
@@ -169,7 +169,7 @@ func TestMatchProfileNoMatch(t *testing.T) {
 }
 
 func TestBuildReport_WithNarrativeProfiles(t *testing.T) {
-	resolver := &tlk.Resolver{}
+	resolver := &resolver.Resolver{}
 	scanReport := &scan.ScanReport{
 		FilesScanned:  0,
 		FilesWithHits: 0,
@@ -192,7 +192,7 @@ func TestBuildReport_WithNarrativeProfiles(t *testing.T) {
 }
 
 func TestBuildReport_NoNarrativeMatch(t *testing.T) {
-	resolver := &tlk.Resolver{}
+	resolver := &resolver.Resolver{}
 	scanReport := &scan.ScanReport{}
 
 	report := BuildReport(

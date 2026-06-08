@@ -1,11 +1,11 @@
 package evidence
 
 import (
+	me2resolver "github.com/commander-spaceman/me2tlk/resolver"
 	"pcc-toolkit/core/internal/dialogue"
 	"pcc-toolkit/core/internal/owners"
 	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
-	"pcc-toolkit/core/internal/tlk"
 )
 
 func BuildReport(
@@ -15,7 +15,7 @@ func BuildReport(
 	bioGameRoot string,
 	candidates []int32,
 	scanReport *scan.ScanReport,
-	resolver *tlk.Resolver,
+	resolver *me2resolver.Resolver,
 ) *EvidenceReport {
 	report := &EvidenceReport{
 		Query:         query,
@@ -109,7 +109,7 @@ func BuildReport(
 	return report
 }
 
-func findSourceTLK(resolver *tlk.Resolver, strref int32) string {
+func findSourceTLK(resolver *me2resolver.Resolver, strref int32) string {
 	result := resolver.ResolveWithSource(strref)
 	if result != nil {
 		return result.SourceTLK
