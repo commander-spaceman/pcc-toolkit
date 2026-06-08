@@ -1,9 +1,9 @@
 # pcc-toolkit
 
-CLI toolkit for inspecting, extracting, and analyzing Mass Effect 2 Original Trilogy
+CLI toolkit for inspecting, extracting, editing, and analyzing Mass Effect 2 Original Trilogy
 dialogue from `.pcc` package files and `.tlk` talk files. Built for AI agent workflows.
 
-**MVP** — Read-only. Windows-only. ME2 OT only. Production-ready for controlled/internal use.
+**MVP** — Windows-only. ME2 OT only. Production-ready for controlled/internal use.
 
 ## Quick Start
 
@@ -35,10 +35,12 @@ python -m venv .venv
 | `pcc-toolkit dialogue export`     | Export parsed conversations as JSON                |
 | `pcc-toolkit dialogue graph`      | Compute Sugiyama graph layout for a conversation   |
 | `pcc-toolkit dialogue dump-lines` | Dump flat dialogue lines (JSON/CSV)                |
+| `pcc-toolkit dialogue edit`       | Edit conversation entries/replies via JSON patch   |
 | `pcc-toolkit package scan-owners` | Scan Kismet sequences for conversation owners      |
 | `pcc-toolkit evidence scan`       | Search TLK text, then scan PCCs for StringRef hits |
 | `pcc-toolkit batch validate`      | Validate all PCCs in a directory                   |
 | `pcc-toolkit batch extract`       | Extract all PCCs in a directory                    |
+| `pcc-toolkit batch edit`          | Apply same patch to multiple PCCs                  |
 
 | `pcc-toolkit dev build-core` | Build the Go core from the CLI |
 | `pcc-toolkit dev test-core` | Run Go core tests from the CLI |
@@ -46,10 +48,12 @@ python -m venv .venv
 
 ## Capabilities
 
-PCC parsing, LZO decompression, Unreal property tags, BioConversation AST extraction,
-TLK parsing with Huffman decoding, DLC-aware StringRef resolution, deterministic
-Sugiyama graph layout, evidence scanning with tiered reports, conversation validation,
-dialogue line dumping, and Kismet owner scanning.
+PCC parsing, LZO compression and decompression, Unreal property tags and encoding,
+BioConversation AST extraction and binary serialization, conversation editing with
+round-trip fidelity, TLK parsing with Huffman decoding and writing, DLC-aware
+StringRef resolution, deterministic Sugiyama graph layout, evidence scanning with
+tiered reports, conversation validation, dialogue line dumping, Kismet owner
+scanning, and batch edit/validate/extract workflows.
 
 ## Architecture
 
