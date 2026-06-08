@@ -21,30 +21,55 @@ python -m venv .venv
 
 ## What It Does
 
-| Command                           | Description                                        |
-| --------------------------------- | -------------------------------------------------- |
-| `pcc-toolkit package list`        | List exports in a PCC package                      |
-| `pcc-toolkit package inspect`     | Show details for a single export                   |
-| `pcc-toolkit package validate`    | Validate conversations in a PCC                    |
-| `pcc-toolkit package extract`     | Full serialization with optional TLK resolution    |
-| `pcc-toolkit tlk info`            | TLK header and entry counts                        |
-| `pcc-toolkit tlk search`          | Full-text search across TLK entries                |
-| `pcc-toolkit tlk resolve`         | Resolve a StringRef through base + DLC TLKs        |
-| `pcc-toolkit tlk dump`            | Dump all TLK entries                               |
-| `pcc-toolkit dialogue list`       | List all BioConversation exports in a PCC          |
-| `pcc-toolkit dialogue export`     | Export parsed conversations as JSON                |
-| `pcc-toolkit dialogue graph`      | Compute Sugiyama graph layout for a conversation   |
-| `pcc-toolkit dialogue dump-lines` | Dump flat dialogue lines (JSON/CSV)                |
-| `pcc-toolkit dialogue edit`       | Edit conversation entries/replies via JSON patch   |
-| `pcc-toolkit package scan-owners` | Scan Kismet sequences for conversation owners      |
-| `pcc-toolkit evidence scan`       | Search TLK text, then scan PCCs for StringRef hits |
-| `pcc-toolkit batch validate`      | Validate all PCCs in a directory                   |
-| `pcc-toolkit batch extract`       | Extract all PCCs in a directory                    |
-| `pcc-toolkit batch edit`          | Apply same patch to multiple PCCs                  |
+### Package
 
+| Command                           | Description                                     |
+| --------------------------------- | ----------------------------------------------- |
+| `pcc-toolkit package list`        | List exports in a PCC package                   |
+| `pcc-toolkit package inspect`     | Show details for a single export                |
+| `pcc-toolkit package validate`    | Validate conversations in a PCC                 |
+| `pcc-toolkit package extract`     | Full serialization with optional TLK resolution |
+| `pcc-toolkit package scan-owners` | Scan Kismet sequences for conversation owners   |
+
+### TLK
+
+| Command                   | Description                                 |
+| ------------------------- | ------------------------------------------- |
+| `pcc-toolkit tlk info`    | TLK header and entry counts                 |
+| `pcc-toolkit tlk search`  | Full-text search across TLK entries         |
+| `pcc-toolkit tlk resolve` | Resolve a StringRef through base + DLC TLKs |
+| `pcc-toolkit tlk dump`    | Dump all TLK entries                        |
+
+### Dialogue
+
+| Command                           | Description                                      |
+| --------------------------------- | ------------------------------------------------ |
+| `pcc-toolkit dialogue list`       | List all BioConversation exports in a PCC        |
+| `pcc-toolkit dialogue export`     | Export parsed conversations as JSON              |
+| `pcc-toolkit dialogue graph`      | Compute Sugiyama graph layout for a conversation |
+| `pcc-toolkit dialogue dump-lines` | Dump flat dialogue lines (JSON/CSV)              |
+| `pcc-toolkit dialogue edit`       | Edit conversation entries/replies via JSON patch |
+
+### Evidence
+
+| Command                     | Description                                        |
+| --------------------------- | -------------------------------------------------- |
+| `pcc-toolkit evidence scan` | Search TLK text, then scan PCCs for StringRef hits |
+
+### Batch
+
+| Command                      | Description                      |
+| ---------------------------- | -------------------------------- |
+| `pcc-toolkit batch validate` | Validate all PCCs in a directory |
+| `pcc-toolkit batch extract`  | Extract all PCCs in a directory  |
+
+### Dev
+
+| Command                      | Description                    |
+| ---------------------------- | ------------------------------ |
 | `pcc-toolkit dev build-core` | Build the Go core from the CLI |
-| `pcc-toolkit dev test-core` | Run Go core tests from the CLI |
-| `pcc-toolkit --version` | Show version and capabilities |
+| `pcc-toolkit dev test-core`  | Run Go core tests from the CLI |
+| `pcc-toolkit --version`      | Show version and capabilities  |
 
 ## Capabilities
 
