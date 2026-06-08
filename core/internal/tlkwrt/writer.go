@@ -135,9 +135,26 @@ func BuildBytes(tlkFile *reader.File, newEntries []StringEntry) ([]byte, error) 
 	sort.Slice(maleEntries, func(i, j int) bool { return maleEntries[i].StringID < maleEntries[j].StringID })
 	sort.Slice(femaleEntries, func(i, j int) bool { return femaleEntries[i].StringID < femaleEntries[j].StringID })
 
-	newBitstream := make([]byte, len(tlkFile.Bits))
-	copy(newBitstream, tlkFile.Bits)
-	bitstreamPos := len(newBitstream) * 8
+	// Reconcile header counts with actual map sizes.
+	// The original TLK may have entries with negative bit offsets that
+	// were filtered out by the reader, so the maps may be smaller than
+	// the header counts.  Use the actual map lengths.
+	actualMaleCount := len(maleEntries)
+	actualFemaleCount := len(femaleEntries)
+	if actualMaleCount != maleCount || actualFemaleCount != femaleCount {
+		// After AddEntries the header was incremented; the map is
+		// authoritative.  Update our local counters to match.
+		maleCount = actualMaleCount
+		femaleCount = actualFemaleCount
+	}
+
+	bitsLen := len(tlkFile.Bits)
+	newBitstream := make([]byte, bitsLen)
+	nCopied := copy(newBitstream, tlkFile.Bits)
+	if nCopied != bitsLen {
+		return nil, fmt.Errorf("copy Bits failed: copied %d of %d bytes", nCopied, bitsLen)
+	}
+	bitstreamPos := bitsLen * 8
 
 	for _, entry := range newEntries {
 		id := entry.StringID
