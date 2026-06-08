@@ -155,8 +155,9 @@ tests/    ── Golden files, smoke tests, and regression probes
 The Go core is the single source of truth. Python adapters are thin wrappers that call
 `pcc-core` as a subprocess and format its JSON output.
 
-See [MAP.md](MAP.md) for the full module navigation guide and
-[PRD-MVP.md](PRD-MVP.md) for the canonical architecture and domain model.
+See [MAP.md](MAP.md) for the full module navigation guide,
+[docs/PRD-INSPECT.md](docs/PRD-INSPECT.md) for the inspect/extract architecture, and
+[docs/PRD-EDITING.md](docs/PRD-EDITING.md) for editing and writing.
 
 ## Testing
 

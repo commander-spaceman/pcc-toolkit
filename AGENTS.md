@@ -4,7 +4,7 @@
 
 Use this file as the operational entry point for AI agents working on this project.
 
-- Architecture and design live in `PRD-MVP.md`.
+- Architecture and design live in `docs/PRD-INSPECT.md` (read/inspect) and `docs/PRD-EDITING.md` (edit/write).
 - Fast repository navigation lives in `MAP.md`.
 - Persistent agent context should live in the `memory` MCP, not in session lifecycle files.
 - `.opencode/` is reserved for MCP runtime files, not project instructions.
@@ -21,15 +21,20 @@ Agents should work task-by-task, using the smallest correct change.
 
 ## Read First
 
-1. `PRD-MVP.md` - canonical MVP architecture, contracts, domain model, dependencies, and verification.
-2. `MAP.md` - current repository structure and module navigation.
-3. `AGENTS.md` - operating model, conventions, verification, and repository map.
+1. `docs/PRD-INSPECT.md` - canonical architecture, contracts, domain model, dependencies, and verification for read & inspect.
+2. `docs/PRD-EDITING.md` - editing, writing, round-trip fidelity, and batch edit requirements.
+3. `MAP.md` - current repository structure and module navigation.
+4. `AGENTS.md` - operating model, conventions, verification, and repository map.
 
 ## Repository Map
 
 | Path                        | What it contains                                                                    | When to read                                                          |
 | --------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `PRD-MVP.md`                | Canonical MVP architecture, domain model, contracts, dependencies, and verification | Before architecture or feature work                                   |
+| `docs/PRD-INSPECT.md`       | Canonical architecture, domain model, contracts, dependencies, and verification     | Before architecture or feature work                                   |
+| `docs/PRD-EDITING.md`       | Editing, writing, round-trip fidelity, and batch edit requirements                  | Before editing or write-path work                                     |
+| `docs/CONTRACTS.md`         | JSON contracts for all pcc-core subcommands                                         | Before adding/modifying CLI commands or golden tests                  |
+| `docs/BUILDING.md`          | Build, test, and release guide                                                      | Before build/release tooling changes                                  |
+| `docs/REFERENCE.md`         | LegendaryExplorer reference notes and known divergences                             | When LEX semantics need clarification                                 |
 | `MAP.md`                    | Current repository structure and navigation guide                                   | Before structural changes or multi-module work                        |
 | `core/`                     | Go engine; domain logic belongs here                                                | Parsing, AST, layout, evidence, validation                            |
 | `cli/`                      | Python CLI; thin dispatch wrapper                                                   | CLI arg parsing and output formatting                                 |
@@ -54,7 +59,7 @@ ME3Tweaks/LegendaryExplorer
 
 Always consult LegendaryExplorer when implementing or changing behavior for PCC parsing, TLK resolution, dialogue editing, conversation graph layout, package structures, or validation semantics.
 
-Treat LegendaryExplorer as the reference implementation unless `PRD-MVP.md` explicitly says otherwise. The guiding question is:
+Treat LegendaryExplorer as the reference implementation unless `docs/PRD-INSPECT.md` or `docs/REFERENCE.md` explicitly says otherwise. The guiding question is:
 
 > Does this match how LegendaryExplorer handles it?
 
@@ -63,7 +68,7 @@ LegendaryExplorer is GPLv3-licensed and its `CONTRIBUTING.md` includes restricti
 ## Operational Rules
 
 - Scope is Mass Effect 2 Original Trilogy only. Do not add LE1, LE2, LE3, ME1, or ME3 behavior unless the task explicitly changes project scope.
-- ME2 OT compressed package support is LZO-only per `PRD-MVP.md`.
+- ME2 OT compressed package support is LZO-only per `docs/PRD-INSPECT.md`.
 - Go core contains all domain logic. Python CLI is a thin layer only.
 - Go core writes success payloads as JSON to stdout and error payloads as JSON to stderr.
 - One feature at a time. Validate behavior against golden files, regression probes, and LegendaryExplorer semantics before moving on.

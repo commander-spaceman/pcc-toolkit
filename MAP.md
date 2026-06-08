@@ -172,7 +172,12 @@ Root-level files define package metadata, dependency setup, operating rules, and
 pcc-toolkit/
 ├── AGENTS.md
 ├── MAP.md
-├── PRD-MVP.md
+├── docs/
+│   ├── PRD-INSPECT.md
+│   ├── PRD-EDITING.md
+│   ├── CONTRACTS.md
+│   ├── BUILDING.md
+│   └── REFERENCE.md
 ├── README.md
 ├── pyproject.toml
 ├── pytest.ini
@@ -187,7 +192,11 @@ pcc-toolkit/
 **Key files:**
 
 - `AGENTS.md`: Operational rules for AI agents, including scope, verification, and repository conventions.
-- `PRD-MVP.md`: Canonical MVP architecture, domain model, contracts, dependencies, and verification.
+- `docs/PRD-INSPECT.md`: Canonical architecture, domain model, contracts, and verification for inspect & extract.
+- `docs/PRD-EDITING.md`: Editing, writing, round-trip fidelity, and batch edit requirements.
+- `docs/CONTRACTS.md`: JSON contracts for all pcc-core subcommands.
+- `docs/BUILDING.md`: Build, test, and release guide.
+- `docs/REFERENCE.md`: LegendaryExplorer reference notes and known divergences.
 - `MAP.md`: Concise navigation map for the repository.
 - `pyproject.toml`: Python project metadata, dependencies, and script entry point.
 - `pytest.ini`: Pytest configuration.
@@ -198,7 +207,7 @@ pcc-toolkit/
 
 - Guides changes across `core/`, `cli/`, and `tests/`.
 - `pyproject.toml` connects the Python CLI package to user-facing command execution.
-- `AGENTS.md` and `PRD-MVP.md` should be consulted before architecture or behavior changes.
+- `AGENTS.md` and the PRDs in `docs/` should be consulted before architecture or behavior changes.
 
 ---
 

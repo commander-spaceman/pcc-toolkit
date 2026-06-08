@@ -1,8 +1,8 @@
-# PCC Toolkit MVP Product Requirements Document
+# PCC Toolkit Product Requirements Document — Inspect & Extract
 
 ## 1. Purpose
 
-PCC Toolkit MVP is a Windows-first CLI toolkit for inspecting, extracting,
+PCC Toolkit is a Windows-first CLI toolkit for inspecting, extracting,
 validating, and analyzing Mass Effect 2 Original Trilogy dialogue data from `.pcc`
 package files and `.tlk` talk files.
 
@@ -10,6 +10,8 @@ The toolkit is designed for AI agents and automation scripts that need determini
 JSON contracts for repeatable analysis, regression testing, and code-assisted modding
 workflows. It provides fast read-only access to ME2 OT dialogue data through a
 subprocess-callable Go engine with a thin Python CLI wrapper.
+
+Editing and writing capabilities are covered in [PRD-EDITING.md](PRD-EDITING.md).
 
 ## 2. Scope
 
@@ -143,8 +145,13 @@ pcc-toolkit/
 pcc-toolkit/
 ├── AGENTS.md
 ├── MAP.md
-├── PRD-MVP.md
 ├── README.md
+├── docs/
+│   ├── PRD-READ.md
+│   ├── PRD-EDITING.md
+│   ├── CONTRACTS.md
+│   ├── BUILDING.md
+│   └── REFERENCE.md
 ├── pyproject.toml
 ├── pytest.ini
 ├── requirements.txt
@@ -153,15 +160,19 @@ pcc-toolkit/
 │   ├── go.sum
 │   ├── cmd/pcc-core/main.go
 │   └── internal/
-│       ├── pcc/
+│       ├── dialenc/
 │       ├── dialogue/
-│       ├── tlk/
-│       ├── graph/
-│       ├── evidence/
 │       ├── dumper/
+│       ├── editor/
+│       ├── evidence/
+│       ├── graph/
 │       ├── owners/
+│       ├── pccenc/
+│       ├── pccpat/
+│       ├── pccwrt/
 │       ├── scan/
-│       └── serialize/
+│       ├── serialize/
+│       └── tlkwrt/
 ├── cli/src/
 │   ├── __init__.py
 │   ├── __main__.py
@@ -177,7 +188,10 @@ pcc-toolkit/
     ├── test_smoke.py
     ├── fixtures/
     ├── golden/
+    │   ├── batch/
     │   ├── conversation/
+    │   ├── edit/
+    │   ├── evidence/
     │   ├── graph/
     │   ├── pcc/
     │   └── tlk/
