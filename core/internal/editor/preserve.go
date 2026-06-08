@@ -23,6 +23,19 @@ type propertySpan struct {
 }
 
 func scanPropertySpans(data []byte, names []string, startOffset, size int) ([]propertySpan, error) {
+	for _, delta := range []int{0, 4, 8, 12} {
+		if size <= delta {
+			continue
+		}
+		spans, err := scanPropertySpansAt(data, names, startOffset+delta, size-delta)
+		if err == nil && len(spans) > 0 {
+			return spans, nil
+		}
+	}
+	return nil, fmt.Errorf("no valid property spans found")
+}
+
+func scanPropertySpansAt(data []byte, names []string, startOffset, size int) ([]propertySpan, error) {
 	end := startOffset + size
 	if end > len(data) {
 		end = len(data)
