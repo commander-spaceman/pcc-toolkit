@@ -73,13 +73,76 @@ python -m venv .venv
 
 ## Capabilities
 
-PCC reading (`me2pcc`), TLK reading (`me2tlk`), LZO compression and
-decompression (`me2lzo`), Unreal property tag parsing and encoding,
-BioConversation AST extraction and binary serialization, conversation editing with
-round-trip fidelity, TLK writing with Huffman encoding, DLC-aware
-StringRef resolution, deterministic Sugiyama graph layout, evidence scanning with
-tiered reports, conversation validation, dialogue line dumping, Kismet owner
-scanning, and batch edit/validate/extract workflows.
+### PCC Packages
+
+Read, write, and patch ME2 OT `.pcc` package files.
+
+- **Reading** — Package header, name/import/export tables, and Unreal property tag
+  parsing via [`me2pcc`](https://github.com/commander-spaceman/me2pcc).
+- **LZO** — Compression and decompression of ME2 OT LZO-compressed packages via
+  [`me2lzo`](https://github.com/commander-spaceman/me2lzo).
+- **Writing** — Full PCC package serialization with optional LZO compression (`pccwrt`).
+- **Encoding** — Unreal property encoding for PCC write workflows (`pccenc`).
+- **Patching** — Binary-level patches applied at specific export offsets (`pccpat`).
+
+### TLK Talk Files
+
+Parse, search, resolve, and write ME2 OT `.tlk` files.
+
+- **Reading** — Header parsing, Huffman tree decoding, and bitstream text extraction
+  via [`me2tlk`](https://github.com/commander-spaceman/me2tlk).
+- **Writing** — Huffman code table building, string encoding, and TLK file
+  serialization (`tlkwrt`).
+- **Resolution** — DLC-aware StringRef resolution using `Mount.dlc` priority and ME2
+  module TLK naming.
+
+### Dialogue
+
+Extract and inspect `BioConversation` data from PCC exports.
+
+- **AST Extraction** — Schema-guided semantic property parsing with row-payload
+  fallback modes for partial or unusual conversation layouts.
+- **Serialization** — Binary encoding of dialogue AST nodes and reply links back
+  into conversation form (`dialenc`).
+- **Line Dumping** — Flat JSON/CSV output with one row per dialogue line including
+  speaker, text, node type, and source file.
+
+### Editing
+
+Modify conversation data while preserving surrounding package bytes.
+
+- **Conversation Editing** — Edit entry/reply nodes via JSON patch input with
+  property span scanning and byte-level splice for round-trip fidelity (`editor`).
+- **Dry Run & Backup** — Preview changes without writing, automatic backup creation.
+
+### Graph Layout
+
+Deterministic Sugiyama-style layered layout for dialogue graphs.
+
+- Node positions, typed edges (start→entry, entry→reply, reply→entry), and
+  reply-choice metadata for rendering without reparsing AST internals.
+
+### Evidence & Discovery
+
+Connect TLK text search results to PCC package locations.
+
+- **Evidence Scanning** — Tiered reports classifying hits as `bioconversation`,
+  `semantic_container`, or `container_fallback` with AST enrichment.
+- **Owner Scanning** — Kismet sequence scanning for conversation owner tags.
+
+### Validation
+
+Actionable per-conversation validation with resilient and strict modes.
+
+- Detects missing properties, empty stubs, invalid links, orphaned nodes,
+  unresolved speakers, missing StringRefs, and traversal anomalies.
+
+### Batch Operations
+
+Apply operations across directories of PCC files.
+
+- `validate`, `extract`, and `edit` with glob pattern matching and optional
+  per-file JSON output.
 
 ## Architecture
 
