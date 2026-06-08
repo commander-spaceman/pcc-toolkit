@@ -1108,6 +1108,7 @@ func cmdEditConversation(args []string) {
 	dryRun := fs.Bool("dry-run", false, "Validate without writing output")
 	tlkPath := fs.String("tlk", "", "Path to TLK file for text resolution/additions")
 	tlkOutput := fs.String("tlk-output", "", "Path for the output TLK file")
+	backup := fs.Bool("backup", false, "Create a .bak backup of the original PCC before editing")
 
 	fs.Parse(args)
 
@@ -1150,6 +1151,17 @@ func cmdEditConversation(args []string) {
 			if err := os.WriteFile(*tlkOutput, buf, 0644); err != nil {
 				writeError(fmt.Sprintf("write TLK: %v", err), 1)
 			}
+		}
+	}
+
+	if *backup && *file != "" {
+		backupPath := *file + ".bak"
+		src, err := os.ReadFile(*file)
+		if err != nil {
+			writeError(fmt.Sprintf("read file for backup: %v", err), 1)
+		}
+		if err := os.WriteFile(backupPath, src, 0644); err != nil {
+			writeError(fmt.Sprintf("write backup: %v", err), 1)
 		}
 	}
 

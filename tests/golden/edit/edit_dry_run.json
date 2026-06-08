@@ -1,0 +1,9 @@
+{
+  "status": "dry_run",
+  "validation": {
+    "total": 9,
+    "valid": 7,
+    "warning": 1,
+    "invalid": 1
+  }
+}

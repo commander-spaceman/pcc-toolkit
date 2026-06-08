@@ -537,3 +537,38 @@ class TestGoldenFiles:
         assert actual["total_hits"] == 0
         assert actual["total_hits"] == golden["total_hits"]
         assert len(actual.get("evidence") or []) == 0
+
+    def test_edit_conversation_dry_run(self):
+        """Verify edit-conversation dry-run produces expected validation."""
+        pcc_name = "BioD_BchLmL_201BeachPath_LOC_INT.pcc"
+        pcc_path = SAMPLES_DIR / pcc_name
+        if not pcc_path.exists():
+            pytest.skip(f"sample PCC not found: {pcc_name}")
+
+        patch_path = SAMPLES_DIR / "edit_patch.json"
+        patch = {
+            "add_entries": [{"speaker_id": 0, "line_strref": 663399}],
+            "add_replies": [{"line_strref": 663399, "target_entry_ids": [3]}],
+        }
+        patch_path.write_text(json.dumps(patch))
+
+        try:
+            actual = run_core(
+                "edit-conversation",
+                file=str(pcc_path),
+                conv_index=0,
+                patch=str(patch_path),
+                dry_run=True,
+            )
+        finally:
+            patch_path.unlink(missing_ok=True)
+
+        golden = _load_golden("edit/edit_dry_run.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+        issues = _compare_keys(actual, golden)
+        if issues:
+            pytest.fail("\n".join(issues))
