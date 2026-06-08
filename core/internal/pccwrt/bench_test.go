@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 
 	"github.com/commander-spaceman/me2lzo/compress"
 	"github.com/commander-spaceman/me2lzo/decompress"

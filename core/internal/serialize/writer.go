@@ -3,9 +3,9 @@ package serialize
 import (
 	"fmt"
 
+	pcc "github.com/commander-spaceman/me2pcc"
 	me2resolver "github.com/commander-spaceman/me2tlk/resolver"
 	"pcc-toolkit/core/internal/dialogue"
-	"pcc-toolkit/core/internal/pcc"
 )
 
 type SerializedConversation struct {

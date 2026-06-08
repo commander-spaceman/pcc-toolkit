@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 type semanticResult struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"sync"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func ParseStrrefs(data []byte, candidates []int32) map[int][]int {

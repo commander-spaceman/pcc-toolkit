@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 	"pcc-toolkit/core/internal/pccpat"
 )
 

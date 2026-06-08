@@ -1,6 +1,6 @@
 package scan
 
-import "pcc-toolkit/core/internal/pcc"
+import pcc "github.com/commander-spaceman/me2pcc"
 
 type FileEntry struct {
 	Path        string

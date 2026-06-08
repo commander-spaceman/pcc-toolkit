@@ -3,8 +3,8 @@ package evidence
 import (
 	"testing"
 
+	pcc "github.com/commander-spaceman/me2pcc"
 	"github.com/commander-spaceman/me2tlk/resolver"
-	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/scan"
 )
 

@@ -3,7 +3,7 @@ package pccpat
 import (
 	"encoding/binary"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func BuildMinimalPCC(exportSerialData [][]byte) ([]byte, *pcc.FileSummary) {

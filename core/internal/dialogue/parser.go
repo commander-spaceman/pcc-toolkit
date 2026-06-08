@@ -3,7 +3,7 @@ package dialogue
 import (
 	"fmt"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func ParseConversations(summary *pcc.FileSummary, rawData []byte, mode string) *ParseResult {

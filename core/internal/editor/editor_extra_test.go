@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	pcc "github.com/commander-spaceman/me2pcc"
 	"pcc-toolkit/core/internal/dialogue"
-	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/pccwrt"
 )
 

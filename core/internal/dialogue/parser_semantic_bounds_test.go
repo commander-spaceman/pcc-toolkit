@@ -3,7 +3,7 @@ package dialogue
 import (
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func TestFindStructItemBoundsSequentially(t *testing.T) {

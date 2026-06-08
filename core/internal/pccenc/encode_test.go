@@ -3,7 +3,7 @@ package pccenc
 import (
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func testNames() []string {

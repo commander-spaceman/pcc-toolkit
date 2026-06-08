@@ -5,7 +5,7 @@ import (
 	"math"
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func extendNames(extra ...string) []string {

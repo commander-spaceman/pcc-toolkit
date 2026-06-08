@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"testing"
 
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 func writeI32LE(buf []byte, off int, v int) {

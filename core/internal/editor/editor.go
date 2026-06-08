@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	pcc "github.com/commander-spaceman/me2pcc"
 	"pcc-toolkit/core/internal/dialogue"
-	"pcc-toolkit/core/internal/pcc"
 	"pcc-toolkit/core/internal/pccpat"
 	"pcc-toolkit/core/internal/pccwrt"
 )

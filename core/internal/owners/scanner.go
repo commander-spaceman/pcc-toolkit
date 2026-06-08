@@ -1,7 +1,7 @@
 package owners
 
 import (
-	"pcc-toolkit/core/internal/pcc"
+	pcc "github.com/commander-spaceman/me2pcc"
 )
 
 type OwnerEntry struct {
