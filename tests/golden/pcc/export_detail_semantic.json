@@ -1,0 +1,149 @@
+{
+  "index": 1,
+  "class_index": -13,
+  "object_name_index": 38,
+  "serial_size": 2544,
+  "serial_offset": 148978,
+  "object_name": "cithub_first_amb_a_dlg",
+  "class_name": "BioConversation",
+  "serial_data": "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",
+  "property_tags": [
+    {
+      "name": "m_StartingList",
+      "prop_type": "ArrayProperty",
+      "size": 8,
+      "array_index": 0,
+      "value_offset": 149002
+    },
+    {
+      "name": "m_EntryList",
+      "prop_type": "ArrayProperty",
+      "size": 1764,
+      "array_index": 0,
+      "value_offset": 149034
+    },
+    {
+      "name": "m_ReplyList",
+      "prop_type": "ArrayProperty",
+      "size": 532,
+      "array_index": 0,
+      "value_offset": 150822
+    },
+    {
+      "name": "m_nResRefID",
+      "prop_type": "IntProperty",
+      "size": 0,
+      "array_index": 4,
+      "value_offset": 151378
+    }
+  ],
+  "semantic_props": {
+    "ActivateDelay": {
+      "name": "ActivateDelay",
+      "prop_type": "ArrayProperty",
+      "value": {
+        "count": 329,
+        "payload_offset": 149046,
+        "payload_size": 0
+      }
+    },
+    "IntProperty": {
+      "name": "IntProperty",
+      "prop_type": "bAmbient",
+      "value": null
+    },
+    "ReplyListNew": {
+      "name": "ReplyListNew",
+      "prop_type": "ArrayProperty",
+      "value": {
+        "count": 1,
+        "payload_offset": 149070,
+        "payload_size": 124
+      }
+    },
+    "aSpeakerList": {
+      "name": "aSpeakerList",
+      "prop_type": "ArrayProperty",
+      "value": {
+        "count": 1,
+        "payload_offset": 149306,
+        "payload_size": 4
+      }
+    },
+    "bAmbient": {
+      "name": "bAmbient",
+      "prop_type": "BoolProperty",
+      "value": true
+    },
+    "bFireConditional": {
+      "name": "bFireConditional",
+      "prop_type": "BoolProperty",
+      "value": true
+    },
+    "bNonTextLine": {
+      "name": "bNonTextLine",
+      "prop_type": "BoolProperty",
+      "value": false
+    },
+    "bSkippable": {
+      "name": "bSkippable",
+      "prop_type": "BoolProperty",
+      "value": true
+    },
+    "eGUIStyle": {
+      "name": "eGUIStyle",
+      "prop_type": "ByteProperty",
+      "value": null
+    },
+    "nConditionalFunc": {
+      "name": "nConditionalFunc",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "nConditionalParam": {
+      "name": "nConditionalParam",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "nExportID": {
+      "name": "nExportID",
+      "prop_type": "IntProperty",
+      "value": 389567
+    },
+    "nListenerIndex": {
+      "name": "nListenerIndex",
+      "prop_type": "IntProperty",
+      "value": -2
+    },
+    "nScriptIndex": {
+      "name": "nScriptIndex",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "nSpeakerIndex": {
+      "name": "nSpeakerIndex",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "nStateTransition": {
+      "name": "nStateTransition",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "nStateTransitionParam": {
+      "name": "nStateTransitionParam",
+      "prop_type": "IntProperty",
+      "value": -1
+    },
+    "sText": {
+      "name": "sText",
+      "prop_type": "StrProperty",
+      "value": ""
+    },
+    "srText": {
+      "name": "srText",
+      "prop_type": "StringRefProperty",
+      "value": 344594
+    }
+  }
+}

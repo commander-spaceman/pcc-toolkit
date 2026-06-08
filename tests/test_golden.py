@@ -538,6 +538,293 @@ class TestGoldenFiles:
         assert actual["total_hits"] == golden["total_hits"]
         assert len(actual.get("evidence") or []) == 0
 
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_dump_lines_csv_resolve_tlk(self):
+        """Verify dump-lines CSV output resolves TLK text correctly."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not pcc_file.exists() or not tlk_file.exists():
+            pytest.skip("required files not found")
+
+        args = [
+            str(CORE_BINARY),
+            "dump-lines",
+            "--file",
+            str(pcc_file),
+            "--resolve-tlk",
+            str(tlk_file),
+            "--format",
+            "csv",
+        ]
+        proc = subprocess.run(
+            args, capture_output=True, text=True, encoding="utf-8", errors="replace"
+        )
+        assert proc.returncode == 0, f"stderr: {proc.stderr}"
+        stdout = proc.stdout.strip()
+        assert stdout, "CSV output is empty"
+
+        lines = stdout.splitlines()
+        assert len(lines) >= 2, f"expected header + at least 1 row, got {len(lines)}"
+        header = lines[0]
+        assert "conversation_id" in header
+        assert "node_type" in header
+        assert "strref" in header
+        assert "line_text" in header
+        assert "line_status" in header
+
+        resolved_count = sum(1 for l in lines[1:] if "resolved" in l)
+        assert resolved_count > 0, "expected at least 1 resolved line"
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_serialize_resolve_tlk(self):
+        """Verify serialize --resolve-tlk output matches golden and has resolved text."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+        if not tlk_file.exists():
+            pytest.skip(f"{tlk_file} not found")
+
+        actual = run_core("serialize", file=str(pcc_file), resolve_tlk=str(tlk_file))
+        golden = _load_golden("conversation/serialize_resolved.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual = _strip_volatile_fields(actual)
+        golden = _strip_volatile_fields(golden)
+
+        assert actual["game_profile"] == golden["game_profile"]
+        assert actual["compressed"] == golden["compressed"]
+        assert len(actual["conversations"]) == len(golden["conversations"])
+
+        for i, (act_conv, exp_conv) in enumerate(
+            zip(actual["conversations"], golden["conversations"])
+        ):
+            assert act_conv["id"] == exp_conv["id"], f"conv[{i}] id mismatch"
+            assert len(act_conv.get("entries", [])) == len(
+                exp_conv.get("entries", [])
+            ), f"conv[{i}] entry count mismatch"
+            assert len(act_conv.get("replies", [])) == len(
+                exp_conv.get("replies", [])
+            ), f"conv[{i}] reply count mismatch"
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_parse_conversations_resolve_tlk(self):
+        """Verify parse-conversations --resolve-tlk resolves text in all nodes."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not pcc_file.exists() or not tlk_file.exists():
+            pytest.skip("required files not found")
+
+        actual = run_core(
+            "parse-conversations", file=str(pcc_file), resolve_tlk=str(tlk_file)
+        )
+
+        resolved_entries = 0
+        unresolved_entries = 0
+        for conv in actual.get("conversations", []):
+            for entry in conv.get("entries", []):
+                if entry.get("line_strref") is not None:
+                    if entry.get("line_status") == "resolved":
+                        resolved_entries += 1
+                        assert entry.get("line_text"), (
+                            f"entry {entry['id']} missing line_text despite resolved status"
+                        )
+                    elif entry.get("line_status") == "unresolved_strref":
+                        unresolved_entries += 1
+            for reply in conv.get("replies", []):
+                if reply.get("line_strref") is not None:
+                    if reply.get("line_status") == "resolved":
+                        assert reply.get("line_text"), (
+                            f"reply {reply['id']} missing line_text despite resolved status"
+                        )
+
+        assert resolved_entries > 0, "expected at least 1 resolved entry with TLK text"
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_parse_tlk_dump_all(self):
+        """Verify parse-tlk --dump-all produces all entries with correct count."""
+        tlk_file = SAMPLES_DIR / "BIOGame_INT.tlk"
+        if not tlk_file.exists():
+            pytest.skip(f"{tlk_file} not found")
+
+        actual = run_core("parse-tlk", file=str(tlk_file), dump_all=True)
+
+        assert "total_entries" in actual
+        assert actual["total_entries"] >= 30000, (
+            f"expected >= 30000 entries, got {actual['total_entries']}"
+        )
+        assert "entries" in actual
+        assert len(actual["entries"]) == actual["total_entries"]
+        assert actual["total_entries"] >= 36000, (
+            f"expected >= 36000 entries, got {actual['total_entries']}"
+        )
+
+        first = actual["entries"][0]
+        assert "string_id" in first
+        assert "text" in first
+        assert "source" in first
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_resolve_tlk_multi_strref(self):
+        """Verify resolve-tlk handles multiple strrefs including invalid ones."""
+        base_tlk = SAMPLES_DIR / "BIOGame_INT.tlk"
+        dlc_dir = SAMPLES_DIR / "dlc"
+        if not base_tlk.exists():
+            pytest.skip(f"{base_tlk} not found")
+        if not (dlc_dir / "DLC_HEN_MT").exists():
+            pytest.skip("dlc subdirectory not found in output/")
+
+        actual = run_core(
+            "resolve-tlk",
+            base=str(base_tlk),
+            dlc_dir=str(dlc_dir),
+            strref=[125303, 356043, 255877, 1, 999999],
+        )
+        golden = _load_golden("tlk/resolve_multi.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        actual_stripped = _strip_volatile_fields(actual)
+        golden_stripped = _strip_volatile_fields(golden)
+
+        assert len(actual_stripped["results"]) == len(golden_stripped["results"])
+        for i, (ar, gr) in enumerate(
+            zip(actual_stripped["results"], golden_stripped["results"])
+        ):
+            assert ar["string_id"] == gr["string_id"], f"result[{i}] string_id mismatch"
+            assert ar["text"] == gr["text"], f"result[{i}] text mismatch"
+            assert ar["found"] == gr["found"], f"result[{i}] found mismatch"
+
+        found_count = sum(1 for r in actual["results"] if r["found"])
+        assert found_count >= 3, f"expected >= 3 found strrefs, got {found_count}"
+
+        not_found = [r for r in actual["results"] if not r["found"]]
+        assert len(not_found) >= 1, "expected at least 1 not-found strref (999999)"
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_batch_edit_dry_run(self):
+        """Verify batch-edit --dry-run validates without writing output."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+
+        patch_path = SAMPLES_DIR / "batch_edit_patch.json"
+        patch = {
+            "add_entries": [{"speaker_id": 0, "line_strref": 663399}],
+            "add_replies": [{"line_strref": 663399, "target_entry_ids": [0]}],
+        }
+        patch_path.write_text(json.dumps(patch))
+
+        try:
+            args = [
+                str(CORE_BINARY),
+                "batch-edit",
+                "--dir",
+                str(SAMPLES_DIR),
+                "--glob",
+                "BioD_CitHub_LOC_INT.pcc",
+                "--patch",
+                str(patch_path),
+                "--dry-run",
+            ]
+            proc = subprocess.run(
+                args, capture_output=True, text=True, encoding="utf-8", errors="replace"
+            )
+            assert proc.returncode == 0, f"batch-edit failed: {proc.stderr}"
+
+            results = json.loads(proc.stdout)
+            assert isinstance(results, list)
+            assert len(results) >= 1
+
+            for r in results:
+                assert "file" in r
+                assert "status" in r
+                assert "validation" in r
+                assert r["status"] == "dry_run", (
+                    f"expected dry_run status, got {r['status']}"
+                )
+        finally:
+            patch_path.unlink(missing_ok=True)
+
+    @pytest.mark.skipif(
+        not CORE_BINARY.exists(),
+        reason="pcc-core binary not found.",
+    )
+    @pytest.mark.skipif(
+        not SAMPLES_DIR.exists() or not any(SAMPLES_DIR.iterdir()),
+        reason="output/ directory empty.",
+    )
+    def test_export_detail_semantic_props(self):
+        """Verify parse-pcc --export-index --semantic-props matches golden."""
+        pcc_file = SAMPLES_DIR / "BioD_CitHub_LOC_INT.pcc"
+        if not pcc_file.exists():
+            pytest.skip(f"{pcc_file} not found")
+
+        actual = run_core(
+            "parse-pcc",
+            file=str(pcc_file),
+            export_index=1,
+            semantic_props=True,
+            property_tags=True,
+        )
+        golden = _load_golden("pcc/export_detail_semantic.json")
+        if golden is None:
+            pytest.skip("golden file not found; generate with --regenerate")
+
+        assert actual["index"] == golden["index"]
+        assert actual["class_name"] == golden["class_name"]
+        assert actual["object_name"] == golden["object_name"]
+
+        assert "serial_data" in actual
+        assert len(actual["serial_data"]) > 0
+        assert "property_tags" in actual
+        assert len(actual["property_tags"]) > 0
+        assert "semantic_props" in actual
+        assert len(actual["semantic_props"]) > 0
+
     def test_edit_conversation_dry_run(self):
         """Verify edit-conversation dry-run produces expected validation."""
         pcc_name = "BioD_BchLmL_201BeachPath_LOC_INT.pcc"
