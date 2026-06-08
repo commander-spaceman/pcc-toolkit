@@ -29,13 +29,12 @@ core/
     ├── evidence/
     ├── graph/
     ├── owners/
-    ├── pcc/
     ├── pccenc/
     ├── pccpat/
     ├── pccwrt/
     ├── scan/
     ├── serialize/
-    └── tlk/
+    └── tlkwrt/
 ```
 
 **Main responsibilities:**
@@ -47,13 +46,9 @@ core/
 **Key files:**
 
 - `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `resolve-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `batch-validate`, `batch-extract`, `dump-lines`, `scan-owners`, `edit-conversation`, and `batch-edit`.
-- `core/internal/pcc/reader.go`: Reads PCC headers, names, imports, exports, and package metadata.
-- `core/internal/pcc/decompress.go`: Handles ME2 OT LZO decompression.
-- `core/internal/pcc/properties.go`: Parses Unreal property tags and semantic property collections.
-- `core/internal/pcc/unreal_props.go`: Decodes low-level Unreal property payloads.
-- `core/internal/pcc/types.go`: Core PCC domain types (names, imports, exports, headers).
-- `core/internal/pcc/containers.go`: Unreal array and struct container parsing helpers.
-- `core/internal/pcc/strings.go`: String table and name table reading utilities.
+- PCC reading is delegated to the external `github.com/commander-spaceman/me2pcc` library.
+- TLK reading is delegated to the external `github.com/commander-spaceman/me2tlk` library.
+- LZO decompression is delegated to the external `github.com/commander-spaceman/me2lzo` library.
 - `core/internal/dialogue/parser.go`: Coordinates extraction of conversations from PCC exports and raw serialized data.
 - `core/internal/dialogue/parser_semantic.go`: Builds conversation nodes from schema-guided semantic property parsing.
 - `core/internal/dialogue/parser_row.go`: Builds entry nodes from row-mode conversation data (matrix-based extraction fallback).
@@ -83,10 +78,7 @@ core/
 - `core/internal/scan/cache.go`: File modification time cache to skip unchanged packages.
 - `core/internal/scan/index.go`: Builds in-memory file index for batch operations.
 - `core/internal/scan/types.go`: Scan domain types (scan configuration, result summaries).
-- `core/internal/tlk/reader.go`: Parses TLK files and decodes text entries.
-- `core/internal/tlk/resolver.go`: Resolves StringRefs with base TLK and DLC override priority.
-- `core/internal/tlk/writer.go`: Writes TLK files from in-memory entries with correct headers and Huffman encoding.
-- `core/internal/tlk/types.go`: TLK domain types (entries, headers, string references).
+- `core/internal/tlkwrt/writer.go`: Writes TLK files from in-memory entries with correct headers and Huffman encoding.
 - `core/internal/serialize/writer.go`: Builds the stable JSON output contract consumed by CLI and tests.
 
 **Relationships:**
