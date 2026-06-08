@@ -1,7 +1,7 @@
 # pcc-toolkit
 
 CLI toolkit for inspecting, extracting, editing, and analyzing Mass Effect 2 Original Trilogy
-dialogue from `.pcc` package files and `.tlk` talk files. Built for AI agent workflows.
+dialogue from `.pcc` package files and `.tlk` talk files.
 
 **MVP** — Windows-only. ME2 OT only. Production-ready for controlled/internal use.
 

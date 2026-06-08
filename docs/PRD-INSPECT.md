@@ -6,7 +6,7 @@ PCC Toolkit is a Windows-first CLI toolkit for inspecting, extracting,
 validating, and analyzing Mass Effect 2 Original Trilogy dialogue data from `.pcc`
 package files and `.tlk` talk files.
 
-The toolkit is designed for AI agents and automation scripts that need deterministic
+The toolkit is designed for automation scripts that need deterministic
 JSON contracts for repeatable analysis, regression testing, and code-assisted modding
 workflows. It provides fast read-only access to ME2 OT dialogue data through a
 subprocess-callable Go engine with a thin Python CLI wrapper.

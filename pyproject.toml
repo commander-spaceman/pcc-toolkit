@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pcc-toolkit"
 version = "0.2.0"
-description = "CLI toolkit for inspecting, extracting, and analyzing Mass Effect 2 dialogue from .pcc files — designed for AI agent workflows"
+description = "CLI toolkit for inspecting, extracting, and analyzing Mass Effect 2 dialogue from .pcc files"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
