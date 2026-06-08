@@ -1,6 +1,7 @@
 package editor
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	"pcc-toolkit/core/internal/dialenc"
@@ -22,74 +23,68 @@ type propertySpan struct {
 	hasMeta       bool
 }
 
-func scanPropertySpans(data []byte, names []string, startOffset, size int) ([]propertySpan, error) {
+func scanPropertySpans(data []byte, names []string) ([]propertySpan, error) {
 	for _, delta := range []int{0, 4, 8, 12} {
-		if size <= delta {
+		if delta >= len(data) {
 			continue
 		}
-		spans, err := scanPropertySpansAt(data, names, startOffset+delta, size-delta)
-		if err == nil && len(spans) > 0 {
-			return spans, nil
+		tags, err := pcc.ParsePropertyTags(data, names, delta, len(data)-delta, false)
+		if err == nil && len(tags) > 0 {
+			return tagsToSpans(data, names, delta, tags), nil
 		}
 	}
 	return nil, fmt.Errorf("no valid property spans found")
 }
 
-func scanPropertySpansAt(data []byte, names []string, startOffset, size int) ([]propertySpan, error) {
-	end := startOffset + size
-	if end > len(data) {
-		end = len(data)
+func tagsToSpans(data []byte, names []string, delta int, tags []pcc.PropertyTag) []propertySpan {
+	var spans []propertySpan
+	cursor := delta
+
+	for _, tag := range tags {
+		metaSize := computeMetaSize(data, names, cursor, tag)
+
+		spans = append(spans, propertySpan{
+			name:        tag.Name,
+			propType:    tag.PropType,
+			headerStart: cursor,
+			headerEnd:   cursor + 24 + metaSize,
+			valueStart:  tag.ValueOffset,
+			valueEnd:    tag.ValueOffset + tag.Size,
+			totalEnd:    tag.ValueOffset + tag.Size,
+		})
+
+		cursor = tag.ValueOffset + tag.Size
 	}
 
-	var spans []propertySpan
-	cursor := startOffset
+	return spans
+}
 
-	for cursor+24 <= end {
-		span := propertySpan{headerStart: cursor}
-
-		name, propType, propSize, _, valueOffset, metaSize := pcc.ParsePropertyHeader(data, names, cursor, end)
-		if name == "" || name == "None" {
-			break
+func computeMetaSize(data []byte, names []string, cursor int, tag pcc.PropertyTag) int {
+	switch tag.PropType {
+	case "StructProperty", "ByteProperty":
+		return 8
+	case "BoolProperty":
+		if cursor+28 <= len(data) {
+			name, _, _, _, _, m := pcc.ParsePropertyHeader(data, names, cursor, len(data))
+			_ = name
+			return m
 		}
-
-		span.name = name
-		span.propType = propType
-		span.hasMeta = metaSize > 0
-
-		var structType string
-		if propType == "StructProperty" && cursor+24+8 <= end {
-			structType = pcc.ResolveName(data, cursor+24, names)
-		}
-		span.structType = structType
-
-		var arrayElemType string
-		if propType == "ArrayProperty" && metaSize >= 8 && cursor+24+8 <= end {
-			arrayElemType = pcc.ResolveName(data, cursor+24, names)
-		}
-		span.arrayElemType = arrayElemType
-
-		totalMeta := 0
-		switch propType {
-		case "StructProperty", "ByteProperty":
-			totalMeta = 8
-		case "BoolProperty":
-			totalMeta = metaSize
-		case "ArrayProperty":
-			if metaSize >= 8 {
-				totalMeta = 8
+	case "ArrayProperty":
+		if cursor+32 <= len(data) {
+			a := int(int32(binary.LittleEndian.Uint32(data[cursor+24:])))
+			b := int(int32(binary.LittleEndian.Uint32(data[cursor+28:])))
+			aName := pcc.ResolveName(data, cursor+24, names)
+			bName := pcc.ResolveName(data, cursor+28, names)
+			if aName != "" && bName != "" {
+				_ = a
+				_ = b
+			}
+			if pcc.PropertyTypeNames[aName] || pcc.PropertyTypeNames[bName] {
+				return 8
 			}
 		}
-
-		span.headerEnd = cursor + 24 + totalMeta
-		span.valueStart = valueOffset
-		span.valueEnd = valueOffset + propSize
-		span.totalEnd = valueOffset + propSize
-
-		cursor = valueOffset + propSize
-		spans = append(spans, span)
 	}
-
-	return spans, nil
+	return 0
 }
 
 func SerializeConversationPreserving(conv dialogue.Conversation, originalData []byte, names []string) ([]byte, error) {
@@ -98,7 +93,7 @@ func SerializeConversationPreserving(conv dialogue.Conversation, originalData []
 		return SerializeConversationSimple(conv, names)
 	}
 
-	spans, err := scanPropertySpans(originalData, names, 0, len(originalData))
+	spans, err := scanPropertySpans(originalData, names)
 	if err != nil {
 		return nil, fmt.Errorf("scan spans: %w", err)
 	}
@@ -158,7 +153,20 @@ func SerializeConversationPreserving(conv dialogue.Conversation, originalData []
 		return originalData, nil
 	}
 
+	sortSpans(&modifiedSpans, &replacementBytes)
+
 	return spliceProperties(originalData, modifiedSpans, replacementBytes)
+}
+
+func sortSpans(spans *[]propertySpan, replacements *[][]byte) {
+	for i := 0; i < len(*spans); i++ {
+		for j := i + 1; j < len(*spans); j++ {
+			if (*spans)[i].headerStart > (*spans)[j].headerStart {
+				(*spans)[i], (*spans)[j] = (*spans)[j], (*spans)[i]
+				(*replacements)[i], (*replacements)[j] = (*replacements)[j], (*replacements)[i]
+			}
+		}
+	}
 }
 
 func SerializeConversationSimple(conv dialogue.Conversation, names []string) ([]byte, error) {
