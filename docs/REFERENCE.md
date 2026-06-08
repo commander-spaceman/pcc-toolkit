@@ -131,15 +131,31 @@ unintended changes, but the mechanisms differ.
 - New features should be verified against LEX for semantic correctness before
   being considered complete.
 
-## License Boundary
+## How We Use LegendaryExplorer
 
-LegendaryExplorer is GPLv3-licensed. PCC Toolkit is MIT-licensed. The boundary
-is enforced by:
+LegendaryExplorer is GPLv3-licensed. PCC Toolkit is MIT-licensed. To ensure we
+use LEX as a reference without creating license obligations, we follow a strict
+clean-room approach:
 
-- Only observing LEX behavior and documenting it here.
-- Never copying, translating, or porting LEX code.
-- Implementing all parsing, writing, and editing logic independently.
-- Referencing LEX file/class names for traceability, not as code sources.
+1. **Observe, don't copy.** We study LEX behavior by running it against real
+   ME2 OT files, inspecting its public source files to understand data
+   structures and algorithms, and consulting its public documentation and
+   community resources.
 
-If the project ever intentionally accepts GPLv3 obligations, that decision
-must be explicit and documented.
+2. **Document behavior, not code.** This file records what LEX does — which
+   field maps to what, what values speakers get, how DLC TLKs are ordered.
+   We never transcribe, translate, or port LEX source code into this repository.
+
+3. **Implement independently.** All PCC Toolkit code is written from scratch
+   based on documented behavior, file format specifications, and direct
+   observation of ME2 OT binary files. No LEX source is used as a starting
+   point for any implementation.
+
+4. **Trace, don't copy.** We reference LEX file and class names (e.g.,
+   `MEPackageHandler.cs`, `ConversationExtended.cs`) for traceability — so
+   anyone can verify our behavioral claims by consulting the relevant LEX
+   source. These references are documentation, not code ancestry.
+
+This approach uses LegendaryExplorer the same way any developer uses
+reference documentation: as a source of truth about how ME2 OT files
+work, not as a source of implementation code.
