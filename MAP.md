@@ -12,57 +12,87 @@
 
 ## 1. Go Core Engine
 
-The Go core is the authoritative domain layer for ME2 OT package parsing, dialogue extraction, TLK resolution, graph layout, validation, evidence scanning, line dumping, owner scanning, and JSON serialization.
+The Go core is the authoritative domain layer for ME2 OT package parsing, dialogue extraction, TLK resolution, graph layout, validation, evidence scanning, line dumping, owner scanning, JSON serialization, PCC encoding, PCC writing, PCC patching, dialogue encoding, and conversation editing.
 
 ```text
 core/
 ├── go.mod
+├── go.sum
 ├── cmd/
 │   └── pcc-core/
 │       └── main.go
 └── internal/
-    ├── pcc/
+    ├── dialenc/
     ├── dialogue/
-    ├── tlk/
-    ├── graph/
-    ├── evidence/
     ├── dumper/
+    ├── editor/
+    ├── evidence/
+    ├── graph/
     ├── owners/
+    ├── pcc/
+    ├── pccenc/
+    ├── pccpat/
+    ├── pccwrt/
     ├── scan/
-    └── serialize/
+    ├── serialize/
+    └── tlk/
 ```
 
 **Main responsibilities:**
 
 - Parse ME2 OT `.pcc` packages, including LZO-compressed packages and Unreal property data.
 - Build and validate `BioConversation` ASTs, resolve TLK text, compute graph layouts, scan evidence and owners, dump dialogue lines, and emit structured JSON.
+- Encode and write PCC packages, patch existing packages with binary-level edits, serialize dialogue back to binary, and edit conversation exports while preserving surrounding data.
 
 **Key files:**
 
-- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `dump-lines`, `scan-owners`, and batch operations.
+- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `resolve-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `batch-validate`, `batch-extract`, `dump-lines`, `scan-owners`, and `edit-conversation`.
 - `core/internal/pcc/reader.go`: Reads PCC headers, names, imports, exports, and package metadata.
 - `core/internal/pcc/decompress.go`: Handles ME2 OT LZO decompression.
 - `core/internal/pcc/properties.go`: Parses Unreal property tags and semantic property collections.
 - `core/internal/pcc/unreal_props.go`: Decodes low-level Unreal property payloads.
+- `core/internal/pcc/types.go`: Core PCC domain types (names, imports, exports, headers).
+- `core/internal/pcc/containers.go`: Unreal array and struct container parsing helpers.
+- `core/internal/pcc/strings.go`: String table and name table reading utilities.
 - `core/internal/dialogue/parser.go`: Coordinates extraction of conversations from PCC exports and raw serialized data.
 - `core/internal/dialogue/parser_semantic.go`: Builds conversation nodes from schema-guided semantic property parsing.
+- `core/internal/dialogue/parser_row.go`: Builds entry nodes from row-mode conversation data (matrix-based extraction fallback).
 - `core/internal/dialogue/structdb.go`: Contains ME2 dialogue struct metadata used by semantic parsing.
 - `core/internal/dialogue/schema.go`: Defines schema helpers for dialogue struct parsing.
+- `core/internal/dialogue/types.go`: Dialogue AST node types (EntryNode, ReplyChoice, Conversation, etc.).
 - `core/internal/dialogue/validate.go`: Produces validation reports for parsed conversations.
+- `core/internal/dialenc/encode.go`: Encodes dialogue AST nodes and reply links back into binary conversation form.
+- `core/internal/editor/editor.go`: Edits conversation exports in-place, preserving unchanged data via binary preservation helpers.
+- `core/internal/editor/preserve.go`: Property span scanning and byte-level splice for round-trip fidelity.
+- `core/internal/pccenc/encode.go`: Encodes Unreal properties for PCC writing.
+- `core/internal/pccenc/writer.go`: Buffered writer for PCC encoding output.
+- `core/internal/pccpat/patch.go`: Applies binary patches to PCC files at specific export offsets.
+- `core/internal/pccpat/buildminimal.go`: Builds minimal valid PCC structures for patch injection.
+- `core/internal/pccwrt/write.go`: Writes complete PCC packages including header, tables, and export data.
+- `core/internal/pccwrt/compress.go`: Handles LZO compression when writing compressed PCC packages.
 - `core/internal/graph/layout.go`: Computes deterministic dialogue graph layouts.
+- `core/internal/graph/types.go`: Graph domain types (nodes, edges, layout algorithms).
 - `core/internal/evidence/builder.go`: Builds evidence reports and enriches hits with conversation AST data.
+- `core/internal/evidence/types.go`: Evidence hit types and scan result structures.
+- `core/internal/evidence/profile.go`: Evidence scan profile definitions and configuration.
 - `core/internal/dumper/lines.go`: Builds normalized dialogue line dump output.
 - `core/internal/owners/scanner.go`: Scans Kismet conversation-start exports for conversation owner tags.
 - `core/internal/scan/scanner.go`: Runs parallel PCC scanning used by evidence and batch workflows.
+- `core/internal/scan/files.go`: Discovers PCC and TLK files from BioGame and DLC directories.
+- `core/internal/scan/cache.go`: File modification time cache to skip unchanged packages.
+- `core/internal/scan/index.go`: Builds in-memory file index for batch operations.
+- `core/internal/scan/types.go`: Scan domain types (scan configuration, result summaries).
 - `core/internal/tlk/reader.go`: Parses TLK files and decodes text entries.
 - `core/internal/tlk/resolver.go`: Resolves StringRefs with base TLK and DLC override priority.
+- `core/internal/tlk/writer.go`: Writes TLK files from in-memory entries with correct headers and Huffman encoding.
+- `core/internal/tlk/types.go`: TLK domain types (entries, headers, string references).
 - `core/internal/serialize/writer.go`: Builds the stable JSON output contract consumed by CLI and tests.
 
 **Relationships:**
 
 - Exposes a single `pcc-core` executable consumed by `cli/`.
 - Produces JSON contracts validated by `tests/` and golden files.
-- Should remain the only place where parsing, AST, layout, evidence, line dumping, owner scanning, and validation logic live.
+- Should remain the only place where parsing, AST, layout, evidence, line dumping, owner scanning, validation, writing, encoding, patching, and editing logic live.
 
 ---
 
@@ -109,7 +139,9 @@ tests/
 ├── test_smoke.py
 ├── fixtures/
 ├── golden/
+│   ├── batch/
 │   ├── conversation/
+│   ├── evidence/
 │   ├── graph/
 │   ├── pcc/
 │   └── tlk/
@@ -183,6 +215,7 @@ These folders hold local inputs and generated outputs. They are useful during de
 ```text
 pcc-toolkit/
 ├── output/
+├── samples/
 ```
 
 **Main responsibilities:**
@@ -228,3 +261,11 @@ pcc-toolkit/
 - Both scripts operate on `core/cmd/pcc-core/` to produce the Go binary.
 - Generated binaries and release packages are local artifacts and are gitignored.
 - The Python CLI provides `pcc-toolkit dev build-core` as an alternative when the CLI is installed, but `scripts/build.ps1` works without Python.
+
+---
+
+## 7. Legacy Code
+
+The `pcc-dialog-toolkit-legacy/` directory at the workspace root contains the predecessor
+Python/Go hybrid implementation. It is preserved for reference only, is outside the
+current MVP scope, and should not be modified or depended upon.
