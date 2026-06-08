@@ -14,6 +14,10 @@ const (
 )
 
 func WritePCC(path string, summary *pcc.FileSummary, rawData []byte) error {
+	return WritePCCCompressed(path, summary, rawData, false)
+}
+
+func WritePCCCompressed(path string, summary *pcc.FileSummary, rawData []byte, compress bool) error {
 	if summary == nil {
 		return fmt.Errorf("summary is nil")
 	}
@@ -25,7 +29,14 @@ func WritePCC(path string, summary *pcc.FileSummary, rawData []byte) error {
 		return err
 	}
 
-	buf, err := buildUncompressedPCC(summary, rawData)
+	var buf []byte
+	var err error
+
+	if compress {
+		buf, err = buildCompressedPCC(summary, rawData)
+	} else {
+		buf, err = buildUncompressedBuffer(summary, rawData)
+	}
 	if err != nil {
 		return err
 	}
@@ -34,40 +45,7 @@ func WritePCC(path string, summary *pcc.FileSummary, rawData []byte) error {
 }
 
 func buildUncompressedPCC(summary *pcc.FileSummary, rawData []byte) ([]byte, error) {
-	nameBytes := buildNameTable(summary.Names)
-	importBytes := buildImportTable(summary.Imports)
-	exportTableBytes, expMeta := buildExportTable(summary, rawData)
-	dependsBytes := buildDependTable(summary.Exports)
-
-	exportData, err := collectExportData(summary.Exports, rawData)
-	if err != nil {
-		return nil, err
-	}
-
-	headerSize := 100
-
-	nameOffset := headerSize
-	importOffset := nameOffset + len(nameBytes)
-	exportOffset := importOffset + len(importBytes)
-	dependsOffset := exportOffset + len(exportTableBytes)
-
-	totalSize := dependsOffset + len(dependsBytes) + len(exportData)
-	buf := make([]byte, totalSize)
-
-	writeHeader(buf, summary.Header.Flags & ^uint32(pcc.CompressedFlag), len(summary.Names), nameOffset,
-		len(summary.Exports), exportOffset,
-		len(summary.Imports), importOffset,
-		len(summary.Exports), dependsOffset)
-
-	copy(buf[nameOffset:], nameBytes)
-	copy(buf[importOffset:], importBytes)
-	copy(buf[exportOffset:], exportTableBytes)
-	copy(buf[dependsOffset:], dependsBytes)
-	copy(buf[dependsOffset+len(dependsBytes):], exportData)
-
-	patchExportSerialOffsets(buf, expMeta, exportOffset, dependsOffset+len(dependsBytes))
-
-	return buf, nil
+	return buildUncompressedBuffer(summary, rawData)
 }
 
 func writeHeader(buf []byte, flags uint32, nameCount, nameOffset, exportCount, exportOffset, importCount, importOffset, dependsCount, dependsOffset int) {

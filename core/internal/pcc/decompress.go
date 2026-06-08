@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	lzo "github.com/anchore/go-lzo"
+	lzo "github.com/commander-spaceman/me2lzo/decompress"
 )
 
 func decompressME2OT(data []byte) ([]byte, error) {

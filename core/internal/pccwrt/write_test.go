@@ -171,3 +171,73 @@ func TestWritePCC_NonME2(t *testing.T) {
 		t.Fatal("expected error for non-ME2 profile")
 	}
 }
+
+func TestWritePCC_CompressedRoundTrip(t *testing.T) {
+	dir := t.TempDir()
+	outPath := filepath.Join(dir, "compressed.pcc")
+
+	rawData, summary := pccpat.BuildMinimalPCC([][]byte{
+		[]byte("compressed test data export 0"),
+	})
+
+	err := WritePCCCompressed(outPath, summary, rawData, true)
+	if err != nil {
+		t.Fatalf("WritePCCCompressed: %v", err)
+	}
+
+	writeBytes, _ := os.ReadFile(outPath)
+	t.Logf("compressed file: %d bytes, magic=%08x flags=%08x",
+		len(writeBytes),
+		binary.LittleEndian.Uint32(writeBytes[0:4]),
+		binary.LittleEndian.Uint32(writeBytes[16:20]))
+
+	readSummary, err := pcc.ReadFile(outPath)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+
+	if !readSummary.Compressed {
+		t.Error("expected compressed file")
+	}
+	if len(readSummary.Names) != len(summary.Names) {
+		t.Errorf("name count: want %d, got %d", len(summary.Names), len(readSummary.Names))
+	}
+	if len(readSummary.Exports) != len(summary.Exports) {
+		t.Errorf("export count: want %d, got %d", len(summary.Exports), len(readSummary.Exports))
+	}
+}
+
+func TestWritePCC_CompressedMultiExport(t *testing.T) {
+	dir := t.TempDir()
+	outPath := filepath.Join(dir, "comp_multi.pcc")
+
+	rawData, summary := pccpat.BuildMinimalPCC([][]byte{
+		[]byte("AAAA"),
+		[]byte("BBBB"),
+		[]byte("CCCCCC"),
+	})
+
+	err := WritePCCCompressed(outPath, summary, rawData, true)
+	if err != nil {
+		t.Fatalf("WritePCCCompressed: %v", err)
+	}
+
+	readSummary, err := pcc.ReadFile(outPath)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+
+	if !readSummary.Compressed {
+		t.Error("expected compressed file")
+	}
+	if len(readSummary.Exports) != 3 {
+		t.Errorf("export count: want 3, got %d", len(readSummary.Exports))
+	}
+
+	sizes := []int{4, 4, 6}
+	for i, want := range sizes {
+		if readSummary.Exports[i].SerialSize != want {
+			t.Errorf("export %d SerialSize: want %d, got %d", i, want, readSummary.Exports[i].SerialSize)
+		}
+	}
+}

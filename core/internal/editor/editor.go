@@ -68,7 +68,7 @@ func EditConversation(
 		return fmt.Errorf("patch export: %w", err)
 	}
 
-	if err := pccwrt.WritePCC(outputPath, newSummary, patchedData); err != nil {
+	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, true); err != nil {
 		return fmt.Errorf("write PCC: %w", err)
 	}
 
