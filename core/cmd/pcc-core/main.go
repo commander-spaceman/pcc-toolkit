@@ -40,6 +40,7 @@ var capabilities = []string{
 	"dump_lines_v1",
 	"scan_owners_v1",
 	"edit_conversation_v1",
+	"batch_edit_v1",
 }
 
 type versionOutput struct {
@@ -92,6 +93,8 @@ func main() {
 		cmdScanOwners(args[1:])
 	case "edit-conversation":
 		cmdEditConversation(args[1:])
+	case "batch-edit":
+		cmdBatchEdit(args[1:])
 	default:
 		writeError(fmt.Sprintf("unknown subcommand: %s", args[0]), 2)
 	}
@@ -1561,4 +1564,81 @@ func resolveTextToStrRefs(patch *conversationPatch, tlkFile *tlk.File) error {
 		return tlk.AddEntries(tlkFile, newTLKEntries)
 	}
 	return nil
+}
+
+func cmdBatchEdit(args []string) {
+	fs := flag.NewFlagSet("batch-edit", flag.ExitOnError)
+	dir := fs.String("dir", "", "Directory with PCC files")
+	globPat := fs.String("glob", "*.pcc", "Glob pattern for PCC files")
+	patchFile := fs.String("patch", "", "Path to JSON patch file")
+	outputDir := fs.String("output-dir", "", "Output directory for edited PCCs")
+	dryRun := fs.Bool("dry-run", false, "Validate without writing output")
+
+	fs.Parse(args)
+
+	if *dir == "" {
+		writeError("--dir is required", 2)
+	}
+	if *patchFile == "" {
+		writeError("--patch is required", 2)
+	}
+
+	patchData, err := os.ReadFile(*patchFile)
+	if err != nil {
+		writeError(fmt.Sprintf("read patch file: %v", err), 1)
+	}
+
+	var patch conversationPatch
+	if err := json.Unmarshal(patchData, &patch); err != nil {
+		writeError(fmt.Sprintf("parse patch JSON: %v", err), 1)
+	}
+
+	matches, err := filepath.Glob(filepath.Join(*dir, *globPat))
+	if err != nil {
+		writeError(fmt.Sprintf("glob: %v", err), 1)
+	}
+	if len(matches) == 0 {
+		writeError(fmt.Sprintf("no files match %s in %s", *globPat, *dir), 1)
+	}
+
+	type batchResult struct {
+		File       string                            `json:"file"`
+		Status     string                            `json:"status"`
+		Error      string                            `json:"error,omitempty"`
+		Output     string                            `json:"output,omitempty"`
+		Validation *dialogue.ValidationReportSummary `json:"validation,omitempty"`
+	}
+
+	var results []batchResult
+	for _, pccPath := range matches {
+		base := filepath.Base(pccPath)
+		outPath := ""
+		if !*dryRun && *outputDir != "" {
+			if err := os.MkdirAll(*outputDir, 0755); err != nil {
+				writeError(fmt.Sprintf("create output dir: %v", err), 1)
+			}
+			outPath = filepath.Join(*outputDir, base)
+		}
+
+		modifyFn := func(conv *dialogue.Conversation) error {
+			return applyPatch(conv, &patch)
+		}
+		editResult, err := editor.EditConversation(pccPath, outPath, 0, *dryRun, modifyFn)
+		if err != nil {
+			results = append(results, batchResult{
+				File: base, Status: "error", Error: err.Error(),
+			})
+			continue
+		}
+		results = append(results, batchResult{
+			File: base, Status: editResult.Status, Output: outPath,
+			Validation: editResult.Validation,
+		})
+	}
+
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(results); err != nil {
+		writeError(fmt.Sprintf("failed to encode output: %v", err), 1)
+	}
 }
