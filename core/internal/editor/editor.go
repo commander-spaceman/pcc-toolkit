@@ -3,11 +3,11 @@ package editor
 import (
 	"encoding/binary"
 	"fmt"
+	"os"
 
 	pcc "github.com/commander-spaceman/me2pcc"
 	"pcc-toolkit/core/internal/dialogue"
 	"pcc-toolkit/core/internal/pccpat"
-	"pcc-toolkit/core/internal/pccwrt"
 )
 
 type EditResult struct {
@@ -115,7 +115,23 @@ func EditConversation(
 		editResult.Status = fmt.Sprintf("written_with_%d_warnings", validationReport.Summary.Warning)
 	}
 
-	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, false); err != nil {
+	// Clear compressed flag in header since patchedData is uncompressed.
+	// The flags offset depends on the folder name length in the PCC header.
+	_ = binary.LittleEndian.Uint32(patchedData[0:4]) // magic
+	cursor := 8
+	cursor += 4
+	folderLen := int(int32(binary.LittleEndian.Uint32(patchedData[cursor : cursor+4])))
+	cursor += 4
+	if folderLen > 0 {
+		cursor += folderLen
+	} else if folderLen < 0 {
+		cursor += (-folderLen) * 2
+	}
+	flags := binary.LittleEndian.Uint32(patchedData[cursor : cursor+4])
+	flags &^= uint32(pcc.CompressedFlag)
+	binary.LittleEndian.PutUint32(patchedData[cursor:cursor+4], flags)
+
+	if err := os.WriteFile(outputPath, patchedData, 0644); err != nil {
 		return nil, fmt.Errorf("write PCC: %w", err)
 	}
 
