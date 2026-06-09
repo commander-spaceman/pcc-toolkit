@@ -115,7 +115,7 @@ func EditConversation(
 		editResult.Status = fmt.Sprintf("written_with_%d_warnings", validationReport.Summary.Warning)
 	}
 
-	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, true); err != nil {
+	if err := pccwrt.WritePCCCompressed(outputPath, newSummary, patchedData, false); err != nil {
 		return nil, fmt.Errorf("write PCC: %w", err)
 	}
 
