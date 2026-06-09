@@ -29,7 +29,7 @@ foreach ($f in $files) {
         Write-Host "Already backed up: $f"
     } else {
         Copy-Item $src $dst -Force
-        Write-Host "Backed up: $f"
+        Write-Host "Backed up: $f              ($([math]::Round((Get-Item $src).Length / 1MB, 1)) MB)"
     }
 }
 
