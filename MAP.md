@@ -4,7 +4,7 @@
 
 ## Notes for AI Agents
 
-- **Entry points:** `core/cmd/pcc-core/main.go` for the Go engine, `cli/src/cli_main.py` for the Typer CLI, and `pyproject.toml` for Python packaging and CLI registration.
+- **Entry points:** `core/cmd/pcc-core/main.go` for the Go engine (subcommand handlers live in sibling `.go` files in the same package), `cli/src/cli_main.py` for the Typer CLI, and `pyproject.toml` for Python packaging and CLI registration.
 - **Main patterns:** Go core owns all domain logic; Python CLI is a thin adapter; communication happens through subprocess calls and JSON stdout/stderr contracts; behavior is guarded by golden-file regression tests.
 - **General rule:** Read this file before proposing structural changes or modifying multiple modules.
 
@@ -20,7 +20,17 @@ core/
 ├── go.sum
 ├── cmd/
 │   └── pcc-core/
-│       └── main.go
+│       ├── main.go          (subcommand dispatcher)
+│       ├── parse.go         (parse-pcc)
+│       ├── tlk.go           (parse-tlk, resolve-tlk)
+│       ├── conversation.go  (parse-conversations)
+│       ├── graph.go         (layout-graph)
+│       ├── evidence.go      (scan-evidence)
+│       ├── validate.go      (validate, batch-validate)
+│       ├── serialize.go     (serialize)
+│       ├── dump.go          (dump-lines)
+│       ├── owners.go        (scan-owners)
+│       └── edit.go          (edit-conversation, batch-edit)
 └── internal/
     ├── dialenc/
     ├── dialogue/
@@ -45,7 +55,7 @@ core/
 
 **Key files:**
 
-- `core/cmd/pcc-core/main.go`: Main binary and subcommand dispatcher for `parse-pcc`, `parse-tlk`, `resolve-tlk`, `parse-conversations`, `layout-graph`, `scan-evidence`, `validate`, `serialize`, `batch-validate`, `batch-extract`, `dump-lines`, `scan-owners`, `edit-conversation`, and `batch-edit`.
+- `core/cmd/pcc-core/main.go`: Main binary entry point and subcommand dispatcher. Subcommand implementations live in sibling files (`parse.go`, `tlk.go`, `conversation.go`, `graph.go`, `evidence.go`, `validate.go`, `serialize.go`, `dump.go`, `owners.go`, `edit.go`).
 - PCC reading is delegated to the external `github.com/commander-spaceman/me2pcc` library.
 - TLK reading is delegated to the external `github.com/commander-spaceman/me2tlk` library.
 - LZO decompression is delegated to the external `github.com/commander-spaceman/me2lzo` library.
@@ -96,6 +106,7 @@ The CLI is a thin Typer-based command layer. It translates user commands into `p
 ```text
 cli/
 └── src/
+    ├── __init__.py
     ├── __main__.py
     ├── cli_main.py
     ├── engine.py
@@ -173,8 +184,10 @@ pcc-toolkit/
 ├── AGENTS.md
 ├── MAP.md
 ├── docs/
+│   ├── README.md
 │   ├── PRD-INSPECT.md
 │   ├── PRD-EDITING.md
+│   ├── PRD-KISMET.md
 │   ├── CONTRACTS.md
 │   ├── BUILDING.md
 │   └── REFERENCE.md
@@ -194,9 +207,11 @@ pcc-toolkit/
 - `AGENTS.md`: Operational rules for AI agents, including scope, verification, and repository conventions.
 - `docs/PRD-INSPECT.md`: Canonical architecture, domain model, contracts, and verification for inspect & extract.
 - `docs/PRD-EDITING.md`: Editing, writing, round-trip fidelity, and batch edit requirements.
+- `docs/PRD-KISMET.md`: Kismet/cinematic sequence support requirements and phase plan.
 - `docs/CONTRACTS.md`: JSON contracts for all pcc-core subcommands.
 - `docs/BUILDING.md`: Build, test, and release guide.
 - `docs/REFERENCE.md`: LegendaryExplorer reference notes and known divergences.
+- `docs/README.md`: Documentation index and reading-order guide.
 - `MAP.md`: Concise navigation map for the repository.
 - `pyproject.toml`: Python project metadata, dependencies, and script entry point.
 - `pytest.ini`: Pytest configuration.
@@ -245,23 +260,42 @@ Scripts used during the build and release process.
 ```text
 pcc-toolkit/
 ├── scripts/
+│   ├── README.md
 │   ├── build.ps1
-│   └── release.ps1
+│   ├── release.ps1
+│   ├── apply.ps1
+│   ├── backup-pcc.ps1
+│   ├── restore.ps1
+│   ├── run-game.ps1
+│   ├── trace-game.ps1
+│   ├── trace_game.py
+│   └── conv_to_screenplay.py
 ```
 
 **Main responsibilities:**
 
 - Build the Go core binary with version injection.
 - Package portable releases for distribution.
+- Provide game modding utilities (backup, apply, restore).
+- Provide game debugging and tracing tools.
 
 **Key files:**
 
 - `scripts/build.ps1`: Standalone PowerShell script to build the Windows `pcc-core` binary with ldflags version injection. Defaults the version from `pyproject.toml`.
 - `scripts/release.ps1`: Release packaging script that builds the core binary and creates a portable release directory or zip archive.
+- `scripts/apply.ps1`: Copies modified files from `output/` into the game's `CookedPC/` directory.
+- `scripts/backup-pcc.ps1`: Backs up original ME2 OT game files before modding.
+- `scripts/restore.ps1`: Restores original game files from backup.
+- `scripts/run-game.ps1`: Launches ME2 OT with real-time log and file-access monitoring.
+- `scripts/trace_game.py`: ETW kernel-file tracer that captures every `.pcc`/`.tlk`/`.upk` file the game opens. Requires Administrator.
+- `scripts/trace-game.ps1`: PowerShell wrapper for `trace_game.py` that auto-elevates and displays results.
+- `scripts/conv_to_screenplay.py`: Converts a conversation JSON export to a readable screenplay format.
+- `scripts/README.md`: Scripts directory reference and usage guide.
 
 **Relationships:**
 
-- Both scripts operate on `core/cmd/pcc-core/` to produce the Go binary.
+- Build scripts operate on `core/cmd/pcc-core/` to produce the Go binary.
+- Modding scripts (`apply.ps1`, `backup-pcc.ps1`, `restore.ps1`) interact with the local ME2 OT install and `output/`.
 - Generated binaries and release packages are local artifacts and are gitignored.
 - The Python CLI provides `pcc-toolkit dev build-core` as an alternative when the CLI is installed, but `scripts/build.ps1` works without Python.
 
