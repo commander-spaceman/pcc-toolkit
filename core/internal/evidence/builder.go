@@ -191,8 +191,11 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 
 	for i := range report.Evidence {
 		ev := &report.Evidence[i]
+		var downgraded []TieredHit
+		validBioC := ev.BioConversation[:0]
 		for j := range ev.BioConversation {
 			cm := &ev.BioConversation[j]
+			enriched := false
 			if nodeMap, ok := fileNodeMaps[cm.FilePath]; ok {
 				if infos, ok := nodeMap[nodeKey{exportIndex: cm.ExportIndex, strRef: cm.StrRef}]; ok && len(infos) == 1 {
 					info := infos[0]
@@ -203,7 +206,24 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 					if info.conversationID != "" {
 						cm.ConversationID = info.conversationID
 					}
+					enriched = true
 				}
+			}
+			if !enriched {
+				// The StringRef byte pattern was found in a BioConversation
+				// export but does not correspond to any parsed entry, reply,
+				// or speaker line.  This is a false positive (e.g. a
+				// coincidental nExportID value).  Downgrade to container
+				// fallback.
+				downgraded = append(downgraded, TieredHit{
+					StrRef:     cm.StrRef,
+					Text:       cm.Text,
+					FilePath:   cm.FilePath,
+					ExportName: cm.ExportName,
+					ClassName:  cm.ClassName,
+					Tier:       string(TierContainerFallback),
+				})
+				continue
 			}
 			if ownerMap, ok := fileOwnerMaps[cm.FilePath]; ok {
 				if cm.ConversationID != "" {
@@ -212,7 +232,10 @@ func EnrichConversationMatchesWithAST(report *EvidenceReport) {
 					}
 				}
 			}
+			validBioC = append(validBioC, *cm)
 		}
+		ev.BioConversation = validBioC
+		ev.ContainerFallback = append(ev.ContainerFallback, downgraded...)
 	}
 }
 
