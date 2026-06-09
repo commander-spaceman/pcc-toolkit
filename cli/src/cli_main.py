@@ -477,6 +477,12 @@ def dialogue_edit(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Validate without writing output"
     ),
+    tlk: Path = typer.Option(
+        None, "--tlk", help="TLK file for text resolution/additions"
+    ),
+    tlk_output: Path = typer.Option(
+        None, "--tlk-output", help="Path for the output TLK file"
+    ),
 ) -> None:
     result = engine_edit_conversation(
         file,
@@ -484,6 +490,8 @@ def dialogue_edit(
         patch_file=patch_file,
         output=output,
         dry_run=dry_run,
+        tlk=tlk,
+        tlk_output=tlk_output,
     )
     status = result.get("status", "unknown")
     validation = result.get("validation")

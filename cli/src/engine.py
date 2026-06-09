@@ -270,6 +270,8 @@ def edit_conversation(
     patch_file: Path | str,
     output: Path | str | None = None,
     dry_run: bool = False,
+    tlk: Path | str | None = None,
+    tlk_output: Path | str | None = None,
 ) -> dict[str, Any]:
     return _run(
         "edit-conversation",
@@ -278,4 +280,6 @@ def edit_conversation(
         patch=str(patch_file),
         output=str(output) if output else None,
         dry_run=dry_run,
+        tlk=str(tlk) if tlk else None,
+        tlk_output=str(tlk_output) if tlk_output else None,
     )
