@@ -33,34 +33,58 @@ type conversationPatch struct {
 }
 
 type entryPatch struct {
-	SpeakerID   *int   `json:"speaker_id"`
-	LineStrRef  *int   `json:"line_strref"`
-	Text        string `json:"text"`
-	ReplyLinks  []int  `json:"reply_links"`
-	ListenerTag string `json:"listener_tag"`
+	SpeakerID            *int   `json:"speaker_id"`
+	LineStrRef           *int   `json:"line_strref"`
+	Text                 string `json:"text"`
+	ReplyLinks           []int  `json:"reply_links"`
+	ListenerTag          string `json:"listener_tag"`
+	ConditionalFunc      *int   `json:"conditional_func"`
+	ConditionalParam     *int   `json:"conditional_param"`
+	StateTransition      *int   `json:"state_transition"`
+	StateTransitionParam *int   `json:"state_transition_param"`
+	FiresConditional     *bool  `json:"fires_conditional"`
+	Skippable            *bool  `json:"skippable"`
 }
 
 type replyPatch struct {
-	LineStrRef     *int   `json:"line_strref"`
-	Text           string `json:"text"`
-	TargetEntryIDs []int  `json:"target_entry_ids"`
-	Category       string `json:"category"`
-	ReplyType      string `json:"reply_type"`
+	LineStrRef           *int   `json:"line_strref"`
+	Text                 string `json:"text"`
+	TargetEntryIDs       []int  `json:"target_entry_ids"`
+	Category             string `json:"category"`
+	ReplyType            string `json:"reply_type"`
+	ConditionalFunc      *int   `json:"conditional_func"`
+	ConditionalParam     *int   `json:"conditional_param"`
+	StateTransition      *int   `json:"state_transition"`
+	StateTransitionParam *int   `json:"state_transition_param"`
+	FiresConditional     *bool  `json:"fires_conditional"`
+	Unskippable          *bool  `json:"unskippable"`
 }
 
 type modifyEntryPatch struct {
-	ID         int   `json:"id"`
-	SpeakerID  *int  `json:"speaker_id"`
-	LineStrRef *int  `json:"line_strref"`
-	ReplyLinks []int `json:"reply_links"`
+	ID                   int   `json:"id"`
+	SpeakerID            *int  `json:"speaker_id"`
+	LineStrRef           *int  `json:"line_strref"`
+	ReplyLinks           []int `json:"reply_links"`
+	ConditionalFunc      *int  `json:"conditional_func"`
+	ConditionalParam     *int  `json:"conditional_param"`
+	StateTransition      *int  `json:"state_transition"`
+	StateTransitionParam *int  `json:"state_transition_param"`
+	FiresConditional     *bool `json:"fires_conditional"`
+	Skippable            *bool `json:"skippable"`
 }
 
 type modifyReplyPatch struct {
-	ID             int    `json:"id"`
-	LineStrRef     *int   `json:"line_strref"`
-	TargetEntryIDs []int  `json:"target_entry_ids"`
-	Category       string `json:"category"`
-	ReplyType      string `json:"reply_type"`
+	ID                   int    `json:"id"`
+	LineStrRef           *int   `json:"line_strref"`
+	TargetEntryIDs       []int  `json:"target_entry_ids"`
+	Category             string `json:"category"`
+	ReplyType            string `json:"reply_type"`
+	ConditionalFunc      *int   `json:"conditional_func"`
+	ConditionalParam     *int   `json:"conditional_param"`
+	StateTransition      *int   `json:"state_transition"`
+	StateTransitionParam *int   `json:"state_transition_param"`
+	FiresConditional     *bool  `json:"fires_conditional"`
+	Unskippable          *bool  `json:"unskippable"`
 }
 
 type replyChoicePatch struct {
@@ -209,6 +233,31 @@ func applyAddEntries(conv *dialogue.Conversation, patches []entryPatch) error {
 			LineStrRef: &lineStrRef,
 		}
 
+		if ep.ConditionalFunc != nil {
+			v := *ep.ConditionalFunc
+			entry.ConditionalFunc = &v
+		}
+		if ep.ConditionalParam != nil {
+			v := *ep.ConditionalParam
+			entry.ConditionalParam = &v
+		}
+		if ep.StateTransition != nil {
+			v := *ep.StateTransition
+			entry.StateTransition = &v
+		}
+		if ep.StateTransitionParam != nil {
+			v := *ep.StateTransitionParam
+			entry.StateTransitionParam = &v
+		}
+		if ep.FiresConditional != nil {
+			v := *ep.FiresConditional
+			entry.FiresConditional = &v
+		}
+		if ep.Skippable != nil {
+			v := *ep.Skippable
+			entry.Skippable = &v
+		}
+
 		if len(ep.ReplyLinks) > 0 {
 			replyBase := len(conv.Replies)
 			entry.ReplyLinks = make([]int, len(ep.ReplyLinks))
@@ -252,6 +301,31 @@ func applyAddReplies(conv *dialogue.Conversation, patches []replyPatch) error {
 			ReplyType:      replyType,
 		}
 
+		if rp.ConditionalFunc != nil {
+			v := *rp.ConditionalFunc
+			reply.ConditionalFunc = &v
+		}
+		if rp.ConditionalParam != nil {
+			v := *rp.ConditionalParam
+			reply.ConditionalParam = &v
+		}
+		if rp.StateTransition != nil {
+			v := *rp.StateTransition
+			reply.StateTransition = &v
+		}
+		if rp.StateTransitionParam != nil {
+			v := *rp.StateTransitionParam
+			reply.StateTransitionParam = &v
+		}
+		if rp.FiresConditional != nil {
+			v := *rp.FiresConditional
+			reply.FiresConditional = &v
+		}
+		if rp.Unskippable != nil {
+			v := *rp.Unskippable
+			reply.Unskippable = &v
+		}
+
 		conv.Replies = append(conv.Replies, reply)
 	}
 	return nil
@@ -284,6 +358,30 @@ func applyModifyEntries(conv *dialogue.Conversation, patches []modifyEntryPatch)
 					})
 				}
 			}
+			if mp.ConditionalFunc != nil {
+				v := *mp.ConditionalFunc
+				conv.Entries[i].ConditionalFunc = &v
+			}
+			if mp.ConditionalParam != nil {
+				v := *mp.ConditionalParam
+				conv.Entries[i].ConditionalParam = &v
+			}
+			if mp.StateTransition != nil {
+				v := *mp.StateTransition
+				conv.Entries[i].StateTransition = &v
+			}
+			if mp.StateTransitionParam != nil {
+				v := *mp.StateTransitionParam
+				conv.Entries[i].StateTransitionParam = &v
+			}
+			if mp.FiresConditional != nil {
+				v := *mp.FiresConditional
+				conv.Entries[i].FiresConditional = &v
+			}
+			if mp.Skippable != nil {
+				v := *mp.Skippable
+				conv.Entries[i].Skippable = &v
+			}
 			break
 		}
 		if !found {
@@ -313,6 +411,30 @@ func applyModifyReplies(conv *dialogue.Conversation, patches []modifyReplyPatch)
 			}
 			if mp.ReplyType != "" {
 				conv.Replies[i].ReplyType = mp.ReplyType
+			}
+			if mp.ConditionalFunc != nil {
+				v := *mp.ConditionalFunc
+				conv.Replies[i].ConditionalFunc = &v
+			}
+			if mp.ConditionalParam != nil {
+				v := *mp.ConditionalParam
+				conv.Replies[i].ConditionalParam = &v
+			}
+			if mp.StateTransition != nil {
+				v := *mp.StateTransition
+				conv.Replies[i].StateTransition = &v
+			}
+			if mp.StateTransitionParam != nil {
+				v := *mp.StateTransitionParam
+				conv.Replies[i].StateTransitionParam = &v
+			}
+			if mp.FiresConditional != nil {
+				v := *mp.FiresConditional
+				conv.Replies[i].FiresConditional = &v
+			}
+			if mp.Unskippable != nil {
+				v := *mp.Unskippable
+				conv.Replies[i].Unskippable = &v
 			}
 			break
 		}
