@@ -76,7 +76,18 @@ The Go core depends on three external libraries maintained in separate repositor
 | `me2tlk` | `github.com/commander-spaceman/me2tlk`        | TLK file reading                |
 
 These libraries are imported via `core/go.mod` and are maintained independently
-from this repository. When a bug is traced to one of these libraries:
+from this repository. Local clones for development live at sibling directories
+relative to the workspace root:
+
+| Library  | Local path                   |
+| -------- | ---------------------------- |
+| `me2lzo` | `..\dev\me2lzo` (or similar) |
+| `me2pcc` | `..\dev\me2pcc` (or similar) |
+| `me2tlk` | `..\dev\me2tlk` (or similar) |
+
+Ask the user for the exact local path if unsure.
+
+When a bug is traced to one of these libraries:
 
 1. Fix the library in its own repository.
 2. Tag or push the fix, then update the dependency in this project:
