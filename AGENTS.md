@@ -34,6 +34,7 @@ Agents should work task-by-task, using the smallest correct change.
 | `docs/PRD-EDITING.md`       | Editing, writing, round-trip fidelity, and batch edit requirements                  | Before editing or write-path work                                     |
 | `docs/CONTRACTS.md`         | JSON contracts for all pcc-core subcommands                                         | Before adding/modifying CLI commands or golden tests                  |
 | `docs/BUILDING.md`          | Build, test, and release guide                                                      | Before build/release tooling changes                                  |
+| `docs/PRD-KISMET.md`        | Kismet/cinematic sequence support requirements and phase plan                       | Before Kismet, InterpData, or ConvNode work                           |
 | `docs/REFERENCE.md`         | LegendaryExplorer reference notes and known divergences                             | When LEX semantics need clarification                                 |
 | `MAP.md`                    | Current repository structure and navigation guide                                   | Before structural changes or multi-module work                        |
 | `core/`                     | Go engine; domain logic belongs here                                                | Parsing, AST, layout, evidence, validation                            |
