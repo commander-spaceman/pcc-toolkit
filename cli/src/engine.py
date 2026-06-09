@@ -34,7 +34,7 @@ def _find_binary() -> Path | None:
     return None
 
 
-def _run(subcommand: str, **kwargs: Any) -> dict[str, Any]:
+def _run(subcommand: str, **kwargs: Any) -> Any:
     binary = _resolve_binary()
     args = [str(binary), subcommand]
     for key, value in kwargs.items():
@@ -279,6 +279,30 @@ def edit_conversation(
         conv_index=conv_index,
         patch=str(patch_file),
         output=str(output) if output else None,
+        dry_run=dry_run,
+        tlk=str(tlk) if tlk else None,
+        tlk_output=str(tlk_output) if tlk_output else None,
+    )
+
+
+def batch_edit(
+    dir: Path | str,
+    *,
+    patch_file: Path | str,
+    glob_pattern: str = "*.pcc",
+    conv_index: int = 0,
+    output_dir: Path | str | None = None,
+    dry_run: bool = False,
+    tlk: Path | str | None = None,
+    tlk_output: Path | str | None = None,
+) -> list[dict[str, Any]]:
+    return _run(
+        "batch-edit",
+        dir=str(dir),
+        patch=str(patch_file),
+        glob=glob_pattern,
+        conv_index=conv_index,
+        output_dir=str(output_dir) if output_dir else None,
         dry_run=dry_run,
         tlk=str(tlk) if tlk else None,
         tlk_output=str(tlk_output) if tlk_output else None,

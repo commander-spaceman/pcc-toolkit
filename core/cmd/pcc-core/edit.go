@@ -484,6 +484,9 @@ func cmdBatchEdit(args []string) {
 	patchFile := fs.String("patch", "", "Path to JSON patch file")
 	outputDir := fs.String("output-dir", "", "Output directory for edited PCCs")
 	dryRun := fs.Bool("dry-run", false, "Validate without writing output")
+	tlkPath := fs.String("tlk", "", "Path to TLK file for text resolution/additions")
+	tlkOutput := fs.String("tlk-output", "", "Path for the output TLK file")
+	convIndex := fs.Int("conv-index", 0, "Conversation index within each PCC (0-based)")
 
 	fs.Parse(args)
 
@@ -502,6 +505,25 @@ func cmdBatchEdit(args []string) {
 	var patch conversationPatch
 	if err := json.Unmarshal(patchData, &patch); err != nil {
 		writeError(fmt.Sprintf("parse patch JSON: %v", err), 1)
+	}
+
+	if *tlkPath != "" {
+		tlkFile, err := reader.ReadFile(*tlkPath)
+		if err != nil {
+			writeError(fmt.Sprintf("read TLK: %v", err), 1)
+		}
+		if err := resolveTextToStrRefs(&patch, tlkFile); err != nil {
+			writeError(fmt.Sprintf("resolve TLK text: %v", err), 1)
+		}
+		if *tlkOutput != "" {
+			buf, err := tlkwrt.WriteFileBytes(tlkFile)
+			if err != nil {
+				writeError(fmt.Sprintf("build TLK bytes: %v", err), 1)
+			}
+			if err := os.WriteFile(*tlkOutput, buf, 0644); err != nil {
+				writeError(fmt.Sprintf("write TLK: %v", err), 1)
+			}
+		}
 	}
 
 	matches, err := filepath.Glob(filepath.Join(*dir, *globPat))
@@ -534,7 +556,7 @@ func cmdBatchEdit(args []string) {
 		modifyFn := func(conv *dialogue.Conversation) error {
 			return applyPatch(conv, &patch)
 		}
-		editResult, err := editor.EditConversation(pccPath, outPath, 0, *dryRun, modifyFn)
+		editResult, err := editor.EditConversation(pccPath, outPath, *convIndex, *dryRun, modifyFn)
 		if err != nil {
 			results = append(results, batchResult{
 				File: base, Status: "error", Error: err.Error(),

@@ -9,6 +9,7 @@ import typer
 
 from engine import (
     EngineError,
+    batch_edit as engine_batch_edit,
     batch_extract as engine_batch_extract,
     batch_validate as engine_batch_validate,
     dump_lines as engine_dump_lines,
@@ -572,7 +573,42 @@ def batch_extract(
             typer.echo(f"  {r.get('conversations', 0):>3} conv  {r.get('file', '')}")
 
 
-# ── evidence ─────────────────────────────────────────────────────────────────
+@batch_app.command("edit")
+def batch_edit(
+    dir: Path = typer.Argument(..., help="Directory to scan for PCC files"),
+    patch_file: Path = typer.Option(..., "--patch", help="Path to JSON patch file"),
+    glob_pattern: str = typer.Option("*.pcc", "--glob", help="Glob pattern"),
+    conv_index: int = typer.Option(
+        0, "--conv-index", help="Conversation index to edit"
+    ),
+    output_dir: Path = typer.Option(None, "--output-dir", help="Output directory"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Validate without writing"),
+    tlk: Path = typer.Option(None, "--tlk", help="TLK file for text resolution"),
+    tlk_output: Path = typer.Option(None, "--tlk-output", help="Output TLK file"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON"),
+) -> None:
+    result = engine_batch_edit(
+        dir,
+        patch_file=patch_file,
+        glob_pattern=glob_pattern,
+        conv_index=conv_index,
+        output_dir=output_dir,
+        dry_run=dry_run,
+        tlk=tlk,
+        tlk_output=tlk_output,
+    )
+    if json_output:
+        typer.echo(json.dumps(result, indent=2))
+        return
+
+    for r in result:
+        status = r.get("status", "?")
+        file = r.get("file", "?")
+        err = r.get("error", "")
+        if err:
+            console.print(f"[red]ERR[/red] {file}: {err}")
+        else:
+            console.print(f"[green]{status}[/green] {file}")
 
 
 @evidence_app.command("scan")
