@@ -13,6 +13,14 @@ import (
 	"pcc-toolkit/core/internal/tlkwrt"
 )
 
+// conversationPatch describes modifications to a conversation AST.
+//
+// ID semantics:
+//   - add_entries.reply_links: relative offsets (0 = first newly added reply)
+//   - modify_entries.reply_links: absolute reply IDs
+//   - add_reply_choices.to_reply_id: absolute reply ID
+//   - add_replies.target_entry_ids: absolute entry IDs
+//   - modify_replies.target_entry_ids: absolute entry IDs
 type conversationPatch struct {
 	AddEntries      []entryPatch       `json:"add_entries"`
 	AddReplies      []replyPatch       `json:"add_replies"`
@@ -392,6 +400,19 @@ func applyAddReplyChoices(conv *dialogue.Conversation, patches []replyChoicePatc
 				continue
 			}
 			found = true
+
+			// Avoid duplicating a reply link that already exists.
+			alreadyLinked := false
+			for _, rl := range conv.Entries[i].ReplyLinks {
+				if rl == rcp.ToReplyID {
+					alreadyLinked = true
+					break
+				}
+			}
+			if alreadyLinked {
+				break
+			}
+
 			conv.Entries[i].ReplyLinks = append(conv.Entries[i].ReplyLinks, rcp.ToReplyID)
 
 			order := len(conv.Entries[i].ReplyChoices)
